@@ -195,6 +195,29 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void commitHistoryUsesReadableSelectionAndExplainsReadOnlyDetails() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n"
+                + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n"
+                + "TP_LOG\tdef5678\t1 hour ago\tfeat: 增加 Git 工作台\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        AlertDialog commits = activity.createCommitsDialog();
+        assertNotNull(commits);
+        activity.showStyledDialog(commits);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(activity.getColor(R.color.tp_text_secondary),
+            commits.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
+        assertTrue(((TextView) commits.findViewById(android.R.id.message)).getText().toString()
+            .contains("只读"));
+        assertEquals(2, commits.getListView().getAdapter().getCount());
+        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("abc1234"));
+        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("修复滚动"));
+    }
+
+    @Test
     public void overviewShowsActionableNextStepForCommonGitStates() {
         Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")
