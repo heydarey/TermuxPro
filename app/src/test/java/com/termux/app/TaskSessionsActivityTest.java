@@ -48,12 +48,22 @@ public class TaskSessionsActivityTest {
         TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
         assertTrue(safetyHint.getText().toString().contains("当前工作区会话优先显示"));
         assertTrue(safetyHint.getText().toString().contains("只允许进入"));
+        assertEquals(activity.getString(R.string.task_sessions_safety_hint),
+            safetyHint.getContentDescription().toString());
 
         create.performClick();
         AlertDialog dialog = (AlertDialog) ShadowDialog.getLatestDialog();
         assertNotNull(dialog);
         assertTrue(dialog.isShowing());
         assertNotNull(dialog.findViewById(R.id.task_session_name_input));
+    }
+
+    @Test
+    public void largeFontUsesCompactSafetyHintWithoutWeakeningAccessibilityDescription() {
+        assertEquals(R.string.task_sessions_safety_hint,
+            TaskSessionsActivity.safetyHintResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_safety_hint_compact,
+            TaskSessionsActivity.safetyHintResForFontScale(1.5f));
     }
 
     @Test

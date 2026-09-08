@@ -75,6 +75,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mRecovery = findViewById(R.id.task_sessions_recovery_button);
         mCreate = findViewById(R.id.task_sessions_create_button);
         mList = findViewById(R.id.task_sessions_list);
+        configureSafetyHint();
         ((TextView) findViewById(R.id.task_sessions_target)).setText(
             getString(R.string.task_sessions_target, String.valueOf(mHost), mPort,
                 String.valueOf(mProjectPath)));
@@ -106,6 +107,19 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         } else {
             loadSessions();
         }
+    }
+
+    /** 大字体时保留共享会话的安全结论，避免静态说明挤掉首个可操作会话。 */
+    private void configureSafetyHint() {
+        TextView hint = findViewById(R.id.task_sessions_safety_hint);
+        hint.setText(safetyHintResForFontScale(getResources().getConfiguration().fontScale));
+        // 视觉上可收敛，但辅助技术仍能读到完整的归属与权限边界。
+        hint.setContentDescription(getString(R.string.task_sessions_safety_hint));
+    }
+
+    static int safetyHintResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_safety_hint_compact
+            : R.string.task_sessions_safety_hint;
     }
 
     private void showPreviewForUiTest() {

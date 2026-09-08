@@ -228,7 +228,7 @@
     <string name="workspace_selector_unconfigured">%1$s\n未配置服务器</string>
     <string name="workspace_selector_target">%1$s\n%2$s · %3$s · %4$s</string>
     <string name="workspace_new_action">新建工作区</string>
-    <string name="workspace_manage_action">服务器与项目</string>
+    <string name="workspace_manage_action">更多工作区操作</string>
     <string name="workspace_edit_action">编辑连接</string>
     <string name="workspace_advanced_action">高级设置</string>
     <string name="workspace_advanced_hide_action">收起高级设置</string>
@@ -567,6 +567,7 @@
     <string name="task_sessions_incomplete_marker_warning">这个会话存在不完整的 TermuxPro 归属元数据。当前只按只读处理：允许进入，但禁用重命名和停止；请重新连接或重建会话后再管理。</string>
     <string name="task_sessions_target">远端目标 · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_safety_hint">当前工作区会话优先显示；其他工作区、其他使用者和归属未知会话只允许进入，不允许在这里重命名或停止。</string>
+    <string name="task_sessions_safety_hint_compact">仅当前工作区会话可管理；其余会话只可进入。</string>
     <string name="task_sessions_owned_context">TermuxPro 自有会话 · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_name_label">会话名称</string>
     <string name="task_sessions_creating">正在新建“%1$s”…</string>
