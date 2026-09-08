@@ -5,8 +5,9 @@
 - 增值服务分类：多工作区、tmux 可视化、移动端交互体验。
 - 审计旅程：开发者在手机上确认当前远程项目，进入终端工具箱后查看共享服务器的 tmux 会话；在系统 200%
   字体下，仍应优先看到可执行操作，而不是重复的说明文字。
-- 证据来源：本轮从 GitHub Emulator UI run `34198797402` 下载并检查 artifact
-  `termuxpro-emulator-ui-240`，覆盖 360dp、深色、简体中文、默认和 200% 字体。
+- 证据来源：先从 GitHub Emulator UI run `34198797402` 下载并检查 artifact
+  `termuxpro-emulator-ui-240` 定位问题；修正后再从 run `34200643606` 下载 artifact
+  `termuxpro-emulator-ui-241` 复查 360dp、深色、简体中文、默认和 200% 字体。
 
 ## 截图发现与取舍
 
@@ -30,7 +31,10 @@
 - `git diff --check`：通过。
 - `test/dialog-readable-style-test.sh`：通过。
 
-## 待远端验收
+## 远端验收证据
 
-- 研发 PR 的 CI、360dp 深色默认/200% 字体 Emulator UI、自动合并与 dev 收尾 CI 必须全部通过后再将本轮
-  标记为闭环。
+- PR #227 分支 CI `34200643688` 通过。
+- PR #227 360dp 深色默认/200% 字体 Emulator UI `34200643606` 通过；复查截图确认“更多工作区操作”不再与
+  卡片标题重复，200% 字体下 tmux 归属提示已收敛，首个会话卡片更靠近操作区。
+- PR #227 已合入 `dev`（merge commit `81aea24b06805c8b3324c3ed29319592b1921b59`），合入后 dev 收尾 CI
+  `34201266672` 通过；自动 PR 收尾 run `34200643638` 通过。本轮闭环完成。
