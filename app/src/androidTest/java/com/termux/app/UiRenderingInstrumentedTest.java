@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** 在真实 Android 渲染器中逐页截图，防止厂商主题默认文字色和大字体回归。 */
 @RunWith(AndroidJUnit4.class)
@@ -125,6 +126,7 @@ public final class UiRenderingInstrumentedTest {
             assertTrue(feedback.getVisibility() == View.VISIBLE);
             assertTrue(!feedback.getText().toString().isEmpty());
         });
+        AtomicReference<View> terminalNavigation = new AtomicReference<>();
         capture(context, "terminal-navigation", new Intent(workspaceIntent), activity -> {
             Context terminalContext = new ContextThemeWrapper(activity,
                 com.termux.R.style.Theme_TermuxActivity_DayNight_NoActionBar);
@@ -135,10 +137,23 @@ public final class UiRenderingInstrumentedTest {
             androidx.drawerlayout.widget.DrawerLayout drawer = terminal.findViewById(
                 com.termux.R.id.drawer_layout);
             drawer.openDrawer(Gravity.LEFT, false);
+            terminalNavigation.set(terminal);
+        }, activity -> {
+            View terminal = terminalNavigation.get();
+            assertNotNull(terminal);
             TextView workbench = terminal.findViewById(com.termux.R.id.workspace_home_button);
             assertTrue(workbench.getText().toString().contains("工作台"));
             assertTrue(!terminal.findViewById(com.termux.R.id.workspace_drawer_button)
                 .getContentDescription().toString().isEmpty());
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.workspace_drawer_button));
+            assertViewHasVisibleBounds(workbench);
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_ai_center_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_tools_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.new_session_button));
         });
         capture(context, "remote-files",
             RemoteFilesActivity.newIntent(context, "invalid", 0, "~/project"), activity ->
@@ -304,10 +319,16 @@ public final class UiRenderingInstrumentedTest {
 
     private void capture(Context context, String name, Intent intent, ScreenPreparer preparer)
         throws Exception {
+        capture(context, name, intent, preparer, null);
+    }
+
+    private void capture(Context context, String name, Intent intent, ScreenPreparer preparer,
+        ScreenVerifier verifier) throws Exception {
         try (ActivityScenario<? extends Activity> scenario = ActivityScenario.launch(intent)) {
             if (preparer != null) scenario.onActivity(preparer::prepare);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Thread.sleep(500L);
+            if (verifier != null) scenario.onActivity(verifier::verify);
             UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
             Bitmap screenshot = automation.takeScreenshot();
             assertNotNull("无法截取页面：" + name, screenshot);
@@ -319,6 +340,10 @@ public final class UiRenderingInstrumentedTest {
 
     private interface ScreenPreparer {
         void prepare(Activity activity);
+    }
+
+    private interface ScreenVerifier {
+        void verify(Activity activity);
     }
 
     private void writeScreenshot(Context context, Bitmap screenshot, String name) throws IOException {

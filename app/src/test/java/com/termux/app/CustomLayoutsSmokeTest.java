@@ -93,8 +93,10 @@ public class CustomLayoutsSmokeTest {
             R.layout.activity_termux, new FrameLayout(context), false);
         TextView workbench = page.findViewById(R.id.workspace_home_button);
         TextView sessions = page.findViewById(R.id.workspace_drawer_button);
+        TextView aiCenter = page.findViewById(R.id.terminal_ai_center_button);
         TextView tools = page.findViewById(R.id.terminal_tools_button);
         TextView closeSession = page.findViewById(R.id.close_session_button);
+        TextView newSession = page.findViewById(R.id.new_session_button);
         ImageButton settings = page.findViewById(R.id.settings_button);
         float density = context.getResources().getDisplayMetrics().density;
 
@@ -106,13 +108,21 @@ public class CustomLayoutsSmokeTest {
             sessions.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_sessions_short),
             sessions.getText().toString());
+        assertEquals(context.getString(R.string.terminal_ai_short), aiCenter.getText().toString());
+        assertEquals(context.getString(R.string.terminal_ai_cli_center_action),
+            aiCenter.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_tools_action), tools.getText().toString());
         assertEquals(context.getString(R.string.workspace_tools_action),
             tools.getContentDescription().toString());
         assertEquals(context.getString(R.string.action_close_session),
             closeSession.getText().toString());
+        assertEquals(context.getString(R.string.terminal_drawer_new_session_short),
+            newSession.getText().toString());
+        assertEquals(context.getString(R.string.action_new_session),
+            newSession.getContentDescription().toString());
         assertTrue(tools.getLayoutParams().height >= Math.round(48 * density));
         assertTrue(closeSession.getLayoutParams().height >= Math.round(48 * density));
+        assertTrue(newSession.getLayoutParams().width == 0);
         assertTrue(settings.getLayoutParams().width >= Math.round(48 * density));
         assertTrue(settings.getLayoutParams().height >= Math.round(48 * density));
     }
