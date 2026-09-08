@@ -56,6 +56,12 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals("选用模板", ((TextView) activity.findViewById(
+            R.id.custom_commands_templates)).getText().toString());
+        assertEquals("新建指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_add)).getText().toString());
 
         activity.findViewById(R.id.custom_commands_add).performClick();
         shadowOf(Looper.getMainLooper()).idle();
@@ -76,6 +82,8 @@ public class CustomCommandsActivityTest {
         assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_scenario_hint).getVisibility());
     }
 
     @Test

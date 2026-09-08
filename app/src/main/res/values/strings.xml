@@ -710,8 +710,8 @@
     <string name="task_sessions_refresh_result">Refresh and verify</string>
     <string name="custom_commands_title">Quick commands</string>
     <string name="custom_commands_back">Back</string>
-    <string name="custom_commands_add">New</string>
-    <string name="custom_commands_templates">Templates</string>
+    <string name="custom_commands_add">New command</string>
+    <string name="custom_commands_templates">Use template</string>
     <string name="custom_commands_target_label">Execution target</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">Save frequent commands for this workspace; always verify the target before running.</string>
@@ -721,7 +721,7 @@
     <string name="custom_commands_search_summary">Showing %1$d of %2$d shortcuts</string>
     <string name="custom_commands_search_empty">No shortcuts match. Clear the filter, or check name, scenario, command, and directory keywords.</string>
     <string name="custom_commands_template_hint">When typing commands on mobile is slow, start from a Codex, Claude, Git, tmux, or test template. Templates only prefill the editor and never run before you save.</string>
-    <string name="custom_commands_empty">No quick commands yet. Start from a template, then adjust it for this project.</string>
+    <string name="custom_commands_empty">No quick commands yet. Use a template and adapt it to this project, or create a command from scratch.</string>
     <string name="custom_commands_group_header">%1$s workflow</string>
     <string name="custom_commands_template_title">Choose a quick command template</string>
     <string name="custom_commands_template_message">Templates only fill the editor. Nothing is saved before you confirm, and every run still follows confirmation and dangerous-command checks.</string>
