@@ -34,10 +34,16 @@
 
 - `git diff --check`：通过。
 - `:app:testDebugUnitTest --tests com.termux.app.CustomCommandsActivityTest --tests com.termux.app.CustomCommandStoreTest --rerun-tasks`：通过。
-  - `CustomCommandsActivityTest`：7 项，0 failure / 0 error；覆盖名称/场景/命令/目录筛选、结果计数、无结果、
+  - `CustomCommandsActivityTest`：8 项，0 failure / 0 error；覆盖名称/场景/命令/目录筛选、结果计数、无结果、
     清除操作、少量指令时隐藏无用筛选、分组显示与原存储顺序。
   - `CustomCommandStoreTest`：4 项，0 failure / 0 error；验证工作区隔离存储未受筛选改动影响。
 
-## 待远端验收
+## 远端验收证据
 
-- 分支 CI、360dp 深色默认/200% 字体 Emulator UI、自动 PR 与合并后 dev 收尾 CI 通过后补充运行编号。
+- 功能 PR #223：分支 CI `34198064186`、360dp 深色默认/200% 字体 Emulator UI `34198064187` 通过；合入后
+  `dev` 收尾 CI `34198601645` 通过。
+- 体验收敛 PR #225：分支 CI `34198797287`、360dp 深色默认/200% 字体 Emulator UI `34198797402` 通过；已合入
+  `dev`（merge commit `f90d34934b9ca3ed6a7cb61f3a8cb44c2add5a20`）。合入后 `dev` 收尾 CI `34199321489`
+  已通过；功能、UI 与合并后研发线回归均完成。
+- PR #224 是 #223 合并后旧分支自动产生的重复修复；关闭请求与自动合并发生竞态，但 #225 合入前后文件树
+  已核对无差异，不存在重复的用户可见改动。
