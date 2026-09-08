@@ -176,6 +176,8 @@
     <string name="ai_cli_center_title">AI CLI 会话中心</string>
     <string name="ai_cli_center_summary">按“准备环境 → 启动 AI → 检查结果”使用。TermuxPro 不读取 AI 私有历史，也不会自动进入最近会话。</string>
     <string name="ai_cli_center_context_title">当前上下文</string>
+    <string name="ai_cli_center_start_title">新建 AI 会话</string>
+    <string name="ai_cli_center_start_hint">安全默认：新建仅 SSH 会话，不自动恢复历史，也不自动进入 tmux。</string>
     <string name="ai_cli_center_prepare_title">启动前先确认</string>
     <string name="ai_cli_center_prepare_hint">远端环境和 tmux 是共享服务器上最容易误入的两类上下文。先检查，再决定是否进入指定会话。</string>
     <string name="ai_cli_center_next_title">AI 完成后</string>

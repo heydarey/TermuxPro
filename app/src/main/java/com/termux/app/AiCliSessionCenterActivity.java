@@ -50,17 +50,22 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void bindTarget() {
         TextView target = findViewById(R.id.ai_cli_center_target);
         TextView detail = findViewById(R.id.ai_cli_center_target_detail);
+        TextView policy = findViewById(R.id.ai_cli_center_policy_summary);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || workspace.host == null || workspace.host.trim().isEmpty()
             || workspace.port < 1 || workspace.path == null || workspace.path.trim().isEmpty()) {
             target.setText(R.string.ai_cli_center_target_missing);
             detail.setText(R.string.ai_cli_center_target_missing_detail);
+            policy.setVisibility(View.GONE);
             return;
         }
         target.setText(workspace.name);
+        // 首屏只保留用户启动 AI 前必须确认的服务器与目录，策略说明留在后续安全工具区，
+        // 避免大字体下把“新建 AI 会话”压出可见范围。
         detail.setText(getString(R.string.ai_cli_center_target_detail,
-            workspace.host, workspace.port, workspace.path)
-            + "\n" + policySummary(workspace.connectionPolicy, workspace.sessionName)
+            workspace.host, workspace.port, workspace.path));
+        policy.setVisibility(View.VISIBLE);
+        policy.setText(policySummary(workspace.connectionPolicy, workspace.sessionName)
             + "\n" + getString(R.string.ai_cli_center_ai_policy));
     }
 

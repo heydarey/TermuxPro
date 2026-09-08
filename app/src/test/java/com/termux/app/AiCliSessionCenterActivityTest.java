@@ -37,8 +37,9 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("AI CLI 会话中心", text(activity, R.id.ai_cli_center_title));
         assertEquals("未选择有效远程工作区", text(activity, R.id.ai_cli_center_target));
         assertTrue(text(activity, R.id.ai_cli_center_target_detail).contains("请先回到工作台"));
-        assertTrue(text(activity, R.id.ai_cli_center_summary).contains("准备环境"));
         assertEquals("当前上下文", text(activity, R.id.ai_cli_center_context_title));
+        assertEquals("新建 AI 会话", text(activity, R.id.ai_cli_center_start_title));
+        assertTrue(text(activity, R.id.ai_cli_center_start_hint).contains("安全默认"));
         assertEquals("启动前先确认", text(activity, R.id.ai_cli_center_prepare_title));
         assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
@@ -73,8 +74,10 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("远程开发", text(activity, R.id.ai_cli_center_target));
         String detail = text(activity, R.id.ai_cli_center_target_detail);
         assertTrue(detail.contains("hdr@192.168.1.153:22 · ~/project"));
-        assertTrue(detail.contains("工作区连接策略：仅进入指定 tmux：safe-ai"));
-        assertTrue(detail.contains("AI 快捷启动策略：始终只建立 SSH"));
+        assertTrue(!detail.contains("工作区连接策略"));
+        String policy = text(activity, R.id.ai_cli_center_policy_summary);
+        assertTrue(policy.contains("工作区连接策略：仅进入指定 tmux：safe-ai"));
+        assertTrue(policy.contains("AI 快捷启动策略：始终只建立 SSH"));
 
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);

@@ -296,6 +296,8 @@
     <string name="ai_cli_center_title">AI CLI session center</string>
     <string name="ai_cli_center_summary">Use this as Prepare environment → Start AI → Review result. TermuxPro does not read private AI history and never auto-enters the latest session.</string>
     <string name="ai_cli_center_context_title">Current context</string>
+    <string name="ai_cli_center_start_title">Start a new AI session</string>
+    <string name="ai_cli_center_start_hint">Safe default: starts a clean SSH-only session. It never resumes history or enters tmux automatically.</string>
     <string name="ai_cli_center_prepare_title">Check before starting</string>
     <string name="ai_cli_center_prepare_hint">Remote tools and tmux are the two easiest contexts to enter by mistake on shared servers. Check first, then decide whether to enter a specific session.</string>
     <string name="ai_cli_center_next_title">After AI finishes</string>
