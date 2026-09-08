@@ -600,6 +600,7 @@
     <string name="custom_commands_search_summary">已显示 %1$d / %2$d 条快捷指令</string>
     <string name="custom_commands_search_empty">没有匹配的快捷指令。可清除筛选，或检查名称、场景、命令和目录关键词。</string>
     <string name="custom_commands_template_hint">不想在手机上手写命令时，可从模板选择 Codex、Claude、Git、tmux 或测试命令；模板只会预填编辑器，保存前不会执行。</string>
+    <string name="custom_commands_template_hint_compact">模板只会预填编辑器；保存前不会执行。</string>
     <string name="custom_commands_empty">还没有快捷指令。可选用模板后按当前项目微调，或直接新建一条指令。</string>
     <string name="custom_commands_group_header">%1$s 场景</string>
     <string name="custom_commands_template_title">选择快捷指令模板</string>

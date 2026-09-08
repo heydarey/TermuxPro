@@ -41,7 +41,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private WorkspaceTarget mTarget;
     private LinearLayout mList;
     private TextView mEmpty;
-    private View mTemplateHint;
+    private TextView mTemplateHint;
     private View mScenarioHint;
     private EditText mSearchInput;
     private TextView mSearchSummary;
@@ -61,6 +61,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mEmpty = findViewById(R.id.custom_commands_empty);
         mTemplateHint = findViewById(R.id.custom_commands_template_hint);
         mScenarioHint = findViewById(R.id.custom_commands_scenario_hint);
+        configureTemplateHint();
         mSearchInput = findViewById(R.id.custom_commands_search_input);
         mSearchSummary = findViewById(R.id.custom_commands_search_summary);
         mSearchEmpty = findViewById(R.id.custom_commands_search_empty);
@@ -103,6 +104,18 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         details.setText(getString(R.string.custom_commands_target_details,
             mTarget.host, mTarget.port, mTarget.path));
         mSearchInput.setEnabled(true);
+    }
+
+    /** 大字体优先呈现下一步；完整模板范围和安全语义仍提供给辅助技术。 */
+    private void configureTemplateHint() {
+        mTemplateHint.setText(templateHintResForFontScale(
+            getResources().getConfiguration().fontScale));
+        mTemplateHint.setContentDescription(getString(R.string.custom_commands_template_hint));
+    }
+
+    static int templateHintResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.custom_commands_template_hint_compact
+            : R.string.custom_commands_template_hint;
     }
 
     private void renderCommands() {
