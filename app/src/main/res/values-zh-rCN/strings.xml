@@ -446,6 +446,8 @@
     <string name="workspace_project_tasks_action">项目任务</string>
     <string name="project_tasks_title">项目任务</string>
     <string name="project_tasks_description">识别阶段只读取项目描述信息；启动任务前会展示完整命令，由你确认后执行。</string>
+    <string name="project_tasks_target">执行目标 · %1$s:%2$d · %3$s</string>
+    <string name="project_tasks_target_missing">未填写</string>
     <string name="project_tasks_detecting">正在识别项目类型…</string>
     <string name="project_tasks_type">已识别：%1$s</string>
     <string name="project_tasks_invalid_workspace">工作区连接信息无效。</string>

@@ -80,6 +80,8 @@ public class RemoteToolRecoveryTest {
 
         assertReadableRecoveryMessage(activity.findViewById(R.id.project_tasks_status),
             activity.findViewById(R.id.project_tasks_recovery_button));
+        assertTrue(((TextView) activity.findViewById(R.id.project_tasks_target)).getText()
+            .toString().contains("invalid:0 · ~/project"));
         assertTrue(activity.findViewById(R.id.project_tasks_list).getVisibility() == View.GONE);
     }
 
