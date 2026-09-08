@@ -105,14 +105,12 @@ public final class UiRenderingInstrumentedTest {
         });
         capture(context, "ai-cli-session-center",
             new Intent(context, AiCliSessionCenterActivity.class), activity -> {
-                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_claude_new)
-                    .getVisibility() == View.VISIBLE);
-                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_claude_history)
-                    .getVisibility() == View.VISIBLE);
-                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_codex_new)
-                    .getVisibility() == View.VISIBLE);
-                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_codex_history)
-                    .getVisibility() == View.VISIBLE);
+                ScrollView scroll = activity.findViewById(com.termux.R.id.ai_cli_center_scroll);
+                assertTrue("会话中心首屏不得预滚动", scroll.getScrollY() == 0);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_claude_new));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_codex_new));
             });
         capture(context, "terminal-feedback", new Intent(workspaceIntent), activity -> {
             TextView feedback = (TextView) activity.getLayoutInflater().inflate(
