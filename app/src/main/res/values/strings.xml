@@ -702,6 +702,11 @@
     <string name="custom_commands_target_label">Execution target</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">Turn repeated Git, tmux, AI CLI, test, and release commands into quick actions for this workspace. When built-in tools do not cover your workflow, extend it here first.</string>
+    <string name="custom_commands_search_label">Filter this workspace’s shortcuts</string>
+    <string name="custom_commands_search_hint">Name, scenario, command, or directory</string>
+    <string name="custom_commands_clear_search">Clear</string>
+    <string name="custom_commands_search_summary">Showing %1$d of %2$d shortcuts</string>
+    <string name="custom_commands_search_empty">No shortcuts match. Clear the filter, or check name, scenario, command, and directory keywords.</string>
     <string name="custom_commands_template_hint">When typing commands on mobile is slow, start from a Codex, Claude, Git, tmux, or test template. Templates only prefill the editor and never run before you save.</string>
     <string name="custom_commands_empty">No quick commands yet. Start from a template, then adjust it for this project.</string>
     <string name="custom_commands_group_header">%1$s workflow</string>
