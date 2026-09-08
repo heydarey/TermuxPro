@@ -376,6 +376,9 @@
     <string name="workspace_delete_title">Delete this workspace?</string>
     <string name="workspace_delete_message">Connection metadata for “%1$s” will be removed. SSH keys and remote files are not affected.</string>
     <string name="workspace_tools_action">Toolbox</string>
+    <string name="terminal_ai_short">AI</string>
+    <string name="terminal_drawer_keyboard_short">Keys</string>
+    <string name="terminal_drawer_new_session_short">New</string>
     <string name="workspace_tools_scrollback_action">Toolbox · Swipe history</string>
     <string name="workspace_tools_tui_scroll_action">Toolbox · Swipe TUI</string>
     <string name="workspace_git_status_action">Git status</string>

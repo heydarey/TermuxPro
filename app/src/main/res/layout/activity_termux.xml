@@ -58,73 +58,40 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <HorizontalScrollView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:fillViewport="false"
-                android:scrollbars="none">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/terminal_ai_center_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="48dp"
+                    android:backgroundTint="#68E0B7"
+                    android:contentDescription="@string/terminal_ai_cli_center_action"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="9dp"
+                    android:text="@string/terminal_ai_short"
+                    android:textAllCaps="false"
+                    android:textColor="#062118"
+                    android:textSize="12sp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/terminal_prompt_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:backgroundTint="#24394A"
-                        android:minWidth="0dp"
-                        android:paddingHorizontal="9dp"
-                        android:text="@string/workspace_prompt_action"
-                        android:textAllCaps="false"
-                        android:textColor="#D8E4EC"
-                        android:textSize="12sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/terminal_claude_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="5dp"
-                        android:backgroundTint="#24394A"
-                        android:minWidth="0dp"
-                        android:paddingHorizontal="8dp"
-                        android:text="Claude"
-                        android:textAllCaps="false"
-                        android:textColor="#D8E4EC"
-                        android:textSize="12sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/terminal_codex_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="5dp"
-                        android:backgroundTint="#68E0B7"
-                        android:minWidth="0dp"
-                        android:paddingHorizontal="8dp"
-                        android:text="Codex"
-                        android:textAllCaps="false"
-                        android:textColor="#062118"
-                        android:textSize="12sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/terminal_tools_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="2dp"
-                        android:backgroundTint="#24394A"
-                        android:contentDescription="@string/workspace_tools_action"
-                        android:minWidth="0dp"
-                        android:paddingHorizontal="9dp"
-                        android:text="@string/workspace_tools_action"
-                        android:textAllCaps="false"
-                        android:textColor="#D8E4EC"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/terminal_tools_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="#24394A"
+                    android:contentDescription="@string/workspace_tools_action"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="9dp"
+                    android:text="@string/workspace_tools_action"
+                    android:textAllCaps="false"
+                    android:textColor="#D8E4EC"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <androidx.drawerlayout.widget.DrawerLayout
@@ -211,26 +178,29 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/toggle_keyboard_button"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="@string/action_toggle_soft_keyboard" />
+                        android:contentDescription="@string/action_toggle_soft_keyboard"
+                        android:text="@string/terminal_drawer_keyboard_short" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/close_session_button"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
+                        android:contentDescription="@string/action_close_session"
                         android:text="@string/action_close_session" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/new_session_button"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="@string/action_new_session" />
+                        android:contentDescription="@string/action_new_session"
+                        android:text="@string/terminal_drawer_new_session_short" />
                 </LinearLayout>
             </LinearLayout>
 

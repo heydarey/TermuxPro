@@ -256,6 +256,9 @@
     <string name="workspace_delete_title">删除这个工作区？</string>
     <string name="workspace_delete_message">将删除“%1$s”的连接信息，不会影响 SSH 密钥和远端文件。</string>
     <string name="workspace_tools_action">工具箱</string>
+    <string name="terminal_ai_short">AI</string>
+    <string name="terminal_drawer_keyboard_short">键盘</string>
+    <string name="terminal_drawer_new_session_short">新建</string>
     <string name="workspace_tools_scrollback_action">工具箱 · 滑动看历史</string>
     <string name="workspace_tools_tui_scroll_action">工具箱 · 滑动控 TUI</string>
     <string name="workspace_git_status_action">Git 状态</string>

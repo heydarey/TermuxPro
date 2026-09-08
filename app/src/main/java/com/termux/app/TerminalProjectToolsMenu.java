@@ -31,6 +31,7 @@ final class TerminalProjectToolsMenu {
     static final int TOOL_AI_CLAUDE = 19;
     static final int TOOL_AI_CODEX = 20;
     static final int TOOL_AI_CENTER = 21;
+    static final int TOOL_PROMPT_COMPOSER = 22;
 
     private TerminalProjectToolsMenu() {}
 
@@ -41,6 +42,7 @@ final class TerminalProjectToolsMenu {
     static void populate(@NonNull Context context, @NonNull Menu menu, boolean tuiTouchScrollMode) {
         menu.clear();
         addHeader(context, menu, R.string.terminal_tools_section_context);
+        menu.add(Menu.NONE, TOOL_PROMPT_COMPOSER, Menu.NONE, R.string.workspace_prompt_action);
         menu.add(Menu.NONE, TOOL_TMUX_SESSIONS, Menu.NONE, R.string.workspace_tmux_sessions_action);
         menu.add(Menu.NONE, TOOL_CUSTOM_COMMANDS, Menu.NONE, R.string.terminal_custom_commands_action);
         menu.add(Menu.NONE, TOOL_SEARCH_OUTPUT, Menu.NONE, R.string.terminal_search_action);

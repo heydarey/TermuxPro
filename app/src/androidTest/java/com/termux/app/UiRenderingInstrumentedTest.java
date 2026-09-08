@@ -139,6 +139,15 @@ public final class UiRenderingInstrumentedTest {
             assertTrue(workbench.getText().toString().contains("工作台"));
             assertTrue(!terminal.findViewById(com.termux.R.id.workspace_drawer_button)
                 .getContentDescription().toString().isEmpty());
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.workspace_drawer_button));
+            assertViewHasVisibleBounds(workbench);
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_ai_center_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_tools_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.new_session_button));
         });
         capture(context, "remote-files",
             RemoteFilesActivity.newIntent(context, "invalid", 0, "~/project"), activity ->
