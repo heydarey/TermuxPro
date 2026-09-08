@@ -291,6 +291,8 @@
     <string name="ai_session_terminal_context_message">%1$s\n\nNote: from the terminal toolbox, the command is sent to the terminal currently on screen. Confirm you are already in the intended SSH, tmux session, and project directory.</string>
     <string name="ai_session_new_action">New session (safe default)\nCommand: %1$s\nStart clean in this project. Recommended for shared Claude accounts.</string>
     <string name="ai_session_pick_history_action">Choose previous session\nCommand: %1$s\nOpen the CLI picker yourself; TermuxPro will not auto-enter the latest session.</string>
+    <string name="ai_session_new_button">New session (safe default)\n%1$s</string>
+    <string name="ai_session_history_button">Choose history (no automatic resume)\n%1$s</string>
     <string name="ai_cli_center_title">AI CLI session center</string>
     <string name="ai_cli_center_summary">Use this as Prepare environment → Start AI → Review result. TermuxPro does not read private AI history and never auto-enters the latest session.</string>
     <string name="ai_cli_center_context_title">Current context</string>

@@ -171,6 +171,8 @@
     <string name="ai_session_terminal_context_message">%1$s\n\n注意：从终端工具箱启动时，命令会发送到当前正在显示的终端会话；请先确认你已经在正确的 SSH、tmux 和项目目录中。</string>
     <string name="ai_session_new_action">新建会话（安全默认）\n将执行：%1$s\n在当前项目干净启动；共享 Claude 账号推荐使用。</string>
     <string name="ai_session_pick_history_action">选择历史会话\n将执行：%1$s\n只打开 CLI 原生选择器，TermuxPro 不自动进入最近会话。</string>
+    <string name="ai_session_new_button">新建会话（安全默认）\n%1$s</string>
+    <string name="ai_session_history_button">选择历史会话（不自动恢复）\n%1$s</string>
     <string name="ai_cli_center_title">AI CLI 会话中心</string>
     <string name="ai_cli_center_summary">按“准备环境 → 启动 AI → 检查结果”使用。TermuxPro 不读取 AI 私有历史，也不会自动进入最近会话。</string>
     <string name="ai_cli_center_context_title">当前上下文</string>

@@ -349,12 +349,14 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("启动 Claude Code", shadowOf(dialog).getTitle());
         assertTrue(dialogMessage(dialog).contains("当前目标未完整配置"));
         assertTrue(dialogMessage(dialog).contains("Claude Code 常见于共享远程账号"));
-        assertEquals("新建会话（安全默认）\n将执行：claude\n在当前项目干净启动；共享 Claude 账号推荐使用。",
-            dialog.getListView().getAdapter().getItem(0));
-        assertEquals("选择历史会话\n将执行：claude --resume\n只打开 CLI 原生选择器，TermuxPro 不自动进入最近会话。",
-            dialog.getListView().getAdapter().getItem(1));
-        assertEquals(2,
-            dialog.getListView().getAdapter().getCount());
+        TextView newSession = dialog.findViewById(R.id.ai_session_new_button);
+        TextView history = dialog.findViewById(R.id.ai_session_history_button);
+        TextView context = dialog.findViewById(R.id.ai_session_choice_context);
+        assertNotNull(newSession);
+        assertNotNull(history);
+        assertEquals("新建会话（安全默认）\nclaude", newSession.getText().toString());
+        assertEquals("选择历史会话（不自动恢复）\nclaude --resume", history.getText().toString());
+        assertTrue(context.getText().toString().contains("Claude Code 常见于共享远程账号"));
         assertEquals(activity.getColor(R.color.tp_primary),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
         dialog.dismiss();
@@ -387,6 +389,9 @@ public class WorkspaceActivitySmokeTest {
 
     private static String dialogMessage(AlertDialog dialog) {
         TextView message = dialog.findViewById(android.R.id.message);
+        if (message == null || message.getText().length() == 0) {
+            message = dialog.findViewById(R.id.ai_session_choice_context);
+        }
         assertNotNull(message);
         return message.getText().toString();
     }
