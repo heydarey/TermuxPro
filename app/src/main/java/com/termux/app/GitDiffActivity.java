@@ -257,6 +257,8 @@ public final class GitDiffActivity extends AppCompatActivity {
                     : overview.upstream,
                 overview.ahead, overview.behind));
         }
+        ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
+            recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
         fetch.setEnabled(overview.upstream != null);
         fetch.setAlpha(overview.upstream != null ? 1f : 0.48f);
@@ -270,6 +272,24 @@ public final class GitDiffActivity extends AppCompatActivity {
         Button push = findViewById(R.id.git_overview_push_button);
         push.setEnabled(canPush);
         push.setAlpha(canPush ? 1f : 0.48f);
+    }
+
+    @NonNull
+    private String recentCommitsSummary(@NonNull GitRepositoryOverview overview) {
+        if (overview.commits.isEmpty()) return getString(R.string.git_workbench_no_commits);
+        StringBuilder text = new StringBuilder();
+        int limit = Math.min(3, overview.commits.size());
+        for (int index = 0; index < limit; index++) {
+            GitRepositoryOverview.Commit commit = overview.commits.get(index);
+            if (text.length() > 0) text.append('\n');
+            text.append(commit.shortHash).append(" · ").append(commit.relativeTime)
+                .append(" · ").append(commit.subject);
+        }
+        if (overview.commits.size() > limit) {
+            text.append('\n').append(getString(R.string.git_workbench_recent_commits_more,
+                overview.commits.size() - limit));
+        }
+        return text.toString();
     }
 
     /** 模拟器截图只注入脱敏协议数据，仍走与真实 SSH 结果相同的解析和渲染路径。 */
