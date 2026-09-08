@@ -169,6 +169,32 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void overviewShowsRecentCommitsSummaryWithoutOpeningSecondaryScreen() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n"
+                + "TP_LOCAL\tdev\n"
+                + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n"
+                + "TP_LOG\tdef5678\t1 hour ago\tfeat: 增加 Git 工作台\n"
+                + "TP_LOG\t987abcd\tyesterday\tdocs: 更新说明\n"
+                + "TP_LOG\t5555555\tlast week\tchore: 清理\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        String summary = ((TextView) activity.findViewById(R.id.git_overview_recent_commits))
+            .getText().toString();
+        assertTrue(summary.contains("abc1234 · 2 minutes ago · fix: 修复滚动"));
+        assertTrue(summary.contains("def5678 · 1 hour ago · feat: 增加 Git 工作台"));
+        assertTrue(summary.contains("987abcd · yesterday · docs: 更新说明"));
+        assertTrue(summary.contains("还有 1 条"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tmain\t0\t0\t0\t0\t\t\t0\n");
+        assertEquals("当前仓库还没有提交记录。",
+            ((TextView) activity.findViewById(R.id.git_overview_recent_commits)).getText()
+                .toString());
+    }
+
+    @Test
     public void stashDialogsExplainSafeCreateApplyAndDropRules() {
         Intent dirtyIntent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")

@@ -129,6 +129,26 @@
                     android:textColor="#B4C3CF"
                     android:textSize="15sp" />
 
+                <TextView
+                    android:id="@+id/git_overview_recent_commits_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/git_workbench_recent_commits"
+                    android:textColor="#F5F8FA"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/git_overview_recent_commits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="#B4C3CF"
+                    android:textIsSelectable="true"
+                    android:textSize="14sp" />
+
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
