@@ -666,6 +666,7 @@
     <string name="task_sessions_title">tmux sessions</string>
     <string name="task_sessions_loading">Loading remote tmux sessions…</string>
     <string name="task_sessions_ready">Tap to enter. TermuxPro-owned sessions can also be renamed or stopped.</string>
+    <string name="task_sessions_ready_compact">Tap to enter. Sessions in this workspace can be managed.</string>
     <string name="task_sessions_empty">No tmux sessions yet. Create an isolated session for this workspace.</string>
     <string name="task_sessions_invalid_workspace">The workspace connection information is invalid.</string>
     <string name="task_sessions_failed">tmux sessions are temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
@@ -684,9 +685,10 @@
     <string name="task_sessions_stop_title">Stop this TermuxPro session?</string>
     <string name="task_sessions_stop_message">Only the TermuxPro session “%1$s” on %2$s:%3$d (%4$s) and its running processes will be stopped. Other tmux sessions are not affected.</string>
     <string name="task_sessions_row">%1$s\n%2$d window(s) · %3$s · %4$s\nCreated %5$s · active %6$s</string>
+    <string name="task_sessions_row_compact">%1$s\n%2$d window(s) · %3$s\n%4$s</string>
     <string name="task_sessions_background">running in background</string>
     <string name="task_sessions_attached">attached</string>
-    <string name="task_sessions_owned">created by TermuxPro</string>
+    <string name="task_sessions_owned">current workspace · created by TermuxPro</string>
     <string name="task_sessions_other_workspace">other TermuxPro workspace</string>
     <string name="task_sessions_other_owner">other TermuxPro owner</string>
     <string name="task_sessions_incomplete_marker">incomplete TermuxPro marker</string>
@@ -699,7 +701,7 @@
     <string name="task_sessions_target">Remote target · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_safety_hint">Current workspace sessions are shown first. Other workspaces, other owners, and unknown sessions can be attached only; rename and stop stay disabled here.</string>
     <string name="task_sessions_safety_hint_compact">Only sessions in this workspace can be managed; other sessions can only be attached.</string>
-    <string name="task_sessions_owned_context">TermuxPro-owned session · %1$s:%2$d · %3$s</string>
+    <string name="task_sessions_owned_context">TermuxPro session in this workspace · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_name_label">Session name</string>
     <string name="task_sessions_creating">Creating “%1$s”…</string>
     <string name="task_sessions_renaming">Renaming “%1$s” to “%2$s”…</string>

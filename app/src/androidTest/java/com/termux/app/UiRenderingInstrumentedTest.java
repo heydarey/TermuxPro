@@ -198,8 +198,14 @@ public final class UiRenderingInstrumentedTest {
                 TextView status = activity.findViewById(com.termux.R.id.task_sessions_status);
                 TextView create = activity.findViewById(com.termux.R.id.task_sessions_create_button);
                 assertTrue(status.getText().length() > 0);
+                assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
                 assertTrue(create.getVisibility() == View.VISIBLE);
                 assertTrue(create.getText().length() > 0);
+                assertViewHasVisibleBounds(create);
+                android.widget.ListView sessions = activity.findViewById(
+                    com.termux.R.id.task_sessions_list);
+                assertNotNull("tmux 列表首项必须在初始视口可见", sessions.getChildAt(0));
+                assertViewHasVisibleBounds(sessions.getChildAt(0));
                 });
         Intent sessionPreview = TaskSessionsActivity.newIntent(context, "dev@example.com", 22,
             "~/project", "11111111-2222-3333-4444-555555555555")

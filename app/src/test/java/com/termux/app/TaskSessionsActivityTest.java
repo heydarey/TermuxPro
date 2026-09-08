@@ -40,7 +40,7 @@ public class TaskSessionsActivityTest {
         TextView ownedRow = (TextView) sessions.getAdapter().getView(0, null, sessions);
         String rowText = ownedRow.getText().toString();
         assertTrue(rowText.startsWith("feature-login"));
-        assertTrue(rowText.contains("TermuxPro 创建"));
+        assertTrue(rowText.contains("当前工作区 · TermuxPro 创建"));
         assertTrue(rowText.contains("创建 "));
         assertTrue(rowText.contains("活跃 "));
         TextView otherWorkspaceRow = (TextView) sessions.getAdapter().getView(1, null, sessions);
@@ -64,6 +64,27 @@ public class TaskSessionsActivityTest {
             TaskSessionsActivity.safetyHintResForFontScale(1.49f));
         assertEquals(R.string.task_sessions_safety_hint_compact,
             TaskSessionsActivity.safetyHintResForFontScale(1.5f));
+        assertEquals(R.string.task_sessions_ready,
+            TaskSessionsActivity.readyMessageResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_ready_compact,
+            TaskSessionsActivity.readyMessageResForFontScale(1.5f));
+        assertEquals(R.string.task_sessions_row,
+            TaskSessionsActivity.sessionRowResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_row_compact,
+            TaskSessionsActivity.sessionRowResForFontScale(1.5f));
+    }
+
+    @Test
+    public void compactRowKeepsNameStateAndOwnershipBeforeLowPriorityTimestamps() {
+        TaskSessionsActivity activity = previewActivity();
+        ListView sessions = activity.findViewById(R.id.task_sessions_list);
+        assertTrue(activity.findViewById(R.id.task_sessions_status).getContentDescription().toString()
+            .contains("重命名或停止"));
+        // 行格式选择独立于远端结果，确保大字体仅收敛视觉信息而非放宽会话归属边界。
+        assertEquals(R.string.task_sessions_row_compact,
+            TaskSessionsActivity.sessionRowResForFontScale(1.5f));
+        assertTrue(((TextView) sessions.getAdapter().getView(0, null, sessions)).getText().toString()
+            .contains("当前工作区"));
     }
 
     @Test

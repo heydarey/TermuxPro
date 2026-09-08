@@ -122,6 +122,26 @@ public final class TaskSessionsActivity extends AppCompatActivity {
             : R.string.task_sessions_safety_hint;
     }
 
+    static int readyMessageResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_ready_compact
+            : R.string.task_sessions_ready;
+    }
+
+    static int sessionRowResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_row_compact
+            : R.string.task_sessions_row;
+    }
+
+    private boolean usesCompactHierarchy() {
+        return getResources().getConfiguration().fontScale >= 1.5f;
+    }
+
+    /** 保留完整说明给辅助技术，大字体视觉层优先让第一个可操作会话进入首屏。 */
+    private void showReadyMessage() {
+        mStatus.setText(readyMessageResForFontScale(getResources().getConfiguration().fontScale));
+        mStatus.setContentDescription(getString(R.string.task_sessions_ready));
+    }
+
     private void showPreviewForUiTest() {
         String fingerprint = WorkspaceCommandBuilder.workspaceFingerprint(mHost, mPort, mProjectPath);
         String output = "feature-login\0002\0000\0001788153600\0001788157200\000" + mOwnerToken
@@ -135,7 +155,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
         mCreate.setVisibility(View.VISIBLE);
         styleCreateButton(false);
-        mStatus.setText(R.string.task_sessions_ready);
+        showReadyMessage();
     }
 
     private void loadSessions() {
@@ -175,7 +195,12 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mCreate.setVisibility(View.VISIBLE);
         mList.setEnabled(true);
         styleCreateButton(mSessions.isEmpty());
-        mStatus.setText(mSessions.isEmpty() ? R.string.task_sessions_empty : R.string.task_sessions_ready);
+        if (mSessions.isEmpty()) {
+            mStatus.setText(R.string.task_sessions_empty);
+            mStatus.setContentDescription(null);
+        } else {
+            showReadyMessage();
+        }
     }
 
     private void showFailure(int message) {
@@ -213,6 +238,11 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         String state = session.attached ? getString(R.string.task_sessions_attached) :
             getString(R.string.task_sessions_background);
         String ownership = ownershipLabel(session);
+        if (usesCompactHierarchy()) {
+            return getString(sessionRowResForFontScale(getResources().getConfiguration().fontScale),
+                session.name, session.windows, state,
+                ownership);
+        }
         String created = formatSessionTime(session.createdEpochSeconds);
         String activity = formatSessionTime(session.activityEpochSeconds);
         return getString(R.string.task_sessions_row, session.name, session.windows, state, ownership,

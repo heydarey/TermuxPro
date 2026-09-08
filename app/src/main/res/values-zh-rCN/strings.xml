@@ -545,6 +545,7 @@
     <string name="task_sessions_title">tmux 会话</string>
     <string name="task_sessions_loading">正在读取远端 tmux 会话…</string>
     <string name="task_sessions_ready">点击会话可进入；TermuxPro 自有会话还可重命名或停止。</string>
+    <string name="task_sessions_ready_compact">点击会话进入；当前工作区会话可管理。</string>
     <string name="task_sessions_empty">还没有 tmux 会话，可以为当前工作区新建一个隔离会话。</string>
     <string name="task_sessions_invalid_workspace">工作区连接信息无效。</string>
     <string name="task_sessions_failed">暂时无法读取 tmux 会话。请返回工作区重新连接，再回来重试。</string>
@@ -563,9 +564,10 @@
     <string name="task_sessions_stop_title">停止这个 TermuxPro 会话？</string>
     <string name="task_sessions_stop_message">仅停止 %2$s:%3$d（%4$s）上由 TermuxPro 管理的会话“%1$s”及其中进程，不影响其他 tmux 会话。</string>
     <string name="task_sessions_row">%1$s\n%2$d 个窗口 · %3$s · %4$s\n创建 %5$s · 活跃 %6$s</string>
+    <string name="task_sessions_row_compact">%1$s\n%2$d 个窗口 · %3$s\n%4$s</string>
     <string name="task_sessions_background">后台运行</string>
     <string name="task_sessions_attached">已连接</string>
-    <string name="task_sessions_owned">TermuxPro 创建</string>
+    <string name="task_sessions_owned">当前工作区 · TermuxPro 创建</string>
     <string name="task_sessions_other_workspace">其他工作区</string>
     <string name="task_sessions_other_owner">其他 TermuxPro 使用者</string>
     <string name="task_sessions_incomplete_marker">TermuxPro 标记不完整</string>
@@ -578,7 +580,7 @@
     <string name="task_sessions_target">远端目标 · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_safety_hint">当前工作区会话优先显示；其他工作区、其他使用者和归属未知会话只允许进入，不允许在这里重命名或停止。</string>
     <string name="task_sessions_safety_hint_compact">仅当前工作区会话可管理；其余会话只可进入。</string>
-    <string name="task_sessions_owned_context">TermuxPro 自有会话 · %1$s:%2$d · %3$s</string>
+    <string name="task_sessions_owned_context">当前工作区的 TermuxPro 会话 · %1$s:%2$d · %3$s</string>
     <string name="task_sessions_name_label">会话名称</string>
     <string name="task_sessions_creating">正在新建“%1$s”…</string>
     <string name="task_sessions_renaming">正在将“%1$s”重命名为“%2$s”…</string>
