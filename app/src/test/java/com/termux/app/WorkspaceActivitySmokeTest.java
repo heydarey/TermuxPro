@@ -88,6 +88,9 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_port_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_path_label).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_selector)
             .getVisibility());
         activity.finish();
@@ -134,6 +137,7 @@ public class WorkspaceActivitySmokeTest {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
 
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertPersistentConnectionFieldLabels(activity);
         assertEquals(View.GONE,
             activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_session_name_input).getVisibility());
@@ -147,6 +151,21 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.VISIBLE,
             activity.findViewById(R.id.workspace_session_name_input).getVisibility());
         activity.finish();
+    }
+
+    private void assertPersistentConnectionFieldLabels(WorkspaceActivity activity) {
+        assertEquals("SSH 地址（支持粘贴 ssh 命令）",
+            ((TextView) activity.findViewById(R.id.workspace_host_label)).getText().toString());
+        int[][] labels = {
+            {R.id.workspace_host_label, R.id.workspace_host_input},
+            {R.id.workspace_port_label, R.id.workspace_port_input},
+            {R.id.workspace_path_label, R.id.workspace_path_input}
+        };
+        for (int[] pair : labels) {
+            TextView label = activity.findViewById(pair[0]);
+            assertEquals(View.VISIBLE, label.getVisibility());
+            assertEquals(pair[1], label.getLabelFor());
+        }
     }
 
     @Test

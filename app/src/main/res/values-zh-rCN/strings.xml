@@ -138,9 +138,12 @@
     <string name="workspace_remote_card_title">服务器与项目</string>
     <string name="workspace_remote_card_description">配置 SSH 地址、项目目录和连接后策略。密码、私钥与 known_hosts 仍由 OpenSSH 管理。</string>
     <string name="workspace_name_hint">工作区名称</string>
-    <string name="workspace_host_hint">SSH 地址或粘贴的 ssh 命令，例如 hdr@192.168.1.153</string>
-    <string name="workspace_port_hint">SSH 端口（默认 22）</string>
-    <string name="workspace_path_hint">远程项目路径</string>
+    <string name="workspace_host_label">SSH 地址（支持粘贴 ssh 命令）</string>
+    <string name="workspace_host_hint">例如 hdr@192.168.1.153</string>
+    <string name="workspace_port_label">SSH 端口</string>
+    <string name="workspace_port_hint">默认 22</string>
+    <string name="workspace_path_label">远程项目路径</string>
+    <string name="workspace_path_hint">例如 ~/project</string>
     <string name="workspace_connection_policy_description">连接与 tmux 策略</string>
     <string-array name="workspace_connection_policy_labels">
         <item>仅 SSH（推荐）</item>

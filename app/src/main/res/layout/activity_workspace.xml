@@ -212,6 +212,17 @@
                 android:textColor="#F5F8FA"
                 android:textColorHint="#71879A" />
 
+            <TextView
+                android:id="@+id/workspace_host_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:labelFor="@id/workspace_host_input"
+                android:text="@string/workspace_host_label"
+                android:textColor="#D8E4EC"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/workspace_host_input"
                 android:layout_width="match_parent"
@@ -224,6 +235,17 @@
                 android:textColor="#F5F8FA"
                 android:textColorHint="#71879A" />
 
+            <TextView
+                android:id="@+id/workspace_port_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:labelFor="@id/workspace_port_input"
+                android:text="@string/workspace_port_label"
+                android:textColor="#D8E4EC"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/workspace_port_input"
                 android:layout_width="match_parent"
@@ -235,6 +257,17 @@
                 android:singleLine="true"
                 android:textColor="#F5F8FA"
                 android:textColorHint="#71879A" />
+
+            <TextView
+                android:id="@+id/workspace_path_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:labelFor="@id/workspace_path_input"
+                android:text="@string/workspace_path_label"
+                android:textColor="#D8E4EC"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/workspace_path_input"

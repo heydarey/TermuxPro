@@ -258,9 +258,12 @@
     <string name="workspace_remote_card_title">Server and project</string>
     <string name="workspace_remote_card_description">Configure the SSH target, project path and connection policy. Passwords, private keys and known_hosts stay with OpenSSH.</string>
     <string name="workspace_name_hint">Workspace name</string>
-    <string name="workspace_host_hint">SSH target or pasted command, e.g. user@192.168.1.153</string>
-    <string name="workspace_port_hint">SSH port (default 22)</string>
-    <string name="workspace_path_hint">Remote project path</string>
+    <string name="workspace_host_label">SSH address (pasting an ssh command is supported)</string>
+    <string name="workspace_host_hint">For example: user@192.168.1.153</string>
+    <string name="workspace_port_label">SSH port</string>
+    <string name="workspace_port_hint">Default: 22</string>
+    <string name="workspace_path_label">Remote project path</string>
+    <string name="workspace_path_hint">For example: ~/project</string>
     <string name="workspace_connection_policy_description">Connection and tmux policy</string>
     <string-array name="workspace_connection_policy_labels">
         <item>SSH only (recommended)</item>
