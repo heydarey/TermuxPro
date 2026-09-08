@@ -52,9 +52,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
     static final String EXTRA_UI_TEST_SSH_READY = "com.termux.app.extra.UI_TEST_SSH_READY";
 
     private static final int REQUEST_NOTIFICATIONS = 1001;
-    private static final int MANAGE_NEW = 1;
-    private static final int MANAGE_COPY = 2;
-    private static final int MANAGE_DELETE = 3;
+    private static final int MANAGE_COPY = 1;
+    private static final int MANAGE_DELETE = 2;
 
     private static final String PREFERENCES_NAME = "ai_terminal_workspace";
     private static final String KEY_NAME = "name";
@@ -433,13 +432,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     private void showWorkspaceManagement(View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
-        popup.getMenu().add(Menu.NONE, MANAGE_NEW, Menu.NONE, R.string.workspace_new_action);
         popup.getMenu().add(Menu.NONE, MANAGE_COPY, Menu.NONE, R.string.workspace_copy_action);
         popup.getMenu().add(Menu.NONE, MANAGE_DELETE, Menu.NONE, R.string.workspace_delete_action);
         popup.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == MANAGE_NEW) {
-                runAfterDiscardConfirmation(this::createWorkspace);
-            } else if (item.getItemId() == MANAGE_COPY) {
+            if (item.getItemId() == MANAGE_COPY) {
                 copyCurrentWorkspace();
             } else if (item.getItemId() == MANAGE_DELETE) {
                 confirmDeleteWorkspace();
