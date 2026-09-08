@@ -28,6 +28,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             startActivity(new Intent(this, WorkspaceActivity.class)));
         findViewById(R.id.ai_cli_center_open_templates).setOnClickListener(view ->
             startActivity(new Intent(this, CustomCommandsActivity.class)));
+        findViewById(R.id.ai_cli_center_open_diagnostic).setOnClickListener(view ->
+            openEnvironmentPreflight());
         findViewById(R.id.ai_cli_center_open_tmux).setOnClickListener(view -> openTmuxSessions());
         findViewById(R.id.ai_cli_center_open_git).setOnClickListener(view -> openGitWorkbench());
         findViewById(R.id.ai_cli_center_claude_new).setOnClickListener(view ->
@@ -84,6 +86,15 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
     private void openGitWorkbench() {
         Intent intent = GitWorkbenchNavigation.newIntentForActiveWorkspace(this, false);
+        if (intent == null) {
+            startActivity(new Intent(this, WorkspaceActivity.class));
+            return;
+        }
+        startActivity(intent);
+    }
+
+    private void openEnvironmentPreflight() {
+        Intent intent = ConnectionDiagnosticNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
             startActivity(new Intent(this, WorkspaceActivity.class));
             return;
