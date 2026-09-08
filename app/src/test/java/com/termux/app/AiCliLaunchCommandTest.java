@@ -82,5 +82,11 @@ public class AiCliLaunchCommandTest {
         assertTrue(AiCliLaunchMessage.actionLabel(RuntimeEnvironment.getApplication(),
             AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY)
             .contains("将执行：codex resume"));
+        assertTrue(AiCliLaunchMessage.buttonLabel(RuntimeEnvironment.getApplication(),
+            AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION)
+            .contains("claude"));
+        assertTrue(AiCliLaunchMessage.buttonLabel(RuntimeEnvironment.getApplication(),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY)
+            .contains("不自动恢复"));
     }
 }

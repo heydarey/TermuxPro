@@ -618,20 +618,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
     }
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
-        String[] actions = {
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.NEW_SESSION),
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.PICK_HISTORY)
-        };
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.ai_session_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
-            .setMessage(aiLaunchMessage(tool))
-            .setItems(actions, (selectionDialog, which) -> launchRemote(AiCliLaunchCommand.command(tool,
-                which == 0 ? AiCliLaunchCommand.Mode.NEW_SESSION :
-                    AiCliLaunchCommand.Mode.PICK_HISTORY)))
-            .setNegativeButton(android.R.string.cancel, null)
-            .create();
-        AiSessionDialog.show(this, dialog);
+        AiSessionDialog.showChoice(this, tool, aiLaunchMessage(tool),
+            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode)));
     }
 
     private String aiLaunchMessage(AiCliLaunchCommand.Tool tool) {

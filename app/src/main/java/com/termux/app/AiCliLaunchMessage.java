@@ -53,4 +53,12 @@ final class AiCliLaunchMessage {
             : R.string.ai_session_pick_history_action;
         return context.getString(labelRes, AiCliLaunchCommand.command(tool, mode));
     }
+
+    @NonNull
+    static String buttonLabel(@NonNull Context context, @NonNull AiCliLaunchCommand.Tool tool,
+                              @NonNull AiCliLaunchCommand.Mode mode) {
+        int labelRes = mode == AiCliLaunchCommand.Mode.NEW_SESSION
+            ? R.string.ai_session_new_button : R.string.ai_session_history_button;
+        return context.getString(labelRes, AiCliLaunchCommand.command(tool, mode));
+    }
 }

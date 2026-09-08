@@ -717,21 +717,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
-        String[] actions = {
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.NEW_SESSION),
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.PICK_HISTORY)
-        };
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.ai_session_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
-            .setMessage(AiCliLaunchMessage.forTerminalTarget(this, tool,
-                WorkspaceTargetStore.readActive(this)))
-            .setItems(actions, (selectionDialog, which) -> startAiCli(AiCliLaunchCommand.command(tool,
-                which == 0 ? AiCliLaunchCommand.Mode.NEW_SESSION :
-                    AiCliLaunchCommand.Mode.PICK_HISTORY)))
-            .setNegativeButton(android.R.string.cancel, null)
-            .create();
-        AiSessionDialog.show(this, dialog);
+        AiSessionDialog.showChoice(this, tool, AiCliLaunchMessage.forTerminalTarget(this, tool,
+            WorkspaceTargetStore.readActive(this)),
+            mode -> startAiCli(AiCliLaunchCommand.command(tool, mode)));
     }
 
     private void showProjectTools(View anchor) {
