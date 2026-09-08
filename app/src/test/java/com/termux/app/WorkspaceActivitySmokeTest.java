@@ -107,6 +107,8 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22"));
 
         activity.findViewById(R.id.workspace_edit_button).performClick();
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
@@ -129,6 +131,8 @@ public class WorkspaceActivitySmokeTest {
             ((EditText) activity.findViewById(R.id.workspace_port_input)).getText().toString());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22022"));
         activity.finish();
     }
 
@@ -184,6 +188,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
         assertTrue(selectedView.getText().toString().contains("远程开发 副本"));
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("尚未验证"));
         assertEquals("hdr@192.168.1.153",
@@ -197,6 +202,7 @@ public class WorkspaceActivitySmokeTest {
         TextView restoredOption = (TextView) ((Spinner) restored.findViewById(R.id.workspace_selector))
             .getAdapter().getView(1, null, restored.findViewById(R.id.workspace_selector));
         assertTrue(restoredOption.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(restoredOption.getText().toString().contains(":22"));
         assertEquals("hdr@192.168.1.153",
             ((EditText) restored.findViewById(R.id.workspace_host_input)).getText().toString());
         restored.finish();
@@ -222,6 +228,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
 
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("最近验证"));
         assertEquals(3, selectedView.getMaxLines());

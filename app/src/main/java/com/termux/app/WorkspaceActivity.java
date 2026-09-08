@@ -354,7 +354,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
             return getString(R.string.workspace_selector_unconfigured, profile.name);
         }
         return getString(R.string.workspace_selector_target, profile.name, profile.host,
-            profile.path, workspaceSelectorStatus(profile.id));
+            profile.port, profile.path, workspaceSelectorStatus(profile.id));
     }
 
     private String workspaceSelectorStatus(String profileId) {
@@ -705,7 +705,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
                     ? getString(R.string.workspace_status_verification_expired)
                     : getString(R.string.workspace_status_unverified);
             ((TextView) findViewById(R.id.workspace_summary_details)).setText(getString(
-                R.string.workspace_summary_details, profile.host, profile.path, status));
+                R.string.workspace_summary_details, profile.host, profile.port, profile.path,
+                status));
         }
 
         WorkspaceConnectionState currentState = mConnectionStateStore.read(profile.id);
