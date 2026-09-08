@@ -215,7 +215,7 @@ public final class UiRenderingInstrumentedTest {
                 assertToolbarActionsVisible(activity, com.termux.R.id.custom_commands_back,
                     com.termux.R.id.custom_commands_add);
                 assertTrue(((android.widget.LinearLayout) activity.findViewById(
-                    com.termux.R.id.custom_commands_list)).getChildCount() == 2);
+                    com.termux.R.id.custom_commands_list)).getChildCount() == 4);
             });
         capture(context, "custom-command-editor",
             new Intent(context, CustomCommandsActivity.class), activity ->

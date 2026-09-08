@@ -68,7 +68,8 @@ public class CustomCommandsActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
 
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
-        assertEquals(1, list.getChildCount());
+        assertEquals(2, list.getChildCount());
+        assertEquals("未分组 场景", ((TextView) list.getChildAt(0)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
@@ -127,7 +128,7 @@ public class CustomCommandsActivityTest {
             CustomCommandsActivity.class).setup().get();
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
 
-        list.getChildAt(0).findViewById(R.id.custom_command_run).performClick();
+        list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
         String message = ((TextView) preview.findViewById(android.R.id.message))
             .getText().toString();
@@ -154,17 +155,46 @@ public class CustomCommandsActivityTest {
             CustomCommandsActivity.class).setup().get();
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
 
-        assertEquals("git status --short", ((TextView) list.getChildAt(0)
+        assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        assertEquals("git status --short", ((TextView) list.getChildAt(1)
             .findViewById(R.id.custom_command_value)).getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
-            ((TextView) list.getChildAt(0).findViewById(R.id.custom_command_run)).getText().toString());
-        list.getChildAt(0).findViewById(R.id.custom_command_run).performClick();
+            ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
+        list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
         assertTrue(intent.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("git status --short"));
+    }
+
+    @Test
+    public void groupsCommandsByScenarioWithoutChangingStoredOrder() {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("ai-resume", "Codex 历史",
+            "codex resume", "", "AI", true, CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("git-log", "Git 提交",
+            "git log --oneline -n 5", "", "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY));
+
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+
+        assertEquals(5, list.getChildCount());
+        assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        assertEquals("Git 状态", ((TextView) list.getChildAt(1)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("Git 提交", ((TextView) list.getChildAt(2)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
+        assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("Git 状态", store.list("workspace-a").get(0).name);
+        assertEquals("Codex 历史", store.list("workspace-a").get(1).name);
+        assertEquals("Git 提交", store.list("workspace-a").get(2).name);
     }
 
     @Test
