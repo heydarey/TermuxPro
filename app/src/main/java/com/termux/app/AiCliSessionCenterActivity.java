@@ -28,6 +28,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             startActivity(new Intent(this, WorkspaceActivity.class)));
         findViewById(R.id.ai_cli_center_open_templates).setOnClickListener(view ->
             startActivity(new Intent(this, CustomCommandsActivity.class)));
+        findViewById(R.id.ai_cli_center_open_diagnostic).setOnClickListener(view ->
+            openEnvironmentPreflight());
         findViewById(R.id.ai_cli_center_open_tmux).setOnClickListener(view -> openTmuxSessions());
         findViewById(R.id.ai_cli_center_open_git).setOnClickListener(view -> openGitWorkbench());
         findViewById(R.id.ai_cli_center_claude_new).setOnClickListener(view ->
@@ -55,7 +57,33 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         }
         target.setText(workspace.name);
         detail.setText(getString(R.string.ai_cli_center_target_detail,
-            workspace.host, workspace.port, workspace.path));
+            workspace.host, workspace.port, workspace.path)
+            + "\n" + policySummary(workspace.connectionPolicy, workspace.sessionName)
+            + "\n" + getString(R.string.ai_cli_center_ai_policy));
+    }
+
+    private String policySummary(String policy, String sessionName) {
+        if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_list_sessions);
+        }
+        if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_attach_session,
+                sessionDisplayName(sessionName));
+        }
+        if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_create_or_attach,
+                sessionDisplayName(sessionName));
+        }
+        if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_unknown);
+        }
+        return getString(R.string.ai_cli_center_policy_ssh_only);
+    }
+
+    private String sessionDisplayName(String sessionName) {
+        return sessionName == null || sessionName.trim().isEmpty()
+            ? getString(R.string.ai_cli_center_policy_session_missing)
+            : sessionName;
     }
 
     private void bindCommands() {
@@ -84,6 +112,15 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
     private void openGitWorkbench() {
         Intent intent = GitWorkbenchNavigation.newIntentForActiveWorkspace(this, false);
+        if (intent == null) {
+            startActivity(new Intent(this, WorkspaceActivity.class));
+            return;
+        }
+        startActivity(intent);
+    }
+
+    private void openEnvironmentPreflight() {
+        Intent intent = ConnectionDiagnosticNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
             startActivity(new Intent(this, WorkspaceActivity.class));
             return;

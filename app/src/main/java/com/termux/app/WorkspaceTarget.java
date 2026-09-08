@@ -11,6 +11,8 @@ final class WorkspaceTarget {
     @NonNull final String path;
     final int remotePort;
     final int localPort;
+    @NonNull final String connectionPolicy;
+    @NonNull final String sessionName;
 
     WorkspaceTarget(@NonNull String id, @NonNull String name, @NonNull String host,
                     int port, @NonNull String path) {
@@ -19,6 +21,13 @@ final class WorkspaceTarget {
 
     WorkspaceTarget(@NonNull String id, @NonNull String name, @NonNull String host,
                     int port, @NonNull String path, int remotePort, int localPort) {
+        this(id, name, host, port, path, remotePort, localPort,
+            WorkspaceCommandBuilder.POLICY_SSH_ONLY, "");
+    }
+
+    WorkspaceTarget(@NonNull String id, @NonNull String name, @NonNull String host,
+                    int port, @NonNull String path, int remotePort, int localPort,
+                    @NonNull String connectionPolicy, @NonNull String sessionName) {
         this.id = id;
         this.name = name;
         this.host = host;
@@ -26,6 +35,8 @@ final class WorkspaceTarget {
         this.path = path;
         this.remotePort = remotePort;
         this.localPort = localPort;
+        this.connectionPolicy = connectionPolicy;
+        this.sessionName = sessionName;
     }
 
     boolean isConfigured() {
