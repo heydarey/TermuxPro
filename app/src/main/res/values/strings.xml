@@ -297,7 +297,7 @@
     <string name="ai_cli_center_prepare_title">Check before starting</string>
     <string name="ai_cli_center_prepare_hint">Remote tools and tmux are the two easiest contexts to enter by mistake on shared servers. Check first, then decide whether to enter a specific session.</string>
     <string name="ai_cli_center_next_title">After AI finishes</string>
-    <string name="ai_cli_center_next_hint">Review Git changes first. Use quick commands when repeating common actions; change servers and project paths from the workbench.</string>
+    <string name="ai_cli_center_next_hint">Review Git changes first, then run project tasks or tests without typing into the active AI terminal. Use quick commands only for repeated custom actions.</string>
     <string name="ai_cli_center_target_missing">No valid remote workspace selected</string>
     <string name="ai_cli_center_target_missing_detail">Go back to the workbench and configure the server, SSH port, and project path first.</string>
     <string name="ai_cli_center_target_detail">%1$s:%2$d · %3$s</string>
@@ -321,6 +321,7 @@
     <string name="ai_cli_center_open_diagnostic">Check AI remote environment</string>
     <string name="ai_cli_center_open_tmux">Choose / manage tmux session</string>
     <string name="ai_cli_center_open_git">Review Git changes</string>
+    <string name="ai_cli_center_open_project_tasks">Run project tasks</string>
     <string name="workspace_open_local_terminal">Open local terminal</string>
     <string name="workspace_security_tip">The first SSH connection still requires explicit host fingerprint confirmation.</string>
     <string name="workspace_error_host">Enter a valid SSH alias, host, user@host, user@host:port, or ssh -p port user@host.</string>
