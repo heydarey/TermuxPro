@@ -30,7 +30,7 @@ public class TerminalProjectToolsMenuTest {
         assertEquals(TerminalProjectToolsMenu.TOOL_CUSTOM_COMMANDS, menu.getItem(2).getItemId());
         assertEquals(TerminalProjectToolsMenu.TOOL_SEARCH_OUTPUT, menu.getItem(3).getItemId());
         assertEquals(TerminalProjectToolsMenu.TOOL_TOUCH_SCROLL_MODE, menu.getItem(4).getItemId());
-        assertEquals("当前：终端历史；点此切换到 AI/TUI 面板", menu.getItem(4).getTitle().toString());
+        assertEquals("滑动：终端历史（推荐）→ 切到 AI/TUI", menu.getItem(4).getTitle().toString());
 
         assertEquals("项目与 Git", menu.getItem(5).getTitle().toString());
         assertFalse(menu.getItem(5).isEnabled());
@@ -83,7 +83,7 @@ public class TerminalProjectToolsMenuTest {
 
         assertEquals(TerminalProjectToolsMenu.TOOL_TOUCH_SCROLL_MODE,
             popup.getMenu().getItem(4).getItemId());
-        assertEquals("当前：AI/TUI 面板；点此切换到终端历史",
+        assertEquals("滑动：AI/TUI 面板 → 切到历史",
             popup.getMenu().getItem(4).getTitle().toString());
     }
 
