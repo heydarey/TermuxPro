@@ -46,6 +46,14 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
+        assertEquals("新建 Claude（安全默认）",
+            text(activity, R.id.ai_cli_center_claude_new));
+        assertEquals("选择 Claude 历史（不自动恢复）",
+            text(activity, R.id.ai_cli_center_claude_history));
+        assertEquals("新建 Codex（安全默认）",
+            text(activity, R.id.ai_cli_center_codex_new));
+        assertEquals("选择 Codex 历史（不自动恢复）",
+            text(activity, R.id.ai_cli_center_codex_history));
 
         activity.findViewById(R.id.ai_cli_center_claude_new).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);

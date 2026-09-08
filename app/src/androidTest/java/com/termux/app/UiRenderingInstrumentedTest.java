@@ -103,6 +103,17 @@ public final class UiRenderingInstrumentedTest {
             ((WorkspaceActivity) activity).onResume();
             activity.findViewById(com.termux.R.id.workspace_claude_button).performClick();
         });
+        capture(context, "ai-cli-session-center",
+            new Intent(context, AiCliSessionCenterActivity.class), activity -> {
+                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_claude_new)
+                    .getVisibility() == View.VISIBLE);
+                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_claude_history)
+                    .getVisibility() == View.VISIBLE);
+                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_codex_new)
+                    .getVisibility() == View.VISIBLE);
+                assertTrue(activity.findViewById(com.termux.R.id.ai_cli_center_codex_history)
+                    .getVisibility() == View.VISIBLE);
+            });
         capture(context, "terminal-feedback", new Intent(workspaceIntent), activity -> {
             TextView feedback = (TextView) activity.getLayoutInflater().inflate(
                 com.termux.R.layout.view_terminal_feedback, null, false);
