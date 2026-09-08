@@ -200,9 +200,17 @@ public final class UiRenderingInstrumentedTest {
                     com.termux.R.id.task_sessions_back_button,
                     com.termux.R.id.task_sessions_refresh_button);
                 TextView status = activity.findViewById(com.termux.R.id.task_sessions_status);
+                TextView safetyHint = activity.findViewById(
+                    com.termux.R.id.task_sessions_safety_hint);
                 TextView create = activity.findViewById(com.termux.R.id.task_sessions_create_button);
-                assertTrue(status.getText().length() > 0);
-                assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+                if (status.getVisibility() == View.VISIBLE) {
+                    assertTrue(status.getText().length() > 0);
+                    assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+                } else {
+                    assertTrue("大字体隐藏重复就绪说明时，安全结论仍须保留给辅助技术",
+                        safetyHint.getContentDescription().toString().contains("重命名或停止"));
+                    assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+                }
                 assertTrue(create.getVisibility() == View.VISIBLE);
                 assertTrue(create.getText().length() > 0);
                 assertViewHasVisibleBounds(create);
