@@ -15,10 +15,15 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.termux.R;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /** 按工作区管理、预览并执行用户快捷指令。 */
 public final class CustomCommandsActivity extends AppCompatActivity {
@@ -80,32 +85,78 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         List<CustomCommand> commands = mStore.list(mTarget.id);
         mEmpty.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
         mTemplateHint.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
+        Map<String, List<IndexedCommand>> groupedCommands = new LinkedHashMap<>();
         for (int index = 0; index < commands.size(); index++) {
             CustomCommand command = commands.get(index);
-            View row = inflater.inflate(R.layout.item_custom_command, mList, false);
-            ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
-            ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
-                ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
             String group = TextUtils.isEmpty(command.group)
                 ? getString(R.string.custom_commands_default_group) : command.group;
-            String directory = TextUtils.isEmpty(command.workingDirectory)
-                ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
-            ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
-                getString(R.string.custom_commands_summary, group, directory));
-            ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
-            boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
-                || CustomCommandValidator.isLikelyDangerous(command.command);
-            ((TextView) row.findViewById(R.id.custom_command_run)).setText(requiresPreview
-                ? R.string.custom_commands_run : R.string.custom_commands_run_now);
-            row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
-            row.findViewById(R.id.custom_command_run).setOnClickListener(view -> {
-                if (requiresPreview) preview(command); else execute(command);
-            });
-            int position = index;
-            row.findViewById(R.id.custom_command_manage).setOnClickListener(
-                view -> showManagement(view, command, position, commands.size()));
-            mList.addView(row);
+            String normalizedGroup = group.toLowerCase(Locale.ROOT);
+            groupedCommands.computeIfAbsent(normalizedGroup, key -> new ArrayList<>())
+                .add(new IndexedCommand(command, index, group));
+        }
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (List<IndexedCommand> grouped : groupedCommands.values()) {
+            if (grouped.isEmpty()) continue;
+            mList.addView(createGroupHeader(grouped.get(0).group));
+            for (IndexedCommand indexed : grouped) {
+                addCommandRow(inflater, indexed.command, indexed.position, commands.size());
+            }
+        }
+    }
+
+    private void addCommandRow(LayoutInflater inflater, CustomCommand command, int position,
+                               int size) {
+        String group = TextUtils.isEmpty(command.group)
+            ? getString(R.string.custom_commands_default_group) : command.group;
+        View row = inflater.inflate(R.layout.item_custom_command, mList, false);
+        ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
+        ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
+            ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
+        String directory = TextUtils.isEmpty(command.workingDirectory)
+            ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
+        ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
+            getString(R.string.custom_commands_summary, group, directory));
+        ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
+        boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
+            || CustomCommandValidator.isLikelyDangerous(command.command);
+        ((TextView) row.findViewById(R.id.custom_command_run)).setText(requiresPreview
+            ? R.string.custom_commands_run : R.string.custom_commands_run_now);
+        row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
+        row.findViewById(R.id.custom_command_run).setOnClickListener(view -> {
+            if (requiresPreview) preview(command); else execute(command);
+        });
+        row.findViewById(R.id.custom_command_manage).setOnClickListener(
+            view -> showManagement(view, command, position, size));
+        mList.addView(row);
+    }
+
+    private TextView createGroupHeader(String group) {
+        TextView header = new TextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, dp(6), 0, dp(8));
+        header.setLayoutParams(params);
+        header.setText(getString(R.string.custom_commands_group_header, group));
+        header.setTextColor(ContextCompat.getColor(this, R.color.tp_text_primary));
+        header.setTextSize(15);
+        header.setTextIsSelectable(false);
+        header.setTypeface(header.getTypeface(), android.graphics.Typeface.BOLD);
+        return header;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private static final class IndexedCommand {
+        final CustomCommand command;
+        final int position;
+        final String group;
+
+        IndexedCommand(CustomCommand command, int position, String group) {
+            this.command = command;
+            this.position = position;
+            this.group = group;
         }
     }
 
