@@ -66,6 +66,9 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_open_templates).performClick();
         assertNextActivity(activity, CustomCommandsActivity.class);
 
+        activity.findViewById(R.id.ai_cli_center_open_diagnostic).performClick();
+        assertNextActivity(activity, ConnectionDiagnosticActivity.class);
+
         activity.findViewById(R.id.ai_cli_center_open_tmux).performClick();
         assertNextActivity(activity, TaskSessionsActivity.class);
 
@@ -117,6 +120,16 @@ public class AiCliSessionCenterActivityTest {
             AiCliSessionCenterActivity.class).setup().get();
 
         activity.findViewById(R.id.ai_cli_center_open_git).performClick();
+
+        assertNextActivity(activity, WorkspaceActivity.class);
+    }
+
+    @Test
+    public void diagnosticActionFallsBackToWorkbenchWhenWorkspaceIsIncomplete() {
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_open_diagnostic).performClick();
 
         assertNextActivity(activity, WorkspaceActivity.class);
     }
