@@ -4,6 +4,7 @@ ai-cli-session-center
 connection-diagnostic
 custom-command-editor
 custom-commands
+custom-commands-empty
 git-diff
 project-tasks
 remote-file-preview
