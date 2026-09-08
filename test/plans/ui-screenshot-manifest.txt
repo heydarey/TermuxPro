@@ -1,5 +1,6 @@
 # UiRenderingInstrumentedTest 必须生成的截图基名；新增/删除页面时同步维护本清单。
 ai-session-choice
+ai-cli-session-center
 connection-diagnostic
 custom-command-editor
 custom-commands

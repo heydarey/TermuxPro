@@ -189,14 +189,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/ai_cli_center_claude_new"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
                     android:minHeight="52dp"
                     android:text="@string/ai_cli_center_claude_new"
                     android:textAllCaps="false"
@@ -205,10 +203,9 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/ai_cli_center_claude_history"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
                     android:minHeight="52dp"
                     android:text="@string/ai_cli_center_claude_history"
                     android:textAllCaps="false"
@@ -254,14 +251,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/ai_cli_center_codex_new"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
                     android:minHeight="52dp"
                     android:text="@string/ai_cli_center_codex_new"
                     android:textAllCaps="false"
@@ -270,10 +265,9 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/ai_cli_center_codex_history"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
                     android:minHeight="52dp"
                     android:text="@string/ai_cli_center_codex_history"
                     android:textAllCaps="false"
