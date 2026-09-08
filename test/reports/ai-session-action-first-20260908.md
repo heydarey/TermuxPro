@@ -28,7 +28,11 @@
 - `test/ai-launch-decision-copy-test.sh`、`test/dialog-readable-style-test.sh`、`scripts/validate-skills.sh`、
   `git diff --check`：均通过。
 
-## 待远端验收
+## 远端验收与结论
 
-- 研发 PR CI、360dp 深色默认/200% 字体 Emulator UI、自动合并与 dev 收尾 CI 通过后，必须复查截图中两个
-  会话决策按钮均位于详细说明之前且可见。
+- PR #229 分支 CI `34202852410`、360dp 深色 Emulator UI `34202852403`、自动合并
+  `34202852469` 与合入 dev 后的收尾 CI `34203377972` 均通过。
+- Emulator UI artifact `termuxpro-emulator-ui-242` 已人工复核：默认字体与 200% 字体截图中，两个会话
+  决策按钮均完整显示在目标与风险说明之前；没有裁切、重叠或只显示“取消”的退化。
+- 结论：本切片通过。首次可见区域已先提供安全可理解的下一步，再按需呈现完整上下文；共享 Claude
+  账号仍不会被静默续接，Termux 原始终端启动路径未被改变。
