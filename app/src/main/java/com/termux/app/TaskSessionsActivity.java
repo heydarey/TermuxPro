@@ -112,9 +112,13 @@ public final class TaskSessionsActivity extends AppCompatActivity {
     /** 大字体时保留共享会话的安全结论，避免静态说明挤掉首个可操作会话。 */
     private void configureSafetyHint() {
         TextView hint = findViewById(R.id.task_sessions_safety_hint);
-        hint.setText(safetyHintResForFontScale(getResources().getConfiguration().fontScale));
+        float fontScale = getResources().getConfiguration().fontScale;
+        hint.setText(safetyHintResForFontScale(fontScale));
         // 视觉上可收敛，但辅助技术仍能读到完整的归属与权限边界。
-        hint.setContentDescription(getString(R.string.task_sessions_safety_hint));
+        hint.setContentDescription(usesCompactHierarchy()
+            ? getString(R.string.task_sessions_safety_hint) + " "
+                + getString(R.string.task_sessions_ready)
+            : getString(R.string.task_sessions_safety_hint));
     }
 
     static int safetyHintResForFontScale(float fontScale) {
@@ -133,11 +137,21 @@ public final class TaskSessionsActivity extends AppCompatActivity {
     }
 
     private boolean usesCompactHierarchy() {
-        return getResources().getConfiguration().fontScale >= 1.5f;
+        return hidesReadyMessageForFontScale(getResources().getConfiguration().fontScale);
+    }
+
+    static boolean hidesReadyMessageForFontScale(float fontScale) {
+        return fontScale >= 1.5f;
     }
 
     /** 保留完整说明给辅助技术，大字体视觉层优先让第一个可操作会话进入首屏。 */
     private void showReadyMessage() {
+        // 大字体首屏已有目标与归属结论；不再重复占用高度，把首个可操作会话留在可视范围内。
+        if (hidesReadyMessageForFontScale(getResources().getConfiguration().fontScale)) {
+            mStatus.setVisibility(View.GONE);
+            return;
+        }
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(readyMessageResForFontScale(getResources().getConfiguration().fontScale));
         mStatus.setContentDescription(getString(R.string.task_sessions_ready));
     }
@@ -168,6 +182,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mRefresh.setEnabled(false);
         configureReturnToWorkspace();
         mRecovery.setVisibility(View.GONE);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(R.string.task_sessions_loading);
         mExecutor.execute(() -> {
             RemoteCommandRunner.Result result = mRunner.run(mHost, mPort,
@@ -196,6 +211,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mList.setEnabled(true);
         styleCreateButton(mSessions.isEmpty());
         if (mSessions.isEmpty()) {
+            mStatus.setVisibility(View.VISIBLE);
             mStatus.setText(R.string.task_sessions_empty);
             mStatus.setContentDescription(null);
         } else {
@@ -207,6 +223,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mProgress.setVisibility(View.GONE);
         mCreate.setVisibility(View.GONE);
         mRefresh.setEnabled(true);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(message);
         mRecovery.setVisibility(View.VISIBLE);
     }
@@ -215,6 +232,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mProgress.setVisibility(View.GONE);
         mCreate.setVisibility(View.GONE);
         mRefresh.setEnabled(true);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(R.string.task_sessions_tmux_missing);
         mRecovery.setText(R.string.task_sessions_open_plain_ssh);
         mRecovery.setOnClickListener(view -> openPlainSsh());
@@ -406,6 +424,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
 
     private void showMutationFailure(int message) {
         mProgress.setVisibility(View.GONE);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(getString(R.string.task_sessions_mutation_uncertain, getString(message)));
         mRecovery.setText(R.string.task_sessions_refresh_result);
         mRecovery.setOnClickListener(view -> loadSessions());

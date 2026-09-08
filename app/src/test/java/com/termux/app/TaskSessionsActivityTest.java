@@ -78,8 +78,13 @@ public class TaskSessionsActivityTest {
     public void compactRowKeepsNameStateAndOwnershipBeforeLowPriorityTimestamps() {
         TaskSessionsActivity activity = previewActivity();
         ListView sessions = activity.findViewById(R.id.task_sessions_list);
-        assertTrue(activity.findViewById(R.id.task_sessions_status).getContentDescription().toString()
-            .contains("重命名或停止"));
+        TextView status = activity.findViewById(R.id.task_sessions_status);
+        TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
+        assertEquals(View.VISIBLE, status.getVisibility());
+        assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+        assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+        assertTrue(TaskSessionsActivity.hidesReadyMessageForFontScale(1.5f));
+        assertTrue(!TaskSessionsActivity.hidesReadyMessageForFontScale(1.49f));
         // 行格式选择独立于远端结果，确保大字体仅收敛视觉信息而非放宽会话归属边界。
         assertEquals(R.string.task_sessions_row_compact,
             TaskSessionsActivity.sessionRowResForFontScale(1.5f));
