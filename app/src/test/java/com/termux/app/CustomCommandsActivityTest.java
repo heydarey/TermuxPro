@@ -62,6 +62,13 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
             R.id.custom_commands_add)).getText().toString());
+        TextView templateHint = activity.findViewById(R.id.custom_commands_template_hint);
+        assertEquals(activity.getString(R.string.custom_commands_template_hint),
+            templateHint.getContentDescription().toString());
+        assertEquals(R.string.custom_commands_template_hint,
+            CustomCommandsActivity.templateHintResForFontScale(1.49f));
+        assertEquals(R.string.custom_commands_template_hint_compact,
+            CustomCommandsActivity.templateHintResForFontScale(1.5f));
 
         activity.findViewById(R.id.custom_commands_add).performClick();
         shadowOf(Looper.getMainLooper()).idle();
