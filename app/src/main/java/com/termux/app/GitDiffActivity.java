@@ -257,6 +257,8 @@ public final class GitDiffActivity extends AppCompatActivity {
                     : overview.upstream,
                 overview.ahead, overview.behind));
         }
+        ((TextView) findViewById(R.id.git_overview_next_step)).setText(
+            nextStepGuidance(overview));
         ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
             recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
@@ -272,6 +274,31 @@ public final class GitDiffActivity extends AppCompatActivity {
         Button push = findViewById(R.id.git_overview_push_button);
         push.setEnabled(canPush);
         push.setAlpha(canPush ? 1f : 0.48f);
+    }
+
+    @NonNull
+    private String nextStepGuidance(@NonNull GitRepositoryOverview overview) {
+        if (overview.detached) return getString(R.string.git_workbench_next_detached);
+        if (overview.changedFiles > 0) {
+            if (overview.stagedFiles > 0) {
+                return getString(R.string.git_workbench_next_commit_or_review,
+                    overview.stagedFiles, overview.unstagedFiles);
+            }
+            return getString(R.string.git_workbench_next_review_or_stash,
+                overview.unstagedFiles);
+        }
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            return getString(R.string.git_workbench_next_set_upstream_or_branch);
+        }
+        if (overview.behind > 0) {
+            return getString(R.string.git_workbench_next_pull_ff, overview.upstream,
+                overview.behind);
+        }
+        if (overview.ahead > 0) {
+            return getString(R.string.git_workbench_next_push, overview.upstream,
+                overview.ahead);
+        }
+        return getString(R.string.git_workbench_next_clean);
     }
 
     @NonNull

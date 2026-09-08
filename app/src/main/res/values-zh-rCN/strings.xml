@@ -309,6 +309,13 @@
     <string name="git_workbench_sync_with_upstream">跟踪 %1$s · 领先 %2$d · 落后 %3$d</string>
     <string name="git_workbench_unknown_upstream">上游分支</string>
     <string name="git_workbench_no_upstream">尚未配置上游分支</string>
+    <string name="git_workbench_next_detached">下一步建议：当前处于游离 HEAD，先从“分支”切回明确分支，或新建分支承接这次修改，再继续提交/推送。</string>
+    <string name="git_workbench_next_review_or_stash">下一步建议：当前有 %1$d 个未暂存文件。先点“修改”或“按文件”审查；如果要临时切任务，使用“保存 Stash”。</string>
+    <string name="git_workbench_next_commit_or_review">下一步建议：已有 %1$d 个文件进入暂存区，仍有 %2$d 个未暂存文件。确认范围后可提交；不确定时先点“按文件”逐个核对。</string>
+    <string name="git_workbench_next_set_upstream_or_branch">下一步建议：当前分支没有上游。可以继续本地提交；需要同步远端时，先在终端或远端仓库配置 upstream，TermuxPro 不会替你猜目标分支。</string>
+    <string name="git_workbench_next_pull_ff">下一步建议：当前落后 %2$d 个提交。工作树干净时可从 %1$s 快进拉取；TermuxPro 不会自动 merge 或 rebase。</string>
+    <string name="git_workbench_next_push">下一步建议：当前领先 %2$d 个提交。确认最近提交和目标 %1$s 后，可以普通推送；这里不会 force push。</string>
+    <string name="git_workbench_next_clean">下一步建议：工作树干净且与上游同步。可以继续启动 Claude/Codex、运行项目任务，或新建分支开始下一项工作。</string>
     <string name="git_workbench_branches">分支</string>
     <string name="git_workbench_fetch">更新远端</string>
     <string name="git_workbench_fetching">正在更新 %1$s 的远端状态，不会合并…</string>

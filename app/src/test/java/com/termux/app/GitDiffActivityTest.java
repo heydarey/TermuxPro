@@ -195,6 +195,42 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void overviewShowsActionableNextStepForCommonGitStates() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t2\t0\t2\t\t\t0\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        TextView nextStep = activity.findViewById(R.id.git_overview_next_step);
+        assertTrue(nextStep.getText().toString().contains("审查"));
+        assertTrue(nextStep.getText().toString().contains("保存 Stash"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t3\t2\t1\t\t\t0\n");
+        assertTrue(nextStep.getText().toString().contains("已有 2 个文件进入暂存区"));
+        assertTrue(nextStep.getText().toString().contains("仍有 1 个未暂存文件"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t3\t1\torigin/dev\n");
+        assertTrue(nextStep.getText().toString().contains("落后 3 个提交"));
+        assertTrue(nextStep.getText().toString().contains("快进拉取"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n");
+        assertTrue(nextStep.getText().toString().contains("领先 2 个提交"));
+        assertTrue(nextStep.getText().toString().contains("不会 force push"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
+        assertTrue(nextStep.getText().toString().contains("没有上游"));
+        assertTrue(nextStep.getText().toString().contains("不会替你猜目标分支"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tabc1234\t1\t0\t0\t0\t\t\t0\n");
+        assertTrue(nextStep.getText().toString().contains("游离 HEAD"));
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
+        assertTrue(nextStep.getText().toString().contains("工作树干净"));
+        assertTrue(nextStep.getText().toString().contains("启动 Claude/Codex"));
+    }
+
+    @Test
     public void stashDialogsExplainSafeCreateApplyAndDropRules() {
         Intent dirtyIntent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")

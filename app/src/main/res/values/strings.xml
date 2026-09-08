@@ -429,6 +429,13 @@
     <string name="git_workbench_sync_with_upstream">Tracking %1$s · ahead %2$d · behind %3$d</string>
     <string name="git_workbench_unknown_upstream">upstream</string>
     <string name="git_workbench_no_upstream">No upstream branch is configured</string>
+    <string name="git_workbench_next_detached">Recommended next step: detached HEAD is active. Switch back to an explicit branch, or create a branch for this work before committing or pushing.</string>
+    <string name="git_workbench_next_review_or_stash">Recommended next step: %1$d file(s) are unstaged. Review Changes or Files first; use Save Stash if you need to switch tasks temporarily.</string>
+    <string name="git_workbench_next_commit_or_review">Recommended next step: %1$d file(s) are staged and %2$d file(s) remain unstaged. Commit after confirming scope, or review Files one by one first.</string>
+    <string name="git_workbench_next_set_upstream_or_branch">Recommended next step: this branch has no upstream. Local commits are safe; configure upstream manually before remote sync because TermuxPro will not guess the target branch.</string>
+    <string name="git_workbench_next_pull_ff">Recommended next step: this branch is behind by %2$d commit(s). When the working tree is clean, fast-forward from %1$s. TermuxPro will not merge or rebase automatically.</string>
+    <string name="git_workbench_next_push">Recommended next step: this branch is ahead by %2$d commit(s). Confirm recent commits and target %1$s, then push normally. Force push is not available here.</string>
+    <string name="git_workbench_next_clean">Recommended next step: the working tree is clean and synced with upstream. Start Claude/Codex, run project tasks, or create a new branch for the next task.</string>
     <string name="git_workbench_branches">Branches</string>
     <string name="git_workbench_fetch">Fetch</string>
     <string name="git_workbench_fetching">Fetching %1$s without merging…</string>
