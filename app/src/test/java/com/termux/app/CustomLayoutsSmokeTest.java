@@ -238,6 +238,14 @@ public class CustomLayoutsSmokeTest {
                 action.getLeft() >= 0 && action.getRight() <= width);
             assertEquals(View.VISIBLE, back.getVisibility());
             assertEquals(View.VISIBLE, action.getVisibility());
+            if (layouts[index] == R.layout.activity_git_diff) {
+                TextView title = page.findViewById(R.id.git_diff_title);
+                assertEquals("Git 标题在超大字体下仍保持单行", 1, title.getMaxLines());
+                assertEquals("Git 标题应按可用宽度缩放", TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                    title.getAutoSizeTextType());
+                assertTrue("Git 标题与刷新操作必须保留可见间距",
+                    action.getLeft() - title.getRight() >= Math.round(8 * density));
+            }
             if (layouts[index] == R.layout.activity_custom_commands) {
                 TextView title = page.findViewById(R.id.custom_commands_title);
                 assertEquals("快捷指令标题在超大字体下仍保持单行", 1, title.getMaxLines());
