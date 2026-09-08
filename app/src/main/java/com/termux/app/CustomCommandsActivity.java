@@ -3,7 +3,9 @@ package com.termux.app;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -39,6 +42,11 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private LinearLayout mList;
     private TextView mEmpty;
     private View mTemplateHint;
+    private EditText mSearchInput;
+    private TextView mSearchSummary;
+    private View mSearchEmpty;
+    private View mClearSearch;
+    private String mSearchQuery = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,10 +57,23 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mList = findViewById(R.id.custom_commands_list);
         mEmpty = findViewById(R.id.custom_commands_empty);
         mTemplateHint = findViewById(R.id.custom_commands_template_hint);
+        mSearchInput = findViewById(R.id.custom_commands_search_input);
+        mSearchSummary = findViewById(R.id.custom_commands_search_summary);
+        mSearchEmpty = findViewById(R.id.custom_commands_search_empty);
+        mClearSearch = findViewById(R.id.custom_commands_clear_search);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
         findViewById(R.id.custom_commands_templates).setOnClickListener(view -> showTemplates());
+        mClearSearch.setOnClickListener(view -> mSearchInput.setText(""));
+        mSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence value, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence value, int start, int before, int count) {
+                mSearchQuery = value.toString().trim();
+                renderCommands();
+            }
+            @Override public void afterTextChanged(Editable value) {}
+        });
         bindTarget();
         renderCommands();
     }
@@ -67,11 +88,13 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             details.setVisibility(View.GONE);
             add.setEnabled(false);
             templates.setEnabled(false);
+            mSearchInput.setEnabled(false);
             return;
         }
         name.setText(mTarget.name);
         details.setText(getString(R.string.custom_commands_target_details,
             mTarget.host, mTarget.port, mTarget.path));
+        mSearchInput.setEnabled(true);
     }
 
     private void renderCommands() {
@@ -80,14 +103,25 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mEmpty.setText(R.string.custom_commands_invalid_workspace);
             mEmpty.setVisibility(View.VISIBLE);
             mTemplateHint.setVisibility(View.GONE);
+            mSearchSummary.setVisibility(View.GONE);
+            mSearchEmpty.setVisibility(View.GONE);
+            mClearSearch.setVisibility(View.GONE);
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
+        List<CustomCommand> filtered = filterCommands(commands, mSearchQuery);
         mEmpty.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
         mTemplateHint.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
+        boolean searching = !mSearchQuery.isEmpty();
+        mClearSearch.setVisibility(searching ? View.VISIBLE : View.GONE);
+        mSearchSummary.setVisibility(searching ? View.VISIBLE : View.GONE);
+        if (searching) mSearchSummary.setText(getString(R.string.custom_commands_search_summary,
+            filtered.size(), commands.size()));
+        mSearchEmpty.setVisibility(!commands.isEmpty() && filtered.isEmpty()
+            ? View.VISIBLE : View.GONE);
         Map<String, List<IndexedCommand>> groupedCommands = new LinkedHashMap<>();
-        for (int index = 0; index < commands.size(); index++) {
-            CustomCommand command = commands.get(index);
+        for (CustomCommand command : filtered) {
+            int index = commands.indexOf(command);
             String group = TextUtils.isEmpty(command.group)
                 ? getString(R.string.custom_commands_default_group) : command.group;
             String normalizedGroup = group.toLowerCase(Locale.ROOT);
@@ -102,6 +136,27 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 addCommandRow(inflater, indexed.command, indexed.position, commands.size());
             }
         }
+    }
+
+    @NonNull
+    static List<CustomCommand> filterCommands(@NonNull List<CustomCommand> commands,
+                                               @NonNull String query) {
+        String normalized = query.trim().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) return new ArrayList<>(commands);
+        List<CustomCommand> filtered = new ArrayList<>();
+        for (CustomCommand command : commands) {
+            if (containsIgnoreCase(command.name, normalized)
+                || containsIgnoreCase(command.group, normalized)
+                || containsIgnoreCase(command.command, normalized)
+                || containsIgnoreCase(command.workingDirectory, normalized)) {
+                filtered.add(command);
+            }
+        }
+        return filtered;
+    }
+
+    private static boolean containsIgnoreCase(@NonNull String value, @NonNull String normalizedQuery) {
+        return value.toLowerCase(Locale.ROOT).contains(normalizedQuery);
     }
 
     private void addCommandRow(LayoutInflater inflater, CustomCommand command, int position,

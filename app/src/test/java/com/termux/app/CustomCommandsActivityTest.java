@@ -26,6 +26,9 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 28, qualifiers = "zh-rCN")
 public class CustomCommandsActivityTest {
@@ -167,6 +170,47 @@ public class CustomCommandsActivityTest {
         assertNotNull(intent);
         assertTrue(intent.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("git status --short"));
+    }
+
+    @Test
+    public void filtersCommandsByNameGroupCommandAndDirectoryWithoutChangingStoreOrder() {
+        CustomCommand git = new CustomCommand("git-status", "查看状态", "git status --short", "",
+            "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY);
+        CustomCommand ai = new CustomCommand("ai-resume", "继续 Codex", "codex resume", "apps/mobile",
+            "AI", true, CustomCommand.Confirmation.ALWAYS);
+        CustomCommand test = new CustomCommand("frontend-test", "前端检查", "pnpm test", "apps/web",
+            "测试", true, CustomCommand.Confirmation.ALWAYS);
+        List<CustomCommand> commands = Arrays.asList(git, ai, test);
+
+        assertEquals(Arrays.asList(ai), CustomCommandsActivity.filterCommands(commands, "codex"));
+        assertEquals(Arrays.asList(git), CustomCommandsActivity.filterCommands(commands, "git"));
+        assertEquals(Arrays.asList(ai), CustomCommandsActivity.filterCommands(commands, "mobile"));
+        assertEquals(Arrays.asList(test), CustomCommandsActivity.filterCommands(commands, "测试"));
+        assertEquals(commands, CustomCommandsActivity.filterCommands(commands, "  "));
+        assertTrue(CustomCommandsActivity.filterCommands(commands, "not-found").isEmpty());
+
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        for (CustomCommand command : commands) store.save("workspace-a", command);
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+        EditText search = activity.findViewById(R.id.custom_commands_search_input);
+        search.setText("codex");
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals("已显示 1 / 3 条快捷指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_search_summary)).getText().toString());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_clear_search).getVisibility());
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+        assertEquals(2, list.getChildCount());
+        assertTrue(((TextView) list.getChildAt(1).findViewById(R.id.custom_command_name)).getText()
+            .toString().contains("Codex"));
+
+        search.setText("not-found");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_search_empty).getVisibility());
+        activity.findViewById(R.id.custom_commands_clear_search).performClick();
+        assertEquals("", search.getText().toString());
+        assertEquals(6, list.getChildCount());
     }
 
     @Test
