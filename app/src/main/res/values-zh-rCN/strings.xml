@@ -233,13 +233,13 @@
     <string name="workspace_setup_ready">SSH 连接组件已就绪</string>
     <string name="workspace_selector_description">已保存的工作区</string>
     <string name="workspace_selector_unconfigured">%1$s\n未配置服务器</string>
-    <string name="workspace_selector_target">%1$s\n%2$s · %3$s · %4$s</string>
+    <string name="workspace_selector_target">%1$s\n%2$s:%3$s · %4$s · %5$s</string>
     <string name="workspace_new_action">新建工作区</string>
-    <string name="workspace_manage_action">更多工作区操作</string>
+    <string name="workspace_manage_action">复制或删除当前工作区</string>
     <string name="workspace_edit_action">编辑连接</string>
     <string name="workspace_advanced_action">高级设置</string>
     <string name="workspace_advanced_hide_action">收起高级设置</string>
-    <string name="workspace_summary_details">%1$s · %2$s · %3$s</string>
+    <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
     <string name="workspace_status_unverified">尚未验证</string>
     <string name="workspace_status_recently_opened">最近打开</string>
     <string name="workspace_status_recently_verified">最近验证</string>

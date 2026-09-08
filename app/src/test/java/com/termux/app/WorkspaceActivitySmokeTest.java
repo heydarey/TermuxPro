@@ -40,7 +40,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("TermuxPro", activity.getTitle());
         assertEquals("继续远程项目", activity.getString(R.string.workspace_home_title));
         assertEquals("打开远程终端", activity.getString(R.string.workspace_connect_action));
-        assertEquals("更多工作区操作", activity.getString(R.string.workspace_manage_action));
+        assertEquals("复制或删除当前工作区", activity.getString(R.string.workspace_manage_action));
         int[] visibleViews = {R.id.workspace_setup_button};
         for (int id : visibleViews) {
             View view = activity.findViewById(id);
@@ -78,7 +78,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("服务器与项目",
             ((TextView) activity.findViewById(R.id.workspace_remote_card_title))
                 .getText().toString());
-        assertEquals("更多工作区操作",
+        assertEquals("复制或删除当前工作区",
             ((TextView) activity.findViewById(R.id.workspace_manage_button)).getText().toString());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_manage_button).getVisibility());
@@ -107,6 +107,8 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22"));
 
         activity.findViewById(R.id.workspace_edit_button).performClick();
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
@@ -129,6 +131,8 @@ public class WorkspaceActivitySmokeTest {
             ((EditText) activity.findViewById(R.id.workspace_port_input)).getText().toString());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22022"));
         activity.finish();
     }
 
@@ -184,6 +188,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
         assertTrue(selectedView.getText().toString().contains("远程开发 副本"));
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("尚未验证"));
         assertEquals("hdr@192.168.1.153",
@@ -197,6 +202,7 @@ public class WorkspaceActivitySmokeTest {
         TextView restoredOption = (TextView) ((Spinner) restored.findViewById(R.id.workspace_selector))
             .getAdapter().getView(1, null, restored.findViewById(R.id.workspace_selector));
         assertTrue(restoredOption.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(restoredOption.getText().toString().contains(":22"));
         assertEquals("hdr@192.168.1.153",
             ((EditText) restored.findViewById(R.id.workspace_host_input)).getText().toString());
         restored.finish();
@@ -222,6 +228,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
 
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("最近验证"));
         assertEquals(3, selectedView.getMaxLines());
