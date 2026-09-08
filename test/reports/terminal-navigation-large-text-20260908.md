@@ -22,6 +22,16 @@
   com.termux.app.TerminalProjectToolsMenuTest --rerun-tasks`：9 项，0 failure / 0 error。
 - `test/terminal-touch-scrollback-test.sh`、`scripts/validate-skills.sh` 与 `git diff --check`：通过。
 
-## 待远端验收
+## 远端验收结论
 
-- 必须通过研发 CI 和 360dp 深色默认/200% 字体 Emulator UI，并人工复核顶栏所有关键入口及抽屉底部操作。
+- 研发 PR #234：`fix(terminal): 修复大字体导航裁切` 已合并至 `dev`，合并提交
+  `3472aa43b5ae2c1e58b5f8e34dd9bec7b91f17ca`。
+- 分支完整 CI `34209567840`：通过；覆盖隔离 SSH/tmux fixture、全模块测试、Lint 和 Debug APK 构建。
+- 360dp 深色 Emulator UI `34209567949`：通过；默认字体与 200% 字体的
+  `captureCriticalDarkPages` 均为 1 test / 0 failure，验收产物为
+  `termuxpro-emulator-ui-246`。
+- 人工截图复核：默认与 200% 字体下，“会话 / 工作台 / AI / 工具箱”均在无需横向滚动的首屏完整可见；
+  抽屉底部“键盘 / 关闭 / 新建”完整显示。200% 字体下正文可正常换行，未挤压顶部关键入口。
+- `dev` 合并后收尾 CI `34210411176`：通过；自动 PR 收尾 `34209567804`：通过。
+
+结论：通过。旧版横向滚动导致的首屏关键入口裁切已关闭；后续页面变更仍必须保留该截图和可视区域断言。
