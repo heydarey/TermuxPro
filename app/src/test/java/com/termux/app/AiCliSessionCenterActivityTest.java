@@ -37,7 +37,12 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("AI CLI 会话中心", text(activity, R.id.ai_cli_center_title));
         assertEquals("未选择有效远程工作区", text(activity, R.id.ai_cli_center_target));
         assertTrue(text(activity, R.id.ai_cli_center_target_detail).contains("请先回到工作台"));
-        assertTrue(text(activity, R.id.ai_cli_center_summary).contains("不读取 AI 私有历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_summary).contains("准备环境"));
+        assertEquals("当前上下文", text(activity, R.id.ai_cli_center_context_title));
+        assertEquals("启动前先确认", text(activity, R.id.ai_cli_center_prepare_title));
+        assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
+        assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
+        assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("优先查看 Git 改动"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
 
