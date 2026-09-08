@@ -398,6 +398,11 @@
     <string name="git_workbench_committing">正在提交已暂存修改…</string>
     <string name="git_workbench_commit_failed">Git 未创建提交，已暂存和未暂存文件都已保留。\n\n%1$s</string>
     <string name="git_workbench_commits">提交记录</string>
+    <string name="git_workbench_commit_item">%1$s · %2$s\n%3$s</string>
+    <string name="git_workbench_commit_detail_hint">点一条提交查看作者、时间、文件统计和改动内容；此操作只读，不会切换分支、提交或推送。</string>
+    <string name="git_workbench_commit_detail_loading">正在读取提交 %1$s 的详情…</string>
+    <string name="git_workbench_commit_detail_missing">这条提交已不可用，请刷新提交记录后重试。</string>
+    <string name="git_workbench_commit_detail_failed">无法读取这条提交详情。当前分支、工作树和远端仓库均未改变。</string>
     <string name="git_workbench_recent_commits">最近提交</string>
     <string name="git_workbench_recent_commits_more">还有 %1$d 条，点“提交记录”查看完整列表。</string>
     <string name="git_workbench_guidance">切换分支不会丢弃修改；若可能覆盖当前文件，Git 会拒绝切换并保留原工作树。</string>
