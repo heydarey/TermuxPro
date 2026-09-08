@@ -44,7 +44,18 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
 
         bindTarget();
+        configureLargeFontHierarchy();
         bindCommands();
+    }
+
+    /** 大字体优先保证四个 AI 核心操作可见，完整上下文和策略仍由可读控件保留。 */
+    private void configureLargeFontHierarchy() {
+        if (getResources().getConfiguration().fontScale < 1.5f) return;
+        findViewById(R.id.ai_cli_center_context_title).setVisibility(View.GONE);
+        findViewById(R.id.ai_cli_center_target_label).setVisibility(View.GONE);
+        TextView hint = findViewById(R.id.ai_cli_center_start_hint);
+        hint.setText(R.string.ai_cli_center_start_hint_compact);
+        hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
     }
 
     private void bindTarget() {
