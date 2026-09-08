@@ -119,27 +119,69 @@
                 android:textColor="#B8C8D4"
                 android:textSize="14sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_cli_center_claude_new"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:minHeight="52dp"
-                android:text="@string/ai_cli_center_claude_new"
-                android:textAllCaps="false"
-                android:textColor="#062118"
-                android:backgroundTint="#68E0B7" />
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_cli_center_codex_new"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ai_cli_center_claude_new"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#68E0B7"
+                    android:contentDescription="@string/ai_cli_center_claude_new_description"
+                    android:minHeight="52dp"
+                    android:text="@string/ai_cli_center_claude_new"
+                    android:textAllCaps="false"
+                    android:textColor="#062118" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ai_cli_center_claude_history"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#25384A"
+                    android:contentDescription="@string/ai_cli_center_claude_history_description"
+                    android:minHeight="52dp"
+                    android:text="@string/ai_cli_center_claude_history"
+                    android:textAllCaps="false"
+                    android:textColor="#F5F8FA" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minHeight="52dp"
-                android:text="@string/ai_cli_center_codex_new"
-                android:textAllCaps="false"
-                android:textColor="#062118"
-                android:backgroundTint="#68E0B7" />
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ai_cli_center_codex_new"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#68E0B7"
+                    android:contentDescription="@string/ai_cli_center_codex_new_description"
+                    android:minHeight="52dp"
+                    android:text="@string/ai_cli_center_codex_new"
+                    android:textAllCaps="false"
+                    android:textColor="#062118" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ai_cli_center_codex_history"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#25384A"
+                    android:contentDescription="@string/ai_cli_center_codex_history_description"
+                    android:minHeight="52dp"
+                    android:text="@string/ai_cli_center_codex_history"
+                    android:textAllCaps="false"
+                    android:textColor="#F5F8FA" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -233,16 +275,6 @@
                 android:textIsSelectable="true"
                 android:textSize="14sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_cli_center_claude_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:minHeight="52dp"
-                android:text="@string/ai_cli_center_claude_history"
-                android:textAllCaps="false"
-                android:textColor="#F5F8FA"
-                android:backgroundTint="#25384A" />
         </LinearLayout>
 
         <LinearLayout
@@ -278,16 +310,6 @@
                 android:textIsSelectable="true"
                 android:textSize="14sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_cli_center_codex_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:minHeight="52dp"
-                android:text="@string/ai_cli_center_codex_history"
-                android:textAllCaps="false"
-                android:textColor="#F5F8FA"
-                android:backgroundTint="#25384A" />
         </LinearLayout>
 
         <TextView
