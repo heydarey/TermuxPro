@@ -46,6 +46,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private TextView mSearchSummary;
     private View mSearchEmpty;
     private View mClearSearch;
+    private View mSearchContainer;
+    private View mSearchLabel;
     private String mSearchQuery = "";
 
     @Override
@@ -61,6 +63,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mSearchSummary = findViewById(R.id.custom_commands_search_summary);
         mSearchEmpty = findViewById(R.id.custom_commands_search_empty);
         mClearSearch = findViewById(R.id.custom_commands_clear_search);
+        mSearchContainer = (View) mSearchInput.getParent();
+        mSearchLabel = findViewById(R.id.custom_commands_search_label);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
@@ -89,6 +93,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             add.setEnabled(false);
             templates.setEnabled(false);
             mSearchInput.setEnabled(false);
+            mSearchContainer.setVisibility(View.GONE);
+            mSearchLabel.setVisibility(View.GONE);
             return;
         }
         name.setText(mTarget.name);
@@ -109,10 +115,18 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
+        boolean canSearch = commands.size() >= 4;
+        mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
+        mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
+        if (!canSearch && !mSearchQuery.isEmpty()) {
+            mSearchQuery = "";
+            mSearchInput.setText("");
+            return;
+        }
         List<CustomCommand> filtered = filterCommands(commands, mSearchQuery);
         mEmpty.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
         mTemplateHint.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
-        boolean searching = !mSearchQuery.isEmpty();
+        boolean searching = canSearch && !mSearchQuery.isEmpty();
         mClearSearch.setVisibility(searching ? View.VISIBLE : View.GONE);
         mSearchSummary.setVisibility(searching ? View.VISIBLE : View.GONE);
         if (searching) mSearchSummary.setText(getString(R.string.custom_commands_search_summary,

@@ -701,7 +701,7 @@
     <string name="custom_commands_templates">Templates</string>
     <string name="custom_commands_target_label">Execution target</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
-    <string name="custom_commands_scenario_hint">Turn repeated Git, tmux, AI CLI, test, and release commands into quick actions for this workspace. When built-in tools do not cover your workflow, extend it here first.</string>
+    <string name="custom_commands_scenario_hint">Save frequent commands for this workspace; always verify the target before running.</string>
     <string name="custom_commands_search_label">Filter this workspace’s shortcuts</string>
     <string name="custom_commands_search_hint">Name, scenario, command, or directory</string>
     <string name="custom_commands_clear_search">Clear</string>
