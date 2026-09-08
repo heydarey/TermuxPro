@@ -301,6 +301,7 @@
     <string name="ai_cli_center_context_title">Current context</string>
     <string name="ai_cli_center_start_title">Start AI work</string>
     <string name="ai_cli_center_start_hint">New sessions never resume history. History opens the native CLI picker only; TermuxPro never enters a session or tmux automatically.</string>
+    <string name="ai_cli_center_start_hint_compact">SSH only; never auto-resume history or enter tmux.</string>
     <string name="ai_cli_center_prepare_title">Check before starting</string>
     <string name="ai_cli_center_prepare_hint">Remote tools and tmux are the two easiest contexts to enter by mistake on shared servers. Check first, then decide whether to enter a specific session.</string>
     <string name="ai_cli_center_next_title">After AI finishes</string>
