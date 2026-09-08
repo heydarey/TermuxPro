@@ -180,7 +180,9 @@ public class CustomCommandsActivityTest {
             "AI", true, CustomCommand.Confirmation.ALWAYS);
         CustomCommand test = new CustomCommand("frontend-test", "前端检查", "pnpm test", "apps/web",
             "测试", true, CustomCommand.Confirmation.ALWAYS);
-        List<CustomCommand> commands = Arrays.asList(git, ai, test);
+        CustomCommand build = new CustomCommand("android-build", "构建 Android", "./gradlew assembleDebug",
+            "", "构建", true, CustomCommand.Confirmation.ALWAYS);
+        List<CustomCommand> commands = Arrays.asList(git, ai, test, build);
 
         assertEquals(Arrays.asList(ai), CustomCommandsActivity.filterCommands(commands, "codex"));
         assertEquals(Arrays.asList(git), CustomCommandsActivity.filterCommands(commands, "git"));
@@ -197,7 +199,7 @@ public class CustomCommandsActivityTest {
         search.setText("codex");
         shadowOf(Looper.getMainLooper()).idle();
 
-        assertEquals("已显示 1 / 3 条快捷指令", ((TextView) activity.findViewById(
+        assertEquals("已显示 1 / 4 条快捷指令", ((TextView) activity.findViewById(
             R.id.custom_commands_search_summary)).getText().toString());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_clear_search).getVisibility());
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
@@ -210,7 +212,23 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_search_empty).getVisibility());
         activity.findViewById(R.id.custom_commands_clear_search).performClick();
         assertEquals("", search.getText().toString());
-        assertEquals(6, list.getChildCount());
+        assertEquals(8, list.getChildCount());
+    }
+
+    @Test
+    public void keepsSmallShortcutListsFocusedOnExecutionInsteadOfShowingUnusedSearch() {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", CustomCommand.create("查看状态", "git status --short", "", "Git",
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", CustomCommand.create("继续 Codex", "codex resume", "", "AI",
+            CustomCommand.Confirmation.ALWAYS));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_search_label)
+            .getVisibility());
+        assertEquals(View.GONE, ((View) activity.findViewById(R.id.custom_commands_search_input)
+            .getParent()).getVisibility());
     }
 
     @Test
