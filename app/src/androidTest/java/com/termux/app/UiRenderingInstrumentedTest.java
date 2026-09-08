@@ -221,14 +221,20 @@ public final class UiRenderingInstrumentedTest {
         capture(context, "task-sessions-stop", new Intent(sessionPreview), activity ->
             ((TaskSessionsActivity) activity).showStopDialogForTesting());
         capture(context, "git-diff",
-            GitDiffActivity.newIntent(context, "invalid", 0, "~/project"), activity -> {
+            GitDiffActivity.newIntent(context, "hdr@192.168.1.153", 22, "~/project"), activity -> {
                 ((GitDiffActivity) activity).showOverviewForTesting("~/project",
                     "TP_OVERVIEW\tdev\t0\t3\t1\t2\t2\t1\t1\n"
                         + "TP_LOCAL\tdev\nTP_LOCAL\tmaster\n"
                         + "TP_REMOTE\torigin/dev\n"
-                        + "TP_LOG\ta1b2c3d\t2 小时前\t完善 Git 工作台\n");
+                        + "TP_LOG\ta1b2c3d\t2 小时前\t完善 Git 工作台\n"
+                        + "TP_STATUS_Z\000M  staged.txt\000 M unstaged.txt\000MM mixed.txt\000");
                 assertTrue(activity.findViewById(com.termux.R.id.git_overview_scroll)
                     .getVisibility() == View.VISIBLE);
+            }, activity -> {
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.git_overview_review_actions));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.git_overview_files_button));
             });
         context.getSharedPreferences(WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE)
             .edit()

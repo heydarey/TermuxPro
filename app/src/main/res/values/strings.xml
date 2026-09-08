@@ -472,6 +472,9 @@
     <string name="git_workbench_push_detached_blocked">Push is blocked because the repository is in detached HEAD. Switch to a branch first.</string>
     <string name="git_workbench_push_failed">Git did not push. No force push was attempted.\n\n%1$s</string>
     <string name="git_workbench_changes">Changes</string>
+    <string name="git_workbench_review_changes">Review current changes first</string>
+    <string name="git_workbench_review_files">Review by file</string>
+    <string name="git_workbench_review_diff">View full diff</string>
     <string name="git_workbench_files">Files</string>
     <string name="git_workbench_index_state">Staged %1$d · unstaged %2$d</string>
     <string name="git_workbench_stage_all">Stage all</string>
