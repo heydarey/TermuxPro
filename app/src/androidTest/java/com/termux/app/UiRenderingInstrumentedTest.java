@@ -221,7 +221,7 @@ public final class UiRenderingInstrumentedTest {
         capture(context, "task-sessions-stop", new Intent(sessionPreview), activity ->
             ((TaskSessionsActivity) activity).showStopDialogForTesting());
         capture(context, "git-diff",
-            GitDiffActivity.newIntent(context, "invalid", 0, "~/project"), activity -> {
+            GitDiffActivity.newIntent(context, "hdr@192.168.1.153", 22, "~/project"), activity -> {
                 ((GitDiffActivity) activity).showOverviewForTesting("~/project",
                     "TP_OVERVIEW\tdev\t0\t3\t1\t2\t2\t1\t1\n"
                         + "TP_LOCAL\tdev\nTP_LOCAL\tmaster\n"
