@@ -118,7 +118,11 @@ public final class UiRenderingInstrumentedTest {
                 assertViewHasVisibleBounds(activity.findViewById(
                     com.termux.R.id.ai_cli_center_claude_new));
                 assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_claude_history));
+                assertViewHasVisibleBounds(activity.findViewById(
                     com.termux.R.id.ai_cli_center_codex_new));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_codex_history));
             });
         capture(context, "terminal-feedback", new Intent(workspaceIntent), activity -> {
             TextView feedback = (TextView) activity.getLayoutInflater().inflate(

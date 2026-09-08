@@ -38,8 +38,8 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("未选择有效远程工作区", text(activity, R.id.ai_cli_center_target));
         assertTrue(text(activity, R.id.ai_cli_center_target_detail).contains("请先回到工作台"));
         assertEquals("当前上下文", text(activity, R.id.ai_cli_center_context_title));
-        assertEquals("新建 AI 会话", text(activity, R.id.ai_cli_center_start_title));
-        assertTrue(text(activity, R.id.ai_cli_center_start_hint).contains("安全默认"));
+        assertEquals("开始 AI 工作", text(activity, R.id.ai_cli_center_start_title));
+        assertTrue(text(activity, R.id.ai_cli_center_start_hint).contains("不会自动进入会话或 tmux"));
         assertEquals("启动前先确认", text(activity, R.id.ai_cli_center_prepare_title));
         assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
@@ -47,14 +47,16 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
-        assertEquals("新建 Claude（安全默认）",
-            text(activity, R.id.ai_cli_center_claude_new));
-        assertEquals("选择 Claude 历史（不自动恢复）",
-            text(activity, R.id.ai_cli_center_claude_history));
-        assertEquals("新建 Codex（安全默认）",
-            text(activity, R.id.ai_cli_center_codex_new));
-        assertEquals("选择 Codex 历史（不自动恢复）",
-            text(activity, R.id.ai_cli_center_codex_history));
+        assertEquals("新建 Claude", text(activity, R.id.ai_cli_center_claude_new));
+        assertEquals("Claude 历史", text(activity, R.id.ai_cli_center_claude_history));
+        assertEquals("新建 Codex", text(activity, R.id.ai_cli_center_codex_new));
+        assertEquals("Codex 历史", text(activity, R.id.ai_cli_center_codex_history));
+        assertTrue(activity.findViewById(R.id.ai_cli_center_claude_new).getContentDescription()
+            .toString().contains("不自动恢复历史"));
+        assertTrue(activity.findViewById(R.id.ai_cli_center_claude_history).getContentDescription()
+            .toString().contains("共享账号请确认会话归属"));
+        assertTrue(activity.findViewById(R.id.ai_cli_center_codex_history).getContentDescription()
+            .toString().contains("不自动恢复"));
 
         activity.findViewById(R.id.ai_cli_center_claude_new).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
