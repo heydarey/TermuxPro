@@ -296,6 +296,13 @@
     <string name="ai_cli_center_target_missing">No valid remote workspace selected</string>
     <string name="ai_cli_center_target_missing_detail">Go back to the workbench and configure the server, SSH port, and project path first.</string>
     <string name="ai_cli_center_target_detail">%1$s:%2$d · %3$s</string>
+    <string name="ai_cli_center_policy_ssh_only">Workspace policy: plain SSH, no automatic tmux attach</string>
+    <string name="ai_cli_center_policy_list_sessions">Workspace policy: list tmux sessions only, no automatic attach</string>
+    <string name="ai_cli_center_policy_attach_session">Workspace policy: attach only the configured tmux session: %1$s</string>
+    <string name="ai_cli_center_policy_create_or_attach">Workspace policy: create or attach the configured tmux session: %1$s</string>
+    <string name="ai_cli_center_policy_session_missing">not set</string>
+    <string name="ai_cli_center_policy_unknown">Workspace policy: unrecognized, treated as plain SSH</string>
+    <string name="ai_cli_center_ai_policy">AI quick launch policy: always opens SSH only and does not inherit automatic tmux attach before launch.</string>
     <string name="ai_cli_center_command_pair">New: %1$s\nHistory picker: %2$s</string>
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>

@@ -50,7 +50,9 @@ final class WorkspaceTargetStore {
             item.optString("host").trim(), parsePort(item.optString("port", "22")),
             item.optString("path", "~/").trim(),
             parsePort(item.optString("remotePort", "5173")),
-            parsePort(item.optString("localPort", "5173")));
+            parsePort(item.optString("localPort", "5173")),
+            item.optString("connectionPolicy", WorkspaceCommandBuilder.POLICY_SSH_ONLY),
+            item.optString("sessionName", "").trim());
     }
 
     @Nullable
@@ -61,7 +63,9 @@ final class WorkspaceTargetStore {
             parsePort(preferences.getString("port", "22")),
             preferences.getString("path", "~/").trim(),
             parsePort(preferences.getString("remotePort", "5173")),
-            parsePort(preferences.getString("localPort", "5173")));
+            parsePort(preferences.getString("localPort", "5173")),
+            preferences.getString("connectionPolicy", WorkspaceCommandBuilder.POLICY_SSH_ONLY),
+            preferences.getString("sessionName", "").trim());
     }
 
     private static int parsePort(String value) {

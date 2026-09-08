@@ -57,7 +57,33 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         }
         target.setText(workspace.name);
         detail.setText(getString(R.string.ai_cli_center_target_detail,
-            workspace.host, workspace.port, workspace.path));
+            workspace.host, workspace.port, workspace.path)
+            + "\n" + policySummary(workspace.connectionPolicy, workspace.sessionName)
+            + "\n" + getString(R.string.ai_cli_center_ai_policy));
+    }
+
+    private String policySummary(String policy, String sessionName) {
+        if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_list_sessions);
+        }
+        if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_attach_session,
+                sessionDisplayName(sessionName));
+        }
+        if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_create_or_attach,
+                sessionDisplayName(sessionName));
+        }
+        if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(policy)) {
+            return getString(R.string.ai_cli_center_policy_unknown);
+        }
+        return getString(R.string.ai_cli_center_policy_ssh_only);
+    }
+
+    private String sessionDisplayName(String sessionName) {
+        return sessionName == null || sessionName.trim().isEmpty()
+            ? getString(R.string.ai_cli_center_policy_session_missing)
+            : sessionName;
     }
 
     private void bindCommands() {

@@ -40,8 +40,25 @@ public class WorkspaceTargetStoreTest {
         assertEquals("~/b", target.path);
         assertEquals(5173, target.remotePort);
         assertEquals(5173, target.localPort);
+        assertEquals(WorkspaceCommandBuilder.POLICY_SSH_ONLY, target.connectionPolicy);
+        assertEquals("", target.sessionName);
         assertTrue(target.hasValidPreviewPorts());
         assertTrue(target.isConfigured());
+    }
+
+    @Test
+    public void readsConnectionPolicyAndSessionNameFromActiveProfile() {
+        preferences.edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"a\",\"name\":\"A\",\"host\":\"a@example.com\",\"port\":\"22\","
+                    + "\"path\":\"~/a\",\"connectionPolicy\":\"create_or_attach\","
+                    + "\"sessionName\":\"termuxpro-safe\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "a").commit();
+
+        WorkspaceTarget target = WorkspaceTargetStore.readActive(RuntimeEnvironment.getApplication());
+
+        assertEquals(WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH, target.connectionPolicy);
+        assertEquals("termuxpro-safe", target.sessionName);
     }
 
     @Test
