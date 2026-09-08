@@ -48,7 +48,14 @@ public final class UiRenderingInstrumentedTest {
         forceSimplifiedChinese(context);
         Intent workspaceIntent = new Intent(context, WorkspaceActivity.class)
             .putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
-        capture(context, "workspace", workspaceIntent);
+        capture(context, "workspace", workspaceIntent, null, activity -> {
+            int[] fieldLabels = {
+                com.termux.R.id.workspace_host_label,
+                com.termux.R.id.workspace_port_label,
+                com.termux.R.id.workspace_path_label
+            };
+            for (int id : fieldLabels) assertViewHasVisibleBounds(activity.findViewById(id));
+        });
         capture(context, "workspace-policy", new Intent(workspaceIntent), activity -> {
             activity.findViewById(com.termux.R.id.workspace_advanced_button).performClick();
             View policy = activity.findViewById(com.termux.R.id.workspace_connection_policy_selector);

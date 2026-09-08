@@ -672,7 +672,9 @@ public final class WorkspaceActivity extends AppCompatActivity {
         boolean showEditor = !configured || mEditingProfile;
         int editorVisibility = showEditor ? View.VISIBLE : View.GONE;
         int[] basicEditorViews = {
-            R.id.workspace_host_input, R.id.workspace_port_input, R.id.workspace_path_input,
+            R.id.workspace_host_label, R.id.workspace_host_input,
+            R.id.workspace_port_label, R.id.workspace_port_input,
+            R.id.workspace_path_label, R.id.workspace_path_input,
             R.id.workspace_advanced_button
         };
         for (int id : basicEditorViews) findViewById(id).setVisibility(editorVisibility);
