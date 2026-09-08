@@ -176,6 +176,13 @@
     <string name="ai_cli_center_target_missing">未选择有效远程工作区</string>
     <string name="ai_cli_center_target_missing_detail">请先回到工作台配置服务器、SSH 端口和项目目录。</string>
     <string name="ai_cli_center_target_detail">%1$s:%2$d · %3$s</string>
+    <string name="ai_cli_center_policy_ssh_only">工作区连接策略：普通 SSH，不自动进入 tmux</string>
+    <string name="ai_cli_center_policy_list_sessions">工作区连接策略：只查看 tmux 列表，不自动进入</string>
+    <string name="ai_cli_center_policy_attach_session">工作区连接策略：仅进入指定 tmux：%1$s</string>
+    <string name="ai_cli_center_policy_create_or_attach">工作区连接策略：创建或进入指定 tmux：%1$s</string>
+    <string name="ai_cli_center_policy_session_missing">未填写</string>
+    <string name="ai_cli_center_policy_unknown">工作区连接策略：未识别，按普通 SSH 处理</string>
+    <string name="ai_cli_center_ai_policy">AI 快捷启动策略：始终只建立 SSH，启动前不会继承工作区 tmux 自动进入策略。</string>
     <string name="ai_cli_center_command_pair">新建：%1$s\n历史选择：%2$s</string>
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>

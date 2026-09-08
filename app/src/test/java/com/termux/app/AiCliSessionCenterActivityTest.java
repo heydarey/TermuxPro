@@ -50,15 +50,17 @@ public class AiCliSessionCenterActivityTest {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
             .putString(WorkspaceTargetStore.KEY_PROFILES,
-                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\",\"connectionPolicy\":\"attach_session\",\"sessionName\":\"safe-ai\"}]")
             .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
             .commit();
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
         assertEquals("远程开发", text(activity, R.id.ai_cli_center_target));
-        assertEquals("hdr@192.168.1.153:22 · ~/project",
-            text(activity, R.id.ai_cli_center_target_detail));
+        String detail = text(activity, R.id.ai_cli_center_target_detail);
+        assertTrue(detail.contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(detail.contains("工作区连接策略：仅进入指定 tmux：safe-ai"));
+        assertTrue(detail.contains("AI 快捷启动策略：始终只建立 SSH"));
 
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
