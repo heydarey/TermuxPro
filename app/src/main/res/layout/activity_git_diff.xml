@@ -130,6 +130,17 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/git_overview_next_step"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="#142332"
+                    android:lineSpacingExtra="3dp"
+                    android:padding="14dp"
+                    android:textColor="#D8E4EC"
+                    android:textSize="15sp" />
+
+                <TextView
                     android:id="@+id/git_overview_recent_commits_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
