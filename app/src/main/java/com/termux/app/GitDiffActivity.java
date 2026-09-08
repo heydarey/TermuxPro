@@ -240,8 +240,11 @@ public final class GitDiffActivity extends AppCompatActivity {
         commit.setEnabled(overview.stagedFiles > 0);
         commit.setAlpha(overview.stagedFiles > 0 ? 1f : 0.48f);
         Button files = findViewById(R.id.git_overview_files_button);
-        files.setEnabled(!overview.fileChanges.isEmpty());
-        files.setAlpha(!overview.fileChanges.isEmpty() ? 1f : 0.48f);
+        boolean hasFileChanges = !overview.fileChanges.isEmpty();
+        files.setEnabled(hasFileChanges);
+        files.setAlpha(hasFileChanges ? 1f : 0.48f);
+        findViewById(R.id.git_overview_review_actions).setVisibility(
+            hasFileChanges ? View.VISIBLE : View.GONE);
         Button stash = findViewById(R.id.git_overview_stash_button);
         stash.setEnabled(overview.changedFiles > 0);
         stash.setAlpha(overview.changedFiles > 0 ? 1f : 0.48f);

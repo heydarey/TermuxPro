@@ -352,6 +352,9 @@
     <string name="git_workbench_push_detached_blocked">当前处于游离 HEAD，已阻止推送。请先切换到分支。</string>
     <string name="git_workbench_push_failed">Git 未完成推送，且没有尝试 force push。\n\n%1$s</string>
     <string name="git_workbench_changes">修改</string>
+    <string name="git_workbench_review_changes">先审查当前修改</string>
+    <string name="git_workbench_review_files">按文件审查</string>
+    <string name="git_workbench_review_diff">查看完整 Diff</string>
     <string name="git_workbench_files">按文件</string>
     <string name="git_workbench_index_state">已暂存 %1$d · 未暂存 %2$d</string>
     <string name="git_workbench_stage_all">暂存全部</string>
