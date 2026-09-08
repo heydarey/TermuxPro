@@ -177,7 +177,7 @@
     <string name="ai_cli_center_prepare_title">启动前先确认</string>
     <string name="ai_cli_center_prepare_hint">远端环境和 tmux 是共享服务器上最容易误入的两类上下文。先检查，再决定是否进入指定会话。</string>
     <string name="ai_cli_center_next_title">AI 完成后</string>
-    <string name="ai_cli_center_next_hint">优先查看 Git 改动；需要复用常用命令时再进入快捷指令，服务器配置回工作台处理。</string>
+    <string name="ai_cli_center_next_hint">优先查看 Git 改动，再运行项目任务或测试，避免把验证命令直接输入到正在工作的 AI 终端里。重复动作再使用快捷指令。</string>
     <string name="ai_cli_center_target_missing">未选择有效远程工作区</string>
     <string name="ai_cli_center_target_missing_detail">请先回到工作台配置服务器、SSH 端口和项目目录。</string>
     <string name="ai_cli_center_target_detail">%1$s:%2$d · %3$s</string>
@@ -201,6 +201,7 @@
     <string name="ai_cli_center_open_diagnostic">检查 AI 远端环境</string>
     <string name="ai_cli_center_open_tmux">选择 / 管理 tmux 会话</string>
     <string name="ai_cli_center_open_git">查看 Git 改动</string>
+    <string name="ai_cli_center_open_project_tasks">运行项目任务</string>
     <string name="workspace_open_local_terminal">打开本地终端</string>
     <string name="workspace_security_tip">首次连接需确认服务器指纹并输入密码或配置 SSH 密钥；TermuxPro 不会自动进入未指定的 tmux 或 AI 历史会话。</string>
     <string name="workspace_error_host">请输入有效的 SSH 别名、主机、“用户名@主机”、“用户名@主机:端口”或“ssh -p 端口 用户名@主机”。</string>

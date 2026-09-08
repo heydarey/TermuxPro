@@ -43,6 +43,7 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("优先查看 Git 改动"));
+        assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
 
@@ -83,6 +84,9 @@ public class AiCliSessionCenterActivityTest {
         Intent gitIntent = shadowOf(activity).getNextStartedActivity();
         assertEquals(GitDiffActivity.class.getName(), gitIntent.getComponent().getClassName());
         assertTrue(!gitIntent.getBooleanExtra(GitDiffActivity.EXTRA_START_IN_DIFF, true));
+
+        activity.findViewById(R.id.ai_cli_center_open_project_tasks).performClick();
+        assertNextActivity(activity, ProjectTasksActivity.class);
     }
 
     @Test
@@ -137,6 +141,16 @@ public class AiCliSessionCenterActivityTest {
             AiCliSessionCenterActivity.class).setup().get();
 
         activity.findViewById(R.id.ai_cli_center_open_diagnostic).performClick();
+
+        assertNextActivity(activity, WorkspaceActivity.class);
+    }
+
+    @Test
+    public void projectTasksActionFallsBackToWorkbenchWhenWorkspaceIsIncomplete() {
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_open_project_tasks).performClick();
 
         assertNextActivity(activity, WorkspaceActivity.class);
     }
