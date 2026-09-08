@@ -8,6 +8,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -144,6 +145,8 @@ public final class GitDiffActivityTest {
         assertTrue(((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
+            .getVisibility());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_stash_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_stashes_button)).isEnabled());
@@ -166,6 +169,8 @@ public final class GitDiffActivityTest {
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
+            .getVisibility());
     }
 
     @Test
@@ -329,6 +334,10 @@ public final class GitDiffActivityTest {
             .setup().get();
 
         assertTrue(((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.git_overview_review_actions)
+            .getVisibility());
+        assertEquals("按文件审查", ((Button) activity.findViewById(
+            R.id.git_overview_files_button)).getText().toString());
         AlertDialog files = activity.createChangedFilesDialog();
         assertNotNull(files);
         activity.showStyledDialog(files);
