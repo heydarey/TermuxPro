@@ -236,6 +236,15 @@ public final class UiRenderingInstrumentedTest {
             .commit();
         CustomCommandStore customCommands = new CustomCommandStore(context);
         customCommands.clear("ui-commands");
+        capture(context, "custom-commands-empty", new Intent(context, CustomCommandsActivity.class),
+            activity -> {
+                assertToolbarActionsVisible(activity, com.termux.R.id.custom_commands_back,
+                    com.termux.R.id.custom_commands_add);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.custom_commands_template_hint));
+                assertTrue(activity.findViewById(com.termux.R.id.custom_commands_scenario_hint)
+                    .getVisibility() == View.GONE);
+            });
         customCommands.save("ui-commands", new CustomCommand("ui-git-status", "查看 Git 状态",
             "git status --short --branch", "", "Git", true,
             CustomCommand.Confirmation.ALWAYS));
@@ -251,6 +260,8 @@ public final class UiRenderingInstrumentedTest {
             activity -> {
                 assertToolbarActionsVisible(activity, com.termux.R.id.custom_commands_back,
                     com.termux.R.id.custom_commands_add);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.custom_commands_scenario_hint));
                 assertTrue(((android.widget.LinearLayout) activity.findViewById(
                     com.termux.R.id.custom_commands_list)).getChildCount() == 4);
             });

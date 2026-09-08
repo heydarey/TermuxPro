@@ -589,8 +589,8 @@
     <string name="task_sessions_refresh_result">刷新并核对结果</string>
     <string name="custom_commands_title">快捷指令</string>
     <string name="custom_commands_back">返回</string>
-    <string name="custom_commands_add">新建</string>
-    <string name="custom_commands_templates">模板</string>
+    <string name="custom_commands_add">新建指令</string>
+    <string name="custom_commands_templates">选用模板</string>
     <string name="custom_commands_target_label">执行目标</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">保存当前工作区常用命令；运行前始终核对目标。</string>
@@ -600,7 +600,7 @@
     <string name="custom_commands_search_summary">已显示 %1$d / %2$d 条快捷指令</string>
     <string name="custom_commands_search_empty">没有匹配的快捷指令。可清除筛选，或检查名称、场景、命令和目录关键词。</string>
     <string name="custom_commands_template_hint">不想在手机上手写命令时，可从模板选择 Codex、Claude、Git、tmux 或测试命令；模板只会预填编辑器，保存前不会执行。</string>
-    <string name="custom_commands_empty">还没有快捷指令。建议先点“模板”选择常用开发动作，再按当前项目微调。</string>
+    <string name="custom_commands_empty">还没有快捷指令。可选用模板后按当前项目微调，或直接新建一条指令。</string>
     <string name="custom_commands_group_header">%1$s 场景</string>
     <string name="custom_commands_template_title">选择快捷指令模板</string>
     <string name="custom_commands_template_message">模板只会填入编辑器，保存前不会落盘，运行前仍遵守确认和危险命令拦截。</string>

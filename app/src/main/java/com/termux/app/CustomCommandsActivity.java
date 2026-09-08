@@ -42,6 +42,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private LinearLayout mList;
     private TextView mEmpty;
     private View mTemplateHint;
+    private View mScenarioHint;
     private EditText mSearchInput;
     private TextView mSearchSummary;
     private View mSearchEmpty;
@@ -59,6 +60,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mList = findViewById(R.id.custom_commands_list);
         mEmpty = findViewById(R.id.custom_commands_empty);
         mTemplateHint = findViewById(R.id.custom_commands_template_hint);
+        mScenarioHint = findViewById(R.id.custom_commands_scenario_hint);
         mSearchInput = findViewById(R.id.custom_commands_search_input);
         mSearchSummary = findViewById(R.id.custom_commands_search_summary);
         mSearchEmpty = findViewById(R.id.custom_commands_search_empty);
@@ -109,6 +111,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mEmpty.setText(R.string.custom_commands_invalid_workspace);
             mEmpty.setVisibility(View.VISIBLE);
             mTemplateHint.setVisibility(View.GONE);
+            mScenarioHint.setVisibility(View.GONE);
             mSearchSummary.setVisibility(View.GONE);
             mSearchEmpty.setVisibility(View.GONE);
             mClearSearch.setVisibility(View.GONE);
@@ -126,6 +129,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         List<CustomCommand> filtered = filterCommands(commands, mSearchQuery);
         mEmpty.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
         mTemplateHint.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
+        // 首次使用时模板说明就是下一步，避免泛化介绍把它推到手机首屏之外。
+        mScenarioHint.setVisibility(commands.isEmpty() ? View.GONE : View.VISIBLE);
         boolean searching = canSearch && !mSearchQuery.isEmpty();
         mClearSearch.setVisibility(searching ? View.VISIBLE : View.GONE);
         mSearchSummary.setVisibility(searching ? View.VISIBLE : View.GONE);
