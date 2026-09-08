@@ -32,8 +32,13 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/git_diff_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="18sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
             android:minHeight="56dp"
             android:layout_weight="1"
             android:ellipsize="end"
@@ -41,6 +46,7 @@
             android:maxLines="1"
             android:minWidth="0dp"
             android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:text="@string/git_diff_title"
             android:textColor="#F5F8FA"
             android:textSize="18sp"
@@ -50,6 +56,7 @@
             android:id="@+id/git_diff_refresh_button"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:contentDescription="@string/git_diff_refresh"
