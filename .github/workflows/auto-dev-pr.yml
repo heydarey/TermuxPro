@@ -2,7 +2,7 @@ name: 自动创建研发 PR
 
 on:
   push:
-    branches: ['dev_*', 'hotfix_*']
+    branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']
 
 concurrency:
   group: auto-dev-pr-${{ github.ref }}

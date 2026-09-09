@@ -21,12 +21,12 @@ for workflow in ci ui-emulator; do
     fi
 done
 
-if ! grep -Fq "branches: [dev, master, 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ci.yml"; then
-    echo "CI push 门禁必须覆盖 dev、master、dev_* 和 hotfix_*。" >&2
+if ! grep -Fq "branches: [dev, master, dev_dailyIteration, 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ci.yml"; then
+    echo "CI push 门禁必须覆盖 dev、master、dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1
 fi
-if ! grep -Fq "branches: ['dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ui-emulator.yml"; then
-    echo "UI push 门禁必须覆盖 dev_* 和 hotfix_*。" >&2
+if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ui-emulator.yml"; then
+    echo "UI push 门禁必须覆盖 dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1
 fi
 if ! grep -Fq "androidRuntime" "$project_dir/.github/workflows/ci.yml"; then
@@ -183,6 +183,19 @@ if ! grep -Fq 'gh_safe release view "$tag"' "$auto_dev_pr_file"; then
 fi
 if ! grep -Fq 'APK_SIGNATURE.txt' "$auto_dev_pr_file" || ! grep -Fq 'SHA256SUMS' "$auto_dev_pr_file"; then
     echo "候选发布 Release 兜底必须核验 APK、SHA256SUMS 和签名报告附件齐全。" >&2
+    exit 1
+fi
+if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须支持长期研发分支 dev_dailyIteration，避免为小切片持续创建新分支。" >&2
+    exit 1
+fi
+if ! grep -Fq 'dev_dailyIteration' "$project_dir/AGENTS.md" \
+    || ! grep -Fq 'dev_dailyIteration' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目规则必须明确长期研发分支 dev_dailyIteration，避免无节制创建一次性业务分支。" >&2
+    exit 1
+fi
+if ! grep -Fq '结构化发布通知' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目 skill 必须约束候选/稳定 Release 的飞书通知结构，避免只发送笼统上架消息。" >&2
     exit 1
 fi
 
