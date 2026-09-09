@@ -375,6 +375,10 @@ public final class GitDiffActivityTest {
         assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
             .contains("2 个已暂存文件"));
         assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
+            .contains("分支 dev"));
+        assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
+            .contains("hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
             .contains("1 个未暂存文件不会进入本次提交"));
 
         EditText input = dialog.findViewById(android.R.id.edit);
