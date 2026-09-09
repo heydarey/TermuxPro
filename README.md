@@ -80,8 +80,11 @@ Android 标准测试位于各模块 `src/test` 和 `src/androidTest`；根目录
 ## 分支与交付流程
 
 - `dev`：日常产品开发和集成分支。
-- 功能分支从 `dev` 创建，使用 `dev_<englishCamelCase>_<YYYYMMDD>` 命名，完成后通过 PR 合回
-  `dev`；紧急修复使用 `hotfix_<englishCamelCase>_<YYYYMMDD>` 或关联 bug ID。
+- `dev_dailyIteration`：长期日常维护分支。普通体验优化、文档治理、流程治理和低风险小功能默认累计到
+  这个分支，形成一个可验收纵向切片后通过自动 PR 合回 `dev`，避免为每个小改动创建一次性分支。
+- 独立功能分支只用于候选发布列车、紧急 hotfix、高风险重构或需要隔离审查的工作；使用
+  `dev_<englishCamelCase>_<YYYYMMDD>` 命名。紧急修复使用 `hotfix_<englishCamelCase>_<YYYYMMDD>`
+  或关联 bug ID。
 - `master`：只接收通过自动化、Release 校验和风险匹配的 Android 运行时验收的发布候选。
 - 官方 Termux 更新通过只读 `upstream` 同步，不向上游推送 TermuxPro 代码。
 
@@ -89,10 +92,11 @@ Android 标准测试位于各模块 `src/test` 和 `src/androidTest`；根目录
 `dev → master` 发布 PR → `vX.Y.Z` 正式 Release → `dev` 快进对齐 `master`。手动 Actions 构建的
 Artifact 仅用于验证，不视为正式发布。
 
-项目每天迭代，但稳定版不按提交逐个发布：每个通过自动化与 UI 验收、可独立体验的纵向切片都会生成
-候选 Release；每个自然周至少进行一次发布评审。每个发布列车默认只有一个 `rc.1`，仅 P0/P1、门禁
-失败或产物不可安装才递增候选编号。发布范围冻结后，新 P2 需求进入下一版本；候选版全部门禁通过且
-没有 P0/P1 后，在同一维护周期合入 `master` 并创建稳定 Release，失败则记录 HOLD 原因和解除条件。
+项目持续迭代，但稳定版不按提交逐个发布：发布前先累计用户可明显感知、可独立体验且可回滚的纵向切片。
+每个自然周至少进行一次发布评审，评审结论可以是 `READY`、`HOLD` 或 `RELEASED`；没有达到质量或价值
+标准时记录 HOLD 原因，不为了显示进度制造候选包。每个发布列车默认只有一个 `rc.1`，仅 P0/P1、门禁
+失败或产物不可安装才递增候选编号。发布范围冻结后，新 P2 需求进入下一版本；候选版全部门禁通过且没有
+P0/P1 后，在同一维护周期合入 `master` 并创建稳定 Release。
 
 完整规范见 [贡献指南](CONTRIBUTING.md)、[架构说明](docs/ARCHITECTURE.md)和
 [发布与签名](docs/RELEASE_SIGNING.md)。Codex 与 Claude Code 应加载项目中的
