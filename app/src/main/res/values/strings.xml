@@ -390,6 +390,11 @@
     <string name="workspace_advanced_action">tmux connection mode</string>
     <string name="workspace_advanced_hide_action">Hide tmux connection mode</string>
     <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
+    <string name="workspace_summary_policy_ssh_only">tmux: do not attach by default; opening the workspace starts SSH only.</string>
+    <string name="workspace_summary_policy_list_sessions">tmux: list sessions after SSH connects, but do not auto-attach.</string>
+    <string name="workspace_summary_policy_attach_session">tmux: attach only the specified session “%1$s”; other sessions will not be restored.</string>
+    <string name="workspace_summary_policy_create_or_attach">tmux: create or attach the specified session “%1$s”; best for an isolated personal workspace.</string>
+    <string name="workspace_summary_policy_unknown">tmux: unrecognized policy; TermuxPro will treat this workspace as SSH only.</string>
     <string name="workspace_status_unverified">Not verified</string>
     <string name="workspace_status_recently_opened">Recently opened</string>
     <string name="workspace_status_recently_verified">Recently verified</string>
