@@ -129,6 +129,7 @@ static_checks=(
     "./test/version-metadata-test.sh"
     "./test/workflow-trigger-policy-test.sh"
     "./test/release-notification-format-test.sh"
+    "./test/github-noise-audit-test.sh"
     "./test/github-cli-wrapper-test.sh"
     "./test/github-check-suites-test.sh"
     "./test/context-checkpoint-test.sh"
