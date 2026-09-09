@@ -264,7 +264,9 @@
     <string name="workspace_port_hint">Default: 22</string>
     <string name="workspace_path_label">Remote project path</string>
     <string name="workspace_path_hint">For example: ~/project</string>
-    <string name="workspace_connection_policy_description">Connection and tmux policy</string>
+    <string name="workspace_connection_policy_label">What to do with tmux after SSH connects</string>
+    <string name="workspace_connection_policy_description">What to do with tmux after SSH connects</string>
+    <string name="workspace_connection_policy_hint">The default opens SSH only. TermuxPro enters tmux only when you explicitly choose a policy and provide a session name. Do not auto-enter unknown sessions on shared accounts.</string>
     <string-array name="workspace_connection_policy_labels">
         <item>SSH only (recommended)</item>
         <item>List tmux sessions, do not attach</item>
@@ -362,8 +364,8 @@
     <string name="workspace_new_action">New workspace</string>
     <string name="workspace_manage_action">Copy or delete this workspace</string>
     <string name="workspace_edit_action">Edit connection</string>
-    <string name="workspace_advanced_action">Advanced settings</string>
-    <string name="workspace_advanced_hide_action">Hide advanced settings</string>
+    <string name="workspace_advanced_action">tmux connection mode</string>
+    <string name="workspace_advanced_hide_action">Hide tmux connection mode</string>
     <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
     <string name="workspace_status_unverified">Not verified</string>
     <string name="workspace_status_recently_opened">Recently opened</string>

@@ -144,7 +144,9 @@
     <string name="workspace_port_hint">默认 22</string>
     <string name="workspace_path_label">远程项目路径</string>
     <string name="workspace_path_hint">例如 ~/project</string>
-    <string name="workspace_connection_policy_description">连接与 tmux 策略</string>
+    <string name="workspace_connection_policy_label">连接后如何处理 tmux</string>
+    <string name="workspace_connection_policy_description">连接后如何处理 tmux</string>
+    <string name="workspace_connection_policy_hint">默认只建立 SSH。只有明确选择并填写会话名时，才会进入指定 tmux；共享账号不要自动进入未知会话。</string>
     <string-array name="workspace_connection_policy_labels">
         <item>仅 SSH（推荐）</item>
         <item>查看 tmux 列表，不自动进入</item>
@@ -242,8 +244,8 @@
     <string name="workspace_new_action">新建工作区</string>
     <string name="workspace_manage_action">复制或删除当前工作区</string>
     <string name="workspace_edit_action">编辑连接</string>
-    <string name="workspace_advanced_action">高级设置</string>
-    <string name="workspace_advanced_hide_action">收起高级设置</string>
+    <string name="workspace_advanced_action">tmux 连接方式</string>
+    <string name="workspace_advanced_hide_action">收起 tmux 连接方式</string>
     <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
     <string name="workspace_status_unverified">尚未验证</string>
     <string name="workspace_status_recently_opened">最近打开</string>

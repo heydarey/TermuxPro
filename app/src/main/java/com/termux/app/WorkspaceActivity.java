@@ -676,7 +676,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
         for (int id : basicEditorViews) findViewById(id).setVisibility(editorVisibility);
         int advancedVisibility = showEditor && mAdvancedEditing ? View.VISIBLE : View.GONE;
         int[] advancedEditorViews = {
-            R.id.workspace_name_input, R.id.workspace_connection_policy_selector
+            R.id.workspace_name_input, R.id.workspace_connection_policy_label,
+            R.id.workspace_connection_policy_selector, R.id.workspace_connection_policy_hint
         };
         for (int id : advancedEditorViews) findViewById(id).setVisibility(advancedVisibility);
         updateSessionNameState();

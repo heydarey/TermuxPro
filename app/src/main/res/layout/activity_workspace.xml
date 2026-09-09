@@ -291,6 +291,16 @@
                 android:textColor="#D8E4EC"
                 android:backgroundTint="#24394A" />
 
+            <TextView
+                android:id="@+id/workspace_connection_policy_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/workspace_connection_policy_label"
+                android:textColor="#D8E4EC"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <Spinner
                 android:id="@+id/workspace_connection_policy_selector"
                 android:layout_width="match_parent"
@@ -299,6 +309,15 @@
                 android:minHeight="52dp"
                 android:backgroundTint="#68E0B7"
                 android:contentDescription="@string/workspace_connection_policy_description" />
+
+            <TextView
+                android:id="@+id/workspace_connection_policy_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/workspace_connection_policy_hint"
+                android:textColor="#9EB1C2"
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/workspace_session_name_input"

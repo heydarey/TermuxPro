@@ -91,7 +91,11 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_label).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_port_label).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_path_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_label)
+            .getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_selector)
+            .getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_hint)
             .getVisibility());
         activity.finish();
     }
@@ -142,13 +146,35 @@ public class WorkspaceActivitySmokeTest {
 
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertPersistentConnectionFieldLabels(activity);
+        assertEquals("tmux 连接方式",
+            ((TextView) activity.findViewById(R.id.workspace_advanced_button)).getText()
+                .toString());
+        assertEquals(View.GONE,
+            activity.findViewById(R.id.workspace_connection_policy_label).getVisibility());
         assertEquals(View.GONE,
             activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
+        assertEquals(View.GONE,
+            activity.findViewById(R.id.workspace_connection_policy_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_session_name_input).getVisibility());
 
         activity.findViewById(R.id.workspace_advanced_button).performClick();
+        assertEquals("收起 tmux 连接方式",
+            ((TextView) activity.findViewById(R.id.workspace_advanced_button)).getText()
+                .toString());
+        assertEquals(View.VISIBLE,
+            activity.findViewById(R.id.workspace_connection_policy_label).getVisibility());
         assertEquals(View.VISIBLE,
             activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
+        assertEquals(View.VISIBLE,
+            activity.findViewById(R.id.workspace_connection_policy_hint).getVisibility());
+        assertEquals("连接后如何处理 tmux",
+            ((TextView) activity.findViewById(R.id.workspace_connection_policy_label))
+                .getText().toString());
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_connection_policy_hint))
+            .getText().toString().contains("默认只建立 SSH"));
+        assertEquals("仅 SSH（推荐）",
+            ((Spinner) activity.findViewById(R.id.workspace_connection_policy_selector))
+                .getSelectedItem().toString());
         assertEquals(View.GONE,
             activity.findViewById(R.id.workspace_session_name_input).getVisibility());
         ((Spinner) activity.findViewById(R.id.workspace_connection_policy_selector)).setSelection(2);
