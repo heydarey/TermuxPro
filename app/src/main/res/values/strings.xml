@@ -334,6 +334,15 @@
     <string name="ai_cli_center_claude_history_description">Choose Claude history. Opens only Claude’s native picker and never resumes automatically. Confirm session ownership on shared accounts.</string>
     <string name="ai_cli_center_codex_new_description">Start a new Codex session. Safe default: SSH only, with no history resume or automatic tmux entry.</string>
     <string name="ai_cli_center_codex_history_description">Choose Codex history. Opens only Codex’s native picker and never resumes automatically.</string>
+    <string name="ai_cli_center_history_title">TermuxPro launch history</string>
+    <string name="ai_cli_center_history_hint">Only records AI launches started from this app in the current workspace. It never reads Claude/Codex private history or terminal output.</string>
+    <string name="ai_cli_center_history_missing_workspace">Choose a valid workspace first. Launch history is isolated by workspace.</string>
+    <string name="ai_cli_center_history_empty">No AI launches from this workspace yet.</string>
+    <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_mode_new">new session</string>
+    <string name="ai_cli_center_history_mode_pick">history picker</string>
+    <string name="ai_cli_center_repeat_last">Repeat last</string>
+    <string name="ai_cli_center_clear_history">Clear records</string>
     <string name="ai_cli_center_tmux_warning">On shared accounts or multi-user tmux environments, confirm ownership in the tmux session center first. Unmarked or other-owned sessions should only be attached explicitly, never auto-resumed or managed.</string>
     <string name="ai_cli_center_open_workspace">Server and project settings</string>
     <string name="ai_cli_center_open_templates">Manage quick command templates</string>
