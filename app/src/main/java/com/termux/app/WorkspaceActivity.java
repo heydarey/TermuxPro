@@ -50,6 +50,7 @@ import java.util.UUID;
 public final class WorkspaceActivity extends AppCompatActivity {
 
     static final String EXTRA_UI_TEST_SSH_READY = "com.termux.app.extra.UI_TEST_SSH_READY";
+    static final String EXTRA_SHOW_BACK_TO_TERMINAL = "com.termux.app.extra.SHOW_BACK_TO_TERMINAL";
 
     private static final int REQUEST_NOTIFICATIONS = 1001;
     private static final int MANAGE_COPY = 1;
@@ -79,6 +80,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
     private boolean mHasUnsavedChanges;
     private boolean mEditingProfile;
     private boolean mAdvancedEditing;
+    private boolean mHasSavedProfiles;
+    private boolean mShowBackToTerminal;
     private WorkspaceConnectionStateStore mConnectionStateStore;
     private WorkspaceOwnershipStore mOwnershipStore;
 
@@ -101,6 +104,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mConnectionPolicySelector = findViewById(R.id.workspace_connection_policy_selector);
         mConnectionStateStore = new WorkspaceConnectionStateStore(this);
         mOwnershipStore = new WorkspaceOwnershipStore(this);
+        mShowBackToTerminal = getIntent().getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false);
 
         ArrayAdapter<CharSequence> policyAdapter = ArrayAdapter.createFromResource(this,
             R.array.workspace_connection_policy_labels, R.layout.item_workspace_spinner);
@@ -158,6 +162,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
             refreshHomeState();
             mHostInput.requestFocus();
         });
+        findViewById(R.id.workspace_back_button).setOnClickListener(view -> handleWorkspaceBack());
         findViewById(R.id.workspace_advanced_button).setOnClickListener(view -> {
             mAdvancedEditing = !mAdvancedEditing;
             refreshHomeState();
@@ -249,6 +254,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (isEditingConfiguredProfile()) {
+            handleWorkspaceBack();
+            return;
+        }
         runAfterDiscardConfirmation(super::onBackPressed);
     }
 
@@ -295,17 +304,20 @@ public final class WorkspaceActivity extends AppCompatActivity {
                         item.optString("connectionPolicy", WorkspaceCommandBuilder.POLICY_SSH_ONLY),
                         item.optString("sessionName", defaultSessionName(item.optString("id", "")))));
                 }
+                mHasSavedProfiles = !mProfiles.isEmpty();
             } catch (JSONException ignored) {
                 // 配置损坏时保留应用可用性，下面会创建默认工作区。
             }
         }
 
         if (mProfiles.isEmpty()) {
+            String legacyHost = preferences.getString(KEY_HOST, "");
             mProfiles.add(new WorkspaceProfile(UUID.randomUUID().toString(),
                 preferences.getString(KEY_NAME, getString(R.string.workspace_default_name)),
-                preferences.getString(KEY_HOST, ""), preferences.getString(KEY_PORT, "22"),
+                legacyHost, preferences.getString(KEY_PORT, "22"),
                 preferences.getString(KEY_PATH, "~/"), "5173", "5173",
                 WorkspaceCommandBuilder.POLICY_SSH_ONLY, ""));
+            mHasSavedProfiles = !TextUtils.isEmpty(legacyHost);
         }
         mActiveProfileId = preferences.getString(KEY_ACTIVE_PROFILE, mProfiles.get(0).id);
         refreshWorkspaceSelector();
@@ -470,6 +482,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mProfiles.add(profile);
         mActiveProfileId = profile.id;
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mHostInput.requestFocus();
     }
@@ -486,6 +499,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mProfiles.add(copy);
         mActiveProfileId = copy.id;
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mNameInput.requestFocus();
         mNameInput.selectAll();
@@ -518,6 +532,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         profile.localPort = mLocalPortInput.getText().toString().trim();
         if (connectionIdentityChanged) mConnectionStateStore.clear(profile.id);
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mEditingProfile = TextUtils.isEmpty(profile.host);
         refreshHomeState();
@@ -543,12 +558,28 @@ public final class WorkspaceActivity extends AppCompatActivity {
                     mProfiles.add(new WorkspaceProfile(UUID.randomUUID().toString(),
                         getString(R.string.workspace_default_name), "", "22", "~/", "5173", "5173",
                         WorkspaceCommandBuilder.POLICY_SSH_ONLY, ""));
+                    mHasSavedProfiles = false;
+                    mActiveProfileId = mProfiles.get(0).id;
+                    clearPersistedProfiles();
+                } else {
+                    mHasSavedProfiles = true;
+                    mActiveProfileId = mProfiles.get(0).id;
+                    persistProfiles();
                 }
-                mActiveProfileId = mProfiles.get(0).id;
-                persistProfiles();
                 refreshWorkspaceSelector();
             })
             .create());
+    }
+
+    private void clearPersistedProfiles() {
+        getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE).edit()
+            .remove(KEY_PROFILES)
+            .remove(KEY_ACTIVE_PROFILE)
+            .remove(KEY_NAME)
+            .remove(KEY_HOST)
+            .remove(KEY_PORT)
+            .remove(KEY_PATH)
+            .apply();
     }
 
     private void persistProfiles() {
@@ -698,6 +729,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
             showEditor ? View.GONE : View.VISIBLE);
         findViewById(R.id.workspace_new_button).setVisibility(
             configured && !showEditor ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_delete_button).setVisibility(
+            showEditor && mHasSavedProfiles ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_back_button).setVisibility(
+            shouldShowWorkspaceBack(showEditor, configured) ? View.VISIBLE : View.GONE);
         if (configured) {
             ((TextView) findViewById(R.id.workspace_summary_target)).setText(profile.name);
             WorkspaceConnectionState state = mConnectionStateStore.read(profile.id);
@@ -733,6 +768,28 @@ public final class WorkspaceActivity extends AppCompatActivity {
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_ai_actions).setVisibility(
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean shouldShowWorkspaceBack(boolean showEditor, boolean configured) {
+        return mShowBackToTerminal || showEditor && configured;
+    }
+
+    private boolean isEditingConfiguredProfile() {
+        if (mProfiles.isEmpty() || !mEditingProfile) return false;
+        return !TextUtils.isEmpty(mProfiles.get(findActiveProfileIndex()).host);
+    }
+
+    private void handleWorkspaceBack() {
+        if (isEditingConfiguredProfile()) {
+            runAfterDiscardConfirmation(() -> {
+                mEditingProfile = false;
+                mAdvancedEditing = false;
+                bindProfile(mProfiles.get(findActiveProfileIndex()));
+                refreshHomeState();
+            });
+            return;
+        }
+        finish();
     }
 
     private int stageLabel(SshDiagnosticStages.Stage stage) {

@@ -255,6 +255,7 @@
     <string name="workspace_home_eyebrow">Mobile development workspace</string>
     <string name="workspace_home_title">Continue your remote project</string>
     <string name="workspace_home_subtitle">Open the remote terminal first, then use tmux, Git, files and command tools when needed. The home screen keeps only the connection path.</string>
+    <string name="workspace_back_action">Back</string>
     <string name="workspace_remote_card_title">Server and project</string>
     <string name="workspace_remote_card_description">Configure the SSH target, project path and connection policy. Passwords, private keys and known_hosts stay with OpenSSH.</string>
     <string name="workspace_name_hint">Workspace name</string>
