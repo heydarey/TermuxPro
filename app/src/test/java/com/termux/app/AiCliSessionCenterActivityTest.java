@@ -48,9 +48,10 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("优先查看 Git 改动"));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
-        assertEquals("TermuxPro 启动记录", text(activity, R.id.ai_cli_center_history_title));
+        assertEquals("最近 AI 启动", text(activity, R.id.ai_cli_center_history_title));
         assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("先回到“服务器与项目”"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
         assertEquals("新建 Claude", text(activity, R.id.ai_cli_center_claude_new));
@@ -161,6 +162,8 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("最近 2 条启动"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可重复上次 Codex CLI · 历史选择"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("不会删除远端 AI 历史"));
         assertEquals("删除最近：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_delete_latest));
 
@@ -168,6 +171,7 @@ public class AiCliSessionCenterActivityTest {
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
         assertTrue(afterDelete.contains("Claude Code"));
         assertTrue(!afterDelete.contains("Codex CLI"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可重复上次 Claude Code · 新建会话"));
         assertEquals("删除最近：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_delete_latest));
 
@@ -179,6 +183,7 @@ public class AiCliSessionCenterActivityTest {
 
         activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
     }
 
     @Test

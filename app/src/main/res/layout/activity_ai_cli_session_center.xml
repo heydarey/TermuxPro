@@ -231,6 +231,16 @@
                 android:textIsSelectable="true"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/ai_cli_center_history_next_step"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ai_launch_risk_background"
+                android:padding="10dp"
+                android:textColor="#F5F8FA"
+                android:textSize="14sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
