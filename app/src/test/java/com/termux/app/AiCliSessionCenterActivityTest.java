@@ -27,6 +27,8 @@ public class AiCliSessionCenterActivityTest {
     public void setUp() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear().commit();
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            AiLaunchHistoryStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     @Test
@@ -46,6 +48,9 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("优先查看 Git 改动"));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
+        assertEquals("TermuxPro 启动记录", text(activity, R.id.ai_cli_center_history_title));
+        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
         assertEquals("新建 Claude", text(activity, R.id.ai_cli_center_claude_new));
@@ -131,6 +136,36 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(startup.contains("exec claude --resume"));
         assertTrue(!startup.contains("tmux attach-session"));
         assertTrue(!startup.contains("tmux new-session"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Claude Code"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
+    }
+
+    @Test
+    public void repeatsAndClearsOnlyCurrentWorkspaceLaunchHistory() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
+
+        activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+        Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
+        assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
+            .contains("codex resume"));
+
+        activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
     }
 
     @Test

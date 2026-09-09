@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.termux.R;
 
+import java.util.List;
+
 /**
  * AI CLI 会话中心。
  *
@@ -17,11 +19,14 @@ import com.termux.R;
  * 真正启动命令仍由工作台或终端中的显式安全弹窗完成。
  */
 public final class AiCliSessionCenterActivity extends AppCompatActivity {
+    private AiLaunchHistoryStore mLaunchHistoryStore;
+    private List<AiLaunchHistoryStore.Entry> mLaunchHistory;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ai_cli_session_center);
+        mLaunchHistoryStore = new AiLaunchHistoryStore(this);
 
         findViewById(R.id.ai_cli_center_back).setOnClickListener(view -> finish());
         findViewById(R.id.ai_cli_center_open_workspace).setOnClickListener(view ->
@@ -42,10 +47,13 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_codex_history).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
+        findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
+        findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view -> clearCurrentHistory());
 
         bindTarget();
         configureLargeFontHierarchy();
         bindCommands();
+        bindHistory();
     }
 
     /** 大字体优先保证四个 AI 核心操作可见，完整上下文和策略仍由可读控件保留。 */
@@ -137,6 +145,67 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                     AiCliLaunchCommand.Mode.PICK_HISTORY)));
     }
 
+    private void bindHistory() {
+        TextView summary = findViewById(R.id.ai_cli_center_history_summary);
+        View repeat = findViewById(R.id.ai_cli_center_repeat_last);
+        View clear = findViewById(R.id.ai_cli_center_clear_history);
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            mLaunchHistory = java.util.Collections.emptyList();
+            summary.setText(R.string.ai_cli_center_history_missing_workspace);
+            repeat.setEnabled(false);
+            clear.setEnabled(false);
+            return;
+        }
+        mLaunchHistory = mLaunchHistoryStore.readForWorkspace(workspace.id);
+        if (mLaunchHistory.isEmpty()) {
+            summary.setText(R.string.ai_cli_center_history_empty);
+            repeat.setEnabled(false);
+            clear.setEnabled(false);
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        int count = Math.min(3, mLaunchHistory.size());
+        for (int index = 0; index < count; index++) {
+            AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(index);
+            if (index > 0) builder.append("\n\n");
+            builder.append(getString(R.string.ai_cli_center_history_item,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path));
+        }
+        summary.setText(builder.toString());
+        repeat.setEnabled(true);
+        clear.setEnabled(true);
+    }
+
+    private String modeLabel(AiCliLaunchCommand.Mode mode) {
+        return getString(mode == AiCliLaunchCommand.Mode.NEW_SESSION
+            ? R.string.ai_cli_center_history_mode_new
+            : R.string.ai_cli_center_history_mode_pick);
+    }
+
+    private void repeatLastAiLaunch() {
+        if (mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            startActivity(new Intent(this, WorkspaceActivity.class));
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        launchAiCli(entry.tool, entry.mode);
+    }
+
+    private void clearCurrentHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            bindHistory();
+            return;
+        }
+        mLaunchHistoryStore.clearWorkspace(workspace.id);
+        bindHistory();
+    }
+
     private void openTmuxSessions() {
         Intent intent = TaskSessionsNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
@@ -185,6 +254,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             workspace.host, workspace.port, workspace.path,
             AiCliLaunchCommand.command(tool, mode),
             WorkspaceCommandBuilder.POLICY_SSH_ONLY, "");
+        mLaunchHistoryStore.record(workspace, tool, mode);
+        bindHistory();
         startActivity(new Intent(this, TermuxActivity.class)
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, command)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true));
