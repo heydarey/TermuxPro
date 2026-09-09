@@ -62,12 +62,14 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         TextView target = findViewById(R.id.ai_cli_center_target);
         TextView detail = findViewById(R.id.ai_cli_center_target_detail);
         TextView policy = findViewById(R.id.ai_cli_center_policy_summary);
+        TextView aiRisk = findViewById(R.id.ai_cli_center_ai_risk);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || workspace.host == null || workspace.host.trim().isEmpty()
             || workspace.port < 1 || workspace.path == null || workspace.path.trim().isEmpty()) {
             target.setText(R.string.ai_cli_center_target_missing);
             detail.setText(R.string.ai_cli_center_target_missing_detail);
             policy.setVisibility(View.GONE);
+            aiRisk.setText(R.string.ai_cli_center_ai_risk_missing);
             return;
         }
         target.setText(workspace.name);
@@ -78,6 +80,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         policy.setVisibility(View.VISIBLE);
         policy.setText(policySummary(workspace.connectionPolicy, workspace.sessionName)
             + "\n" + getString(R.string.ai_cli_center_ai_policy));
+        aiRisk.setText(aiLaunchRiskSummary(workspace.connectionPolicy, workspace.sessionName));
     }
 
     private String policySummary(String policy, String sessionName) {
@@ -96,6 +99,21 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             return getString(R.string.ai_cli_center_policy_unknown);
         }
         return getString(R.string.ai_cli_center_policy_ssh_only);
+    }
+
+    private String aiLaunchRiskSummary(String policy, String sessionName) {
+        if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(policy)
+            || WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(policy)) {
+            return getString(R.string.ai_cli_center_ai_risk_tmux,
+                sessionDisplayName(sessionName));
+        }
+        if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(policy)) {
+            return getString(R.string.ai_cli_center_ai_risk_list_tmux);
+        }
+        if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(policy)) {
+            return getString(R.string.ai_cli_center_ai_risk_unknown_policy);
+        }
+        return getString(R.string.ai_cli_center_ai_risk_ssh_only);
     }
 
     private String sessionDisplayName(String sessionName) {

@@ -40,6 +40,7 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("当前上下文", text(activity, R.id.ai_cli_center_context_title));
         assertEquals("开始 AI 工作", text(activity, R.id.ai_cli_center_start_title));
         assertTrue(text(activity, R.id.ai_cli_center_start_hint).contains("不会自动进入会话或 tmux"));
+        assertTrue(text(activity, R.id.ai_cli_center_ai_risk).contains("不会猜服务器"));
         assertEquals("启动前先确认", text(activity, R.id.ai_cli_center_prepare_title));
         assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
@@ -80,6 +81,10 @@ public class AiCliSessionCenterActivityTest {
         String policy = text(activity, R.id.ai_cli_center_policy_summary);
         assertTrue(policy.contains("工作区连接策略：仅进入指定 tmux：safe-ai"));
         assertTrue(policy.contains("AI 快捷启动策略：始终只建立 SSH"));
+        String risk = text(activity, R.id.ai_cli_center_ai_risk);
+        assertTrue(risk.contains("工作区默认 tmux：safe-ai"));
+        assertTrue(risk.contains("AI 启动不会自动进入它"));
+        assertTrue(risk.contains("共享 Claude/tmux 会话"));
 
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
@@ -126,6 +131,23 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(startup.contains("exec claude --resume"));
         assertTrue(!startup.contains("tmux attach-session"));
         assertTrue(!startup.contains("tmux new-session"));
+    }
+
+    @Test
+    public void aiRiskCueExplainsPlainSshPolicyBeforeLaunch() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\",\"connectionPolicy\":\"ssh_only\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        String risk = text(activity, R.id.ai_cli_center_ai_risk);
+        assertTrue(risk.contains("仅连接 SSH"));
+        assertTrue(risk.contains("不自动进入 tmux"));
+        assertTrue(risk.contains("恢复历史"));
     }
 
     @Test

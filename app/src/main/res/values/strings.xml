@@ -318,6 +318,11 @@
     <string name="ai_cli_center_policy_session_missing">not set</string>
     <string name="ai_cli_center_policy_unknown">Workspace policy: unrecognized, treated as plain SSH</string>
     <string name="ai_cli_center_ai_policy">AI quick launch policy: always opens SSH only and does not inherit automatic tmux attach before launch.</string>
+    <string name="ai_cli_center_ai_risk_missing">Configure a remote workspace first. AI launch will not guess the server, project, or tmux session.</string>
+    <string name="ai_cli_center_ai_risk_ssh_only">This AI launch: plain SSH only, no automatic tmux attach or history resume.</string>
+    <string name="ai_cli_center_ai_risk_list_tmux">This AI launch: plain SSH only. If you need tmux, choose the session explicitly in the session center first.</string>
+    <string name="ai_cli_center_ai_risk_tmux">Workspace default tmux: %1$s. AI launch will not auto-attach it, avoiding shared Claude/tmux session pollution.</string>
+    <string name="ai_cli_center_ai_risk_unknown_policy">Workspace policy is unknown. AI launch falls back to plain SSH and will not auto-attach tmux.</string>
     <string name="ai_cli_center_command_pair">New: %1$s\nHistory picker: %2$s</string>
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>

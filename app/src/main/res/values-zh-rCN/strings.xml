@@ -198,6 +198,11 @@
     <string name="ai_cli_center_policy_session_missing">未填写</string>
     <string name="ai_cli_center_policy_unknown">工作区连接策略：未识别，按普通 SSH 处理</string>
     <string name="ai_cli_center_ai_policy">AI 快捷启动策略：始终只建立 SSH，启动前不会继承工作区 tmux 自动进入策略。</string>
+    <string name="ai_cli_center_ai_risk_missing">先配置远程工作区，AI 启动不会猜服务器、项目或 tmux 会话。</string>
+    <string name="ai_cli_center_ai_risk_ssh_only">本次 AI 启动：仅连接 SSH，不自动进入 tmux 或恢复历史。</string>
+    <string name="ai_cli_center_ai_risk_list_tmux">本次 AI 启动：仅连接 SSH；如需进入 tmux，请先从会话中心手动选择。</string>
+    <string name="ai_cli_center_ai_risk_tmux">工作区默认 tmux：%1$s；AI 启动不会自动进入它，避免污染共享 Claude/tmux 会话。</string>
+    <string name="ai_cli_center_ai_risk_unknown_policy">当前工作区策略无法识别；AI 启动按仅 SSH 处理，不自动进入 tmux。</string>
     <string name="ai_cli_center_command_pair">新建：%1$s\n历史选择：%2$s</string>
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>
