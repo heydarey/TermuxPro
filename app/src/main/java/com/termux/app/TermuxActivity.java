@@ -716,7 +716,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
         AiSessionDialog.showChoice(this, tool, AiCliLaunchMessage.forTerminalTarget(this, tool,
             WorkspaceTargetStore.readActive(this)),
-            mode -> startAiCli(AiCliLaunchCommand.command(tool, mode)));
+            mode -> {
+                AiLaunchRecorder.recordActiveIfConfigured(this, tool, mode);
+                startAiCli(AiCliLaunchCommand.command(tool, mode));
+            });
     }
 
     private void showProjectTools(View anchor) {

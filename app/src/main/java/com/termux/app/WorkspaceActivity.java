@@ -136,7 +136,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mRemotePortInput.addTextChangedListener(dirtyWatcher);
         mLocalPortInput.addTextChangedListener(dirtyWatcher);
 
-        findViewById(R.id.workspace_connect_button).setOnClickListener(view -> launchRemote(null));
+        findViewById(R.id.workspace_connect_button).setOnClickListener(view ->
+            launchRemote(null, null, null));
         findViewById(R.id.workspace_connection_diagnostic_primary).setOnClickListener(
             view -> openConnectionDiagnostic());
         findViewById(R.id.workspace_claude_button).setOnClickListener(view ->
@@ -575,7 +576,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
             .apply();
     }
 
-    private void launchRemote(String cli) {
+    private void launchRemote(String cli, AiCliLaunchCommand.Tool tool,
+                              AiCliLaunchCommand.Mode mode) {
         if (!isSshClientInstalled()) {
             installSshClient();
             return;
@@ -607,6 +609,9 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
         persistExtraKeysPreset(cli == null ? TermuxTerminalExtraKeys.PRESET_SHELL :
             TermuxTerminalExtraKeys.PRESET_AI);
+        if (cli != null && tool != null && mode != null) {
+            AiLaunchRecorder.recordActiveIfConfigured(this, tool, mode);
+        }
         // 远程连接必须进入独立本地终端会话，避免命令被写入正在运行任务的旧 Shell。
         openTerminal(WorkspaceCommandBuilder.buildSshCommand(
             host, port, path, cli, policy, sessionName,
@@ -615,7 +620,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
         AiSessionDialog.showChoice(this, tool, aiLaunchMessage(tool),
-            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode)));
+            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode), tool, mode));
     }
 
     private String aiLaunchMessage(AiCliLaunchCommand.Tool tool) {
