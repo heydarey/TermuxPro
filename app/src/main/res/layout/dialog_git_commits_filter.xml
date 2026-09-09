@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="4dp">
+
+    <TextView
+        android:id="@+id/git_commit_history_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tp_text_primary"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/git_commit_history_filter"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/tp_primary"
+        android:hint="@string/git_workbench_commit_filter_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:singleLine="true"
+        android:textColor="@color/tp_text_primary"
+        android:textColorHint="@color/tp_text_tertiary" />
+
+    <ListView
+        android:id="@+id/git_commit_history_list"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:divider="@color/tp_divider"
+        android:dividerHeight="1dp" />
+
+    <TextView
+        android:id="@+id/git_commit_history_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/tp_text_secondary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</LinearLayout>

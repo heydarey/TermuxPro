@@ -580,6 +580,8 @@
     <string name="git_workbench_commit_item">%1$s · %2$s\n%3$s</string>
     <string name="git_workbench_commit_detail_hint">Select a commit to view its author, time, file summary, and changes. This is read-only: it never switches branches, commits, or pushes.</string>
     <string name="git_workbench_commit_detail_hint_with_context">Current branch: %1$s\nCurrent target: %2$s\nSelect a commit to view its author, time, file summary, and changes. This is read-only: it never switches branches, commits, or pushes.</string>
+    <string name="git_workbench_commit_filter_hint">Filter hash, time, or subject</string>
+    <string name="git_workbench_commit_filter_empty">No commits match “%1$s”.</string>
     <string name="git_workbench_unknown_target">Unknown remote target</string>
     <string name="git_workbench_commit_detail_loading">Reading details for commit %1$s…</string>
     <string name="git_workbench_commit_detail_missing">This commit is no longer available. Refresh the history and try again.</string>

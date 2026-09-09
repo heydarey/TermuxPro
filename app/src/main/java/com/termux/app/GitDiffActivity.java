@@ -7,13 +7,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import com.termux.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -413,19 +417,73 @@ public final class GitDiffActivity extends AppCompatActivity {
     @Nullable
     AlertDialog createCommitsDialog() {
         if (mOverview == null || mOverview.commits.isEmpty()) return null;
-        String[] labels = new String[mOverview.commits.size()];
-        for (int index = 0; index < mOverview.commits.size(); index++) {
-            GitRepositoryOverview.Commit commit = mOverview.commits.get(index);
-            labels[index] = getString(R.string.git_workbench_commit_item, commit.shortHash,
-                commit.relativeTime, commit.subject);
-        }
-        return new AlertDialog.Builder(this)
+        View content = getLayoutInflater().inflate(R.layout.dialog_git_commits_filter, null);
+        TextView message = content.findViewById(R.id.git_commit_history_message);
+        message.setText(commitHistoryMessage());
+        EditText filter = content.findViewById(R.id.git_commit_history_filter);
+        ListView list = content.findViewById(R.id.git_commit_history_list);
+        TextView empty = content.findViewById(R.id.git_commit_history_empty);
+        list.setEmptyView(empty);
+
+        ArrayList<GitRepositoryOverview.Commit> visibleCommits = new ArrayList<>(mOverview.commits);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_termuxpro_list,
+            commitLabels(visibleCommits));
+        list.setAdapter(adapter);
+        filter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence text, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                visibleCommits.clear();
+                visibleCommits.addAll(filterCommits(mOverview.commits,
+                    text == null ? "" : text.toString()));
+                adapter.clear();
+                adapter.addAll(commitLabels(visibleCommits));
+                adapter.notifyDataSetChanged();
+                empty.setText(getString(R.string.git_workbench_commit_filter_empty,
+                    text == null ? "" : text.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable text) {}
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_commits)
-            .setMessage(commitHistoryMessage())
-            .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list, labels),
-                (selectionDialog, which) -> loadCommitDetails(mOverview.commits.get(which).shortHash))
+            .setView(content)
             .setNegativeButton(android.R.string.cancel, null)
             .create();
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            GitRepositoryOverview.Commit commit = visibleCommits.get(position);
+            dialog.dismiss();
+            loadCommitDetails(commit.shortHash);
+        });
+        return dialog;
+    }
+
+    @NonNull
+    private List<String> commitLabels(@NonNull List<GitRepositoryOverview.Commit> commits) {
+        List<String> labels = new ArrayList<>(commits.size());
+        for (GitRepositoryOverview.Commit commit : commits) {
+            labels.add(getString(R.string.git_workbench_commit_item, commit.shortHash,
+                commit.relativeTime, commit.subject));
+        }
+        return labels;
+    }
+
+    @NonNull
+    static List<GitRepositoryOverview.Commit> filterCommits(
+        @NonNull List<GitRepositoryOverview.Commit> commits, @NonNull String query) {
+        String normalized = query.trim().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) return new ArrayList<>(commits);
+        List<GitRepositoryOverview.Commit> result = new ArrayList<>();
+        for (GitRepositoryOverview.Commit commit : commits) {
+            String haystack = (commit.shortHash + " " + commit.relativeTime + " " + commit.subject)
+                .toLowerCase(Locale.ROOT);
+            if (haystack.contains(normalized)) result.add(commit);
+        }
+        return result;
     }
 
     @NonNull
