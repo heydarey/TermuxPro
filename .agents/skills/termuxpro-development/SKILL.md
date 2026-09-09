@@ -201,6 +201,11 @@ UI/UX 与功能、安全和稳定性是同等级主线，不得把体验工作�
   不等待固定窗口。稳定版之间允许有多个候选版，但不允许只有长期 `dev`/Artifact 而没有 Release。
 - 发布负责人每轮都要给出 `READY`、`HOLD` 或 `RELEASED` 结论；`HOLD` 必须引用失败证据。只有稳定版
   `RELEASED` 后才算完成从开发到用户可安装产物的交付闭环。
+- 每次正式版发布都必须把 README 作为发布门禁检查项：若当前版本、稳定能力、安装说明、仓库链接、
+  截图/说明或已知限制与实际 Release 不一致，必须在稳定发布 PR 或紧随其后的维护 PR 中更新，不能让
+  用户看到过期版本或错误仓库入口。README 无需为每个小修机械变更，但正式版对外承诺必须同步。
+- GitHub 仓库本身按产品资产维护：描述、topics、README、License、Security、贡献说明、Release
+  附件和 issue/PR 模板应保持专业、可理解、可复现；发现过期、错链、噪声或缺失时纳入维护切片处理。
 
 1. 同步 `master`、`dev`，从 `dev` 创建英语小驼峰业务分支。
 2. 完成功能、测试、文档和本地验证后提交推送，创建以 `dev` 为目标的 PR。
@@ -220,8 +225,8 @@ UI/UX 与功能、安全和稳定性是同等级主线，不得把体验工作�
 5. 创建 `dev → master` 发布 PR；发布门禁和 CI 全绿后才能合并。
 6. 在 `master` 合并提交创建稳定标签 `vX.Y.Z`。标签流水线必须完成测试、Lint、R8、签名、APK
    内容校验和 GitHub Release 创建；只运行 `workflow_dispatch` 得到的是临时 Artifact，不算发布。
-7. 核对稳定 Release 非 Draft/Pre-release、附件和 SHA-256 完整、默认分支为 `master`、无遗留 PR；
-   再将 `dev` 快进到 `master` 发布提交，并等待收尾 CI 通过。
+7. 核对稳定 Release 非 Draft/Pre-release、附件和 SHA-256 完整、默认分支为 `master`、README
+   对外版本与仓库入口正确、无遗留 PR；再将 `dev` 快进到 `master` 发布提交，并等待收尾 CI 通过。
 
 稳定版的 `versionCode` 必须高于同版本所有候选包。稳定 Release 完成并让 `dev` 对齐 `master` 后，才能
 开始下一版本的普通功能迭代；当前发布列车不得长期停留在只有 RC、`dev` 更新而 `master` 不更新的状态。

@@ -160,11 +160,16 @@ public class AiCliSessionCenterActivityTest {
 
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("最近 2 条启动"));
+        assertEquals("删除最近：Codex CLI · 历史选择",
+            text(activity, R.id.ai_cli_center_delete_latest));
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
         assertTrue(afterDelete.contains("Claude Code"));
         assertTrue(!afterDelete.contains("Codex CLI"));
+        assertEquals("删除最近：Claude Code · 新建会话",
+            text(activity, R.id.ai_cli_center_delete_latest));
 
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
         Intent repeated = shadowOf(activity).getNextStartedActivity();
