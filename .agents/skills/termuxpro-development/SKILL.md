@@ -158,6 +158,10 @@ UI/UX 与功能、安全和稳定性是同等级主线，不得把体验工作�
   从最近安全检查点继续；不得把重连当成新任务，也不得因无人在线而让持续迭代静默停止。
 - 每个可恢复检查点至少由 Git 工作树、`docs/PRODUCT_BACKLOG.md` 和 GitHub PR/CI 状态共同提供证据；
   不依赖未落盘的对话记忆判断已完成步骤。
+- 会话恢复、模型切换或平台上下文压缩后，先读取 `docs/CURRENT_STATE.md`；若文件缺失、过期或与实时
+  Git/GitHub/测试状态冲突，运行 `./scripts/update-context-checkpoint.sh` 刷新。该脚本只能依赖仓库内
+  工具、项目级配置、`scripts/codex-quota-guard.sh`、`scripts/resource-guard.sh` 和
+  `scripts/github-cli.sh`，不能依赖用户主目录、全局 `PATH` 或系统 Python 包。
 - 开始高资源任务前运行 `scripts/resource-guard.sh`。检测到 SSH/无桌面 Linux/多人会话时按远程共享服务器处理。
 - 共享服务器默认 Gradle `--max-workers=2` 且不并行启动多个全量构建；持续观察可用内存、负载和磁盘。
 - Android 模拟器属于重任务：仅在 KVM 可用且资源守卫通过时启动，一次只运行一个；否则使用低资源测试并保留真机门禁。

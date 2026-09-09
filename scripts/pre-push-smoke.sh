@@ -130,6 +130,7 @@ static_checks=(
     "./test/workflow-trigger-policy-test.sh"
     "./test/github-cli-wrapper-test.sh"
     "./test/github-check-suites-test.sh"
+    "./test/context-checkpoint-test.sh"
 )
 
 for check in "${static_checks[@]}"; do
