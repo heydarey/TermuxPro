@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
-      - name: 创建或复用 dev PR
+      - name: 创建 PR、等待门禁、合并并验证 dev
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
@@ -27,6 +27,13 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
           GH_COMMAND_TIMEOUT_SECONDS: 45
         run: |
+          {
+            echo "## 自动研发 PR 控制器"
+            echo
+            echo "本步骤会串行完成：创建或复用 dev PR → 等待同提交 CI → 按需等待模拟器 UI → 合并到 dev → 触发并等待 dev 收尾 CI。"
+            echo "如果 GitHub 页面显示本步骤仍在运行，通常表示正在等待后续门禁，不代表创建 PR 卡死。"
+          } >> "$GITHUB_STEP_SUMMARY"
+
           gh_safe() {
             timeout --foreground "${GH_COMMAND_TIMEOUT_SECONDS:-45}s" gh "$@"
           }
