@@ -13,6 +13,7 @@ source "$project_dir/scripts/resolve-jdk17.sh"
 ./test/pre-push-smoke-test.sh
 ./test/workflow-trigger-policy-test.sh
 ./test/release-notification-format-test.sh
+./test/github-noise-audit-test.sh
 ./test/ai-launch-decision-copy-test.sh
 ./test/terminal-touch-scrollback-test.sh
 ./test/terminal-session-actions-test.sh

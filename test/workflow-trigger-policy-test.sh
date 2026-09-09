@@ -189,6 +189,11 @@ if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$auto_dev
     echo "自动研发 PR 必须支持长期研发分支 dev_dailyIteration，避免为小切片持续创建新分支。" >&2
     exit 1
 fi
+if ! grep -Fq 'compare/dev...$HEAD_BRANCH' "$auto_dev_pr_file" \
+    || ! grep -Fq '相对 dev 没有待合并提交' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须在长期分支与 dev 无差异时成功退出，避免对齐分支触发 422 失败提醒。" >&2
+    exit 1
+fi
 if ! grep -Fq 'dev_dailyIteration' "$project_dir/AGENTS.md" \
     || ! grep -Fq 'dev_dailyIteration' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
     echo "项目规则必须明确长期研发分支 dev_dailyIteration，避免无节制创建一次性业务分支。" >&2

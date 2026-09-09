@@ -53,6 +53,17 @@ jobs:
           }
 
           title="${COMMIT_TITLE%%$'\n'*}"
+          compare_json="$(gh_retry api "repos/$REPOSITORY/compare/dev...$HEAD_BRANCH" \
+            --jq '{status: .status, ahead_by: .ahead_by, behind_by: .behind_by}')"
+          compare_status="$(jq -r '.status' <<<"$compare_json")"
+          ahead_by="$(jq -r '.ahead_by' <<<"$compare_json")"
+          behind_by="$(jq -r '.behind_by' <<<"$compare_json")"
+          echo "分支差异：status=$compare_status，ahead_by=$ahead_by，behind_by=$behind_by。"
+          if [[ "$ahead_by" == "0" ]]; then
+            echo "分支 $HEAD_BRANCH 相对 dev 没有待合并提交，按长期研发分支对齐操作成功退出，不创建 PR。"
+            exit 0
+          fi
+
           existing="$(gh_retry pr list --repo "$REPOSITORY" --base dev --head "$HEAD_BRANCH" \
             --state open --json number --jq '.[0].number // empty')"
           if [[ -n "$existing" ]]; then
