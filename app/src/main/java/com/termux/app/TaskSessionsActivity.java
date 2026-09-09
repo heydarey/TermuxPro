@@ -290,6 +290,10 @@ public final class TaskSessionsActivity extends AppCompatActivity {
     }
 
     private void showActions(TmuxSessionInfo session) {
+        if (!session.managedByTermuxPro) {
+            confirmAttachNonOwnedSession(session);
+            return;
+        }
         String[] actions = session.managedByTermuxPro
             ? new String[]{getString(R.string.task_sessions_attach), getString(R.string.task_sessions_rename)}
             : new String[]{getString(R.string.task_sessions_attach)};
@@ -310,6 +314,20 @@ public final class TaskSessionsActivity extends AppCompatActivity {
             if (session.managedByTermuxPro) shownDialog.getButton(AlertDialog.BUTTON_NEUTRAL)
                 .setTextColor(ContextCompat.getColor(this, R.color.tp_danger));
         });
+    }
+
+    private void confirmAttachNonOwnedSession(TmuxSessionInfo session) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.task_sessions_attach_external_title, session.name))
+            .setMessage(nonOwnedSessionWarning(session) + "\n\n"
+                + getString(R.string.task_sessions_attach_external_message, mHost, mPort, mProjectPath))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.task_sessions_attach_external_confirm,
+                (ignoredDialog, which) -> attach(session))
+            .create();
+        TermuxProDialogStyle.show(this, dialog, shownDialog -> shownDialog
+            .getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(ContextCompat.getColor(this, R.color.tp_primary)));
     }
 
     private String nonOwnedSessionWarning(TmuxSessionInfo session) {

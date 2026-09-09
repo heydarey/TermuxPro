@@ -209,7 +209,7 @@ public final class UiRenderingInstrumentedTest {
                 } else {
                     assertTrue("大字体隐藏重复就绪说明时，安全结论仍须保留给辅助技术",
                         safetyHint.getContentDescription().toString().contains("重命名或停止"));
-                    assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+                    assertTrue(safetyHint.getContentDescription().toString().contains("确认后"));
                 }
                 assertTrue(create.getVisibility() == View.VISIBLE);
                 assertTrue(create.getText().length() > 0);
