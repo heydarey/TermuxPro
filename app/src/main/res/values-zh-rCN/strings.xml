@@ -218,11 +218,15 @@
     <string name="ai_cli_center_history_hint">只记录当前工作区里由本应用发起的 AI 启动；不读取 Claude/Codex 私有历史或终端输出。</string>
     <string name="ai_cli_center_history_missing_workspace">请先选择有效工作区。启动记录按工作区隔离。</string>
     <string name="ai_cli_center_history_empty">当前工作区还没有 AI 启动记录。</string>
+    <plurals name="ai_cli_center_history_count">
+        <item quantity="other">最近 %1$d 条启动</item>
+    </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
     <string name="ai_cli_center_history_mode_new">新建会话</string>
     <string name="ai_cli_center_history_mode_pick">历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
+    <string name="ai_cli_center_delete_latest_target">删除最近：%1$s · %2$s</string>
     <string name="ai_cli_center_clear_history">清空记录</string>
     <string name="ai_cli_center_tmux_warning">共享账号或多人 tmux 环境下，请先在 tmux 会话中心确认目标会话归属。未标记或其他归属会话只应显式进入，不应被自动恢复或管理。</string>
     <string name="ai_cli_center_open_workspace">服务器与项目配置</string>

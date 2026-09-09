@@ -10,7 +10,7 @@ TermuxPro 是面向 Android 手机的移动 AI 开发终端。它以官方
 
 ## 当前版本
 
-`0.8.0` 是 ARM64 正式版，面向 Android 7 及以上设备，优先验证 Android 14–16。当前阶段聚焦：
+`0.10.0` 是 ARM64 正式版，面向 Android 7 及以上设备，优先验证 Android 14–16。当前阶段聚焦：
 
 - 中文工作区与多 SSH 项目配置
 - Claude Code 与 Codex CLI 安全新建上下文，历史会话必须由用户显式选择
@@ -22,7 +22,7 @@ TermuxPro 是面向 Android 手机的移动 AI 开发终端。它以官方
 - 最近 1 MB 终端输出搜索，最多返回 100 条且不落盘
 - 完整本地 Termux Linux 环境
 
-远端文件写入、Mosh、增强远端代理以及应用内模型调用尚未作为 `0.8.0` 稳定能力承诺。
+远端文件写入、Mosh、增强远端代理以及应用内模型调用尚未作为 `0.10.0` 稳定能力承诺。
 
 ## 安装与使用
 
@@ -127,4 +127,4 @@ test/                 跨模块测试计划、用例与验收记录
 
 - 上游源码：https://github.com/termux/termux-app
 - 上游软件包：https://github.com/termux/termux-packages
-- 本项目问题：https://github.com/dr1234-div/TermuxPro/issues
+- 本项目问题：https://github.com/heydarey/TermuxPro/issues

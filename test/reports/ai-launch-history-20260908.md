@@ -21,7 +21,8 @@
 2. 只记录 TermuxPro 自己触发的工具、模式、工作区名、SSH 目标和项目路径。
    - 覆盖入口：工作区首页 AI 快捷启动、终端工具箱 AI 快捷启动、AI CLI 会话中心。
    - 普通“打开远程终端”不记入 AI 历史，避免把纯 SSH 操作混入 AI 工作流。
-3. AI 会话中心展示最近 3 条记录，并提供“重复上次”“删除最近”和“清空记录”三个闭环操作。
+3. AI 会话中心展示最近 3 条记录，并在删除按钮上直接标明将删除的工具与启动模式，
+   提供“重复上次”“删除最近”和“清空记录”三个闭环操作。
 4. “重复上次”仍基于当前工作区重新构造 `ssh_only` 启动命令，不自动进入 tmux，不自动恢复最近会话。
 5. “清空记录”只删除当前工作区的本地启动元数据，不影响远端 Claude/Codex 历史或 tmux 会话。
 
@@ -39,7 +40,7 @@
   - 无有效工作区时提示记录按工作区隔离。
   - 启动 Claude 历史后生成本地启动记录。
   - 可从启动记录“重复上次”进入独立 SSH only 终端。
-  - 可删除最近一条错误启动记录，保留同工作区其他记录。
+  - 可删除最近一条错误启动记录，保留同工作区其他记录；删除前按钮文案明确目标对象。
   - 可清空当前工作区记录。
 - 本地命令：
   `TERMUXPRO_USE_CHINA_MIRROR=1 ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiLaunchHistoryStoreTest --tests com.termux.app.AiLaunchRecorderTest --tests com.termux.app.AiCliSessionCenterActivityTest`
