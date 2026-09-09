@@ -9,7 +9,7 @@ on:
         default: 'true'
         type: boolean
   push:
-    branches: [dev, master, 'dev_*', 'hotfix_*']
+    branches: [dev, master, dev_dailyIteration, 'dev_*', 'hotfix_*']
   pull_request:
     branches: [master]
 
