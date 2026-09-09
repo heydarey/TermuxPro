@@ -19,6 +19,8 @@
 
 1. 启动记录按工作区 ID 隔离，同一手机上不同服务器/项目互不展示。
 2. 只记录 TermuxPro 自己触发的工具、模式、工作区名、SSH 目标和项目路径。
+   - 覆盖入口：工作区首页 AI 快捷启动、终端工具箱 AI 快捷启动、AI CLI 会话中心。
+   - 普通“打开远程终端”不记入 AI 历史，避免把纯 SSH 操作混入 AI 工作流。
 3. AI 会话中心展示最近 3 条记录，并提供“重复上次”和“清空记录”两个闭环操作。
 4. “重复上次”仍基于当前工作区重新构造 `ssh_only` 启动命令，不自动进入 tmux，不自动恢复最近会话。
 5. “清空记录”只删除当前工作区的本地启动元数据，不影响远端 Claude/Codex 历史或 tmux 会话。
@@ -29,13 +31,16 @@
   - 按工作区隔离记录。
   - 每个工作区最多保留最近 5 条。
   - 清空当前工作区不影响其他工作区。
+- `AiLaunchRecorderTest`：
+  - 无有效工作区时不创建启动记录。
+  - 有效工作区下可由任意 TermuxPro AI 入口统一写入同一工作区历史。
 - `AiCliSessionCenterActivityTest`：
   - 无有效工作区时提示记录按工作区隔离。
   - 启动 Claude 历史后生成本地启动记录。
   - 可从启动记录“重复上次”进入独立 SSH only 终端。
   - 可清空当前工作区记录。
 - 本地命令：
-  `TERMUXPRO_USE_CHINA_MIRROR=1 ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiLaunchHistoryStoreTest --tests com.termux.app.AiCliSessionCenterActivityTest`
+  `TERMUXPRO_USE_CHINA_MIRROR=1 ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiLaunchHistoryStoreTest --tests com.termux.app.AiLaunchRecorderTest --tests com.termux.app.AiCliSessionCenterActivityTest`
 
 ## 回归面
 
@@ -43,3 +48,4 @@
 - AI 快捷启动仍不自动进入 tmux。
 - 记录展示不能泄露 AI 私有历史、终端输出或用户 Prompt。
 - 多工作区切换后只能看到当前工作区的启动记录。
+- 工作区首页、终端工具箱和 AI CLI 会话中心的 AI 启动记录必须一致进入同一历史存储。
