@@ -259,6 +259,70 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void primaryActionMapsRecommendationToSafeExistingGitFlow() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t2\t0\t2\t\t\t0\n"
+                + "TP_STATUS_Z\000"
+                + " M app/src/main/java/App.java\000"
+                + "?? README.md\000");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+        Button primary = activity.findViewById(R.id.git_overview_primary_action_button);
+
+        assertEquals("推荐：按文件审查", primary.getText().toString());
+        assertTrue(primary.getContentDescription().toString().contains("不提交、不推送、不丢弃"));
+        primary.performClick();
+        assertEquals("按文件", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t2\t2\t0\t\t\t0\n");
+        assertEquals("推荐：提交已暂存修改", primary.getText().toString());
+        primary.performClick();
+        assertEquals("提交", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t2\t1\torigin/dev\n");
+        assertEquals("推荐：快进拉取", primary.getText().toString());
+        primary.performClick();
+        assertEquals("快进拉取", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n");
+        assertEquals("推荐：普通推送", primary.getText().toString());
+        primary.performClick();
+        assertEquals("推送", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
+        assertEquals("推荐：新建分支", primary.getText().toString());
+        primary.performClick();
+        assertEquals("新建分支", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tabc1234\t1\t0\t0\t0\t\t\t0\n"
+            + "TP_LOCAL\tdev\n");
+        assertEquals("推荐：选择分支", primary.getText().toString());
+        primary.performClick();
+        assertEquals("切换分支", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n"
+            + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n");
+        assertEquals("推荐：查看提交记录", primary.getText().toString());
+        primary.performClick();
+        assertEquals("提交记录", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+    }
+
+    @Test
     public void stashDialogsExplainSafeCreateApplyAndDropRules() {
         Intent dirtyIntent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")
