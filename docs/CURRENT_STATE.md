@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-09T05:09:05Z
+- UTC：2026-09-09T05:27:21Z
 
 ## 当前目标
 
@@ -15,18 +15,17 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ## 代码状态
 
-- 当前分支：`dev_stable0100Evidence_20260908`
-- 当前提交：`43c7a5794fc8`
-- 最近提交：Merge pull request #266 from heydarey/dev
-- `origin/dev`：`43c7a5794fc8`
+- 当前分支：`dev`
+- 当前提交：`e60c04e79827`
+- 最近提交：Merge pull request #268 from heydarey/dev_darkReadableCoverage_20260908
+- `origin/dev`：`e60c04e79827`
 - `origin/master`：`43c7a5794fc8`
 - 版本源：`0.10.0` / `100002`
 
 ### 工作树
 
 ```text
- M docs/PRODUCT_BACKLOG.md
- M test/reports/0.10.0-release-readiness.md
+干净
 ```
 
 ## 额度与资源
@@ -36,10 +35,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-09T05:08:56.280Z",
-    "usedPercent": 15,
-    "remainingPercent": 85,
-    "resetsAt": 1789435931,
+    "timestamp": "2026-09-09T05:27:08.743Z",
+    "usedPercent": 16,
+    "remainingPercent": 84,
+    "resetsAt": 1789435930,
     "windowMinutes": 10080
   },
   "minimumRemainingPercent": 15,
@@ -52,9 +51,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：5.31
-可用内存：10235 MiB
-工作区可用磁盘：11083 MiB
+CPU：8 核，1 分钟负载：0.77
+可用内存：12232 MiB
+工作区可用磁盘：11027 MiB
 工作区磁盘使用率：95%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -71,7 +70,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-09T05:01:09Z","databaseId":34313204226,"displayTitle":"Merge pull request #266 from heydarey/dev","headSha":"43c7a5794fc89eaf72b97777d4eb94a2772e021a","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T04:39:40Z","databaseId":34311832886,"displayTitle":"chore(release): 发布0.10.0正式版","headSha":"2e4bfc73e61f0d14f049cc824df31057a6f205fd","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T04:32:27Z","databaseId":34311362105,"displayTitle":"TermuxPro CI","headSha":"2e4bfc73e61f0d14f049cc824df31057a6f205fd","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-09T05:21:04Z","databaseId":34314520413,"displayTitle":"TermuxPro CI","headSha":"e60c04e79827b5cee5919f8ee75eab479f5c8b0b","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:10:11Z","databaseId":34313798012,"displayTitle":"TermuxPro CI","headSha":"fc809f44f8cc79c81d930248f19934a4fc748db2","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:01:09Z","databaseId":34313204226,"displayTitle":"Merge pull request #266 from heydarey/dev","headSha":"43c7a5794fc89eaf72b97777d4eb94a2772e021a","status":"completed"}]
 ```
 
 ### 最近 Release
