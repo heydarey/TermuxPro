@@ -269,6 +269,11 @@
     <string name="workspace_advanced_action">tmux 连接方式</string>
     <string name="workspace_advanced_hide_action">收起 tmux 连接方式</string>
     <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
+    <string name="workspace_summary_policy_ssh_only">tmux：默认不进入，连接只打开 SSH。</string>
+    <string name="workspace_summary_policy_list_sessions">tmux：连接后只查看会话列表，不自动进入。</string>
+    <string name="workspace_summary_policy_attach_session">tmux：只进入指定会话“%1$s”，不会随机恢复其他会话。</string>
+    <string name="workspace_summary_policy_create_or_attach">tmux：创建或进入指定会话“%1$s”，适合个人隔离工作区。</string>
+    <string name="workspace_summary_policy_unknown">tmux：策略无法识别，将按仅 SSH 处理。</string>
     <string name="workspace_status_unverified">尚未验证</string>
     <string name="workspace_status_recently_opened">最近打开</string>
     <string name="workspace_status_recently_verified">最近验证</string>

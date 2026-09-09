@@ -709,6 +709,9 @@ public final class WorkspaceActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.workspace_summary_details)).setText(getString(
                 R.string.workspace_summary_details, profile.host, profile.port, profile.path,
                 status));
+            TextView policy = findViewById(R.id.workspace_summary_policy);
+            policy.setText(workspacePolicySummary(profile));
+            policy.setContentDescription(policy.getText());
         }
 
         WorkspaceConnectionState currentState = mConnectionStateStore.read(profile.id);
@@ -766,6 +769,24 @@ public final class WorkspaceActivity extends AppCompatActivity {
         if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(policy)) return 2;
         if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(policy)) return 3;
         return 0;
+    }
+
+    private String workspacePolicySummary(WorkspaceProfile profile) {
+        String sessionName = TextUtils.isEmpty(profile.sessionName)
+            ? defaultSessionName(profile.id) : profile.sessionName;
+        if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(profile.connectionPolicy)) {
+            return getString(R.string.workspace_summary_policy_list_sessions);
+        }
+        if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(profile.connectionPolicy)) {
+            return getString(R.string.workspace_summary_policy_attach_session, sessionName);
+        }
+        if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(profile.connectionPolicy)) {
+            return getString(R.string.workspace_summary_policy_create_or_attach, sessionName);
+        }
+        if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(profile.connectionPolicy)) {
+            return getString(R.string.workspace_summary_policy_unknown);
+        }
+        return getString(R.string.workspace_summary_policy_ssh_only);
     }
 
     private static String defaultSessionName(String id) {

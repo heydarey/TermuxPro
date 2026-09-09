@@ -113,10 +113,35 @@ public class WorkspaceActivitySmokeTest {
             .getText().toString().contains("hdr@192.168.1.153"));
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains(":22"));
+        assertEquals("tmux：默认不进入，连接只打开 SSH。",
+            ((TextView) activity.findViewById(R.id.workspace_summary_policy)).getText()
+                .toString());
 
         activity.findViewById(R.id.workspace_edit_button).performClick();
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_summary).getVisibility());
+        activity.finish();
+    }
+
+    @Test
+    public void savedWorkspaceShowsTmuxPolicyBeforeConnecting() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_advanced_button).performClick();
+        ((Spinner) activity.findViewById(R.id.workspace_connection_policy_selector)).setSelection(2);
+        ((EditText) activity.findViewById(R.id.workspace_session_name_input))
+            .setText("hdr-TermuxProDaily");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+
+        TextView policy = activity.findViewById(R.id.workspace_summary_policy);
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
+        assertEquals("tmux：只进入指定会话“hdr-TermuxProDaily”，不会随机恢复其他会话。",
+            policy.getText().toString());
+        assertEquals(policy.getText().toString(), policy.getContentDescription().toString());
+        assertEquals(View.GONE,
+            activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
+
         activity.finish();
     }
 
