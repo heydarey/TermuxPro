@@ -149,6 +149,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
     private void bindHistory() {
         TextView summary = findViewById(R.id.ai_cli_center_history_summary);
+        TextView nextStep = findViewById(R.id.ai_cli_center_history_next_step);
         View repeat = findViewById(R.id.ai_cli_center_repeat_last);
         TextView deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
         View clear = findViewById(R.id.ai_cli_center_clear_history);
@@ -156,6 +157,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         if (workspace == null || !workspace.isConfigured()) {
             mLaunchHistory = java.util.Collections.emptyList();
             summary.setText(R.string.ai_cli_center_history_missing_workspace);
+            nextStep.setText(R.string.ai_cli_center_history_next_missing_workspace);
             repeat.setEnabled(false);
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
@@ -165,6 +167,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         mLaunchHistory = mLaunchHistoryStore.readForWorkspace(workspace.id);
         if (mLaunchHistory.isEmpty()) {
             summary.setText(R.string.ai_cli_center_history_empty);
+            nextStep.setText(R.string.ai_cli_center_history_next_empty);
             repeat.setEnabled(false);
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
@@ -186,9 +189,11 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 entry.path));
         }
         summary.setText(builder.toString());
+        AiLaunchHistoryStore.Entry latest = mLaunchHistory.get(0);
+        nextStep.setText(getString(R.string.ai_cli_center_history_next_ready,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
         repeat.setEnabled(true);
         deleteLatest.setEnabled(true);
-        AiLaunchHistoryStore.Entry latest = mLaunchHistory.get(0);
         deleteLatest.setText(getString(R.string.ai_cli_center_delete_latest_target,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
         clear.setEnabled(true);

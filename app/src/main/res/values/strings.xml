@@ -334,10 +334,13 @@
     <string name="ai_cli_center_claude_history_description">Choose Claude history. Opens only Claude’s native picker and never resumes automatically. Confirm session ownership on shared accounts.</string>
     <string name="ai_cli_center_codex_new_description">Start a new Codex session. Safe default: SSH only, with no history resume or automatic tmux entry.</string>
     <string name="ai_cli_center_codex_history_description">Choose Codex history. Opens only Codex’s native picker and never resumes automatically.</string>
-    <string name="ai_cli_center_history_title">TermuxPro launch history</string>
-    <string name="ai_cli_center_history_hint">Only records AI launches started from this app in the current workspace. It never reads Claude/Codex private history or terminal output.</string>
+    <string name="ai_cli_center_history_title">Recent AI launches</string>
+    <string name="ai_cli_center_history_hint">Only records AI launches started by TermuxPro in the current workspace. It never reads Claude/Codex private history or terminal output.</string>
     <string name="ai_cli_center_history_missing_workspace">Choose a valid workspace first. Launch history is isolated by workspace.</string>
     <string name="ai_cli_center_history_empty">No AI launches from this workspace yet.</string>
+    <string name="ai_cli_center_history_next_missing_workspace">Next: choose a target in Server and project, then start Claude or Codex.</string>
+    <string name="ai_cli_center_history_next_empty">Next: tap New for a fresh task, or tap History for the matching tool and confirm the native CLI picker.</string>
+    <string name="ai_cli_center_history_next_ready">Next: repeat last %1$s · %2$s if that is still your task. If it was accidental, delete only this local TermuxPro record; remote AI history is untouched.</string>
     <plurals name="ai_cli_center_history_count">
         <item quantity="one">Latest %1$d launch</item>
         <item quantity="other">Latest %1$d launches</item>
