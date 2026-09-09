@@ -41,17 +41,20 @@ final class TerminalProjectToolsMenu {
 
     static void populate(@NonNull Context context, @NonNull Menu menu, boolean tuiTouchScrollMode) {
         menu.clear();
-        addHeader(context, menu, R.string.terminal_tools_section_context);
-        menu.add(Menu.NONE, TOOL_PROMPT_COMPOSER, Menu.NONE, R.string.workspace_prompt_action);
+        addHeader(context, menu, R.string.terminal_tools_section_recommended);
+        menu.add(Menu.NONE, TOOL_AI_CENTER, Menu.NONE, R.string.terminal_ai_cli_center_action);
+        menu.add(Menu.NONE, TOOL_GIT_STATUS, Menu.NONE, R.string.workspace_git_status_action);
         menu.add(Menu.NONE, TOOL_TMUX_SESSIONS, Menu.NONE, R.string.workspace_tmux_sessions_action);
         menu.add(Menu.NONE, TOOL_CUSTOM_COMMANDS, Menu.NONE, R.string.terminal_custom_commands_action);
+
+        addHeader(context, menu, R.string.terminal_tools_section_context);
+        menu.add(Menu.NONE, TOOL_PROMPT_COMPOSER, Menu.NONE, R.string.workspace_prompt_action);
         menu.add(Menu.NONE, TOOL_SEARCH_OUTPUT, Menu.NONE, R.string.terminal_search_action);
         menu.add(Menu.NONE, TOOL_TOUCH_SCROLL_MODE, Menu.NONE, tuiTouchScrollMode ?
             R.string.terminal_touch_scroll_switch_to_scrollback :
             R.string.terminal_touch_scroll_switch_to_tui);
 
         addHeader(context, menu, R.string.terminal_tools_section_project);
-        menu.add(Menu.NONE, TOOL_GIT_STATUS, Menu.NONE, R.string.workspace_git_status_action);
         menu.add(Menu.NONE, TOOL_GIT_DIFF, Menu.NONE, R.string.workspace_git_diff_action);
         menu.add(Menu.NONE, TOOL_REMOTE_FILES, Menu.NONE, R.string.workspace_remote_files_action);
         menu.add(Menu.NONE, TOOL_PROJECT_CHECK, Menu.NONE, R.string.workspace_project_tasks_action);
@@ -63,7 +66,6 @@ final class TerminalProjectToolsMenu {
         menu.add(Menu.NONE, TOOL_SSH_KEYS, Menu.NONE, R.string.workspace_ssh_keys_action);
 
         addHeader(context, menu, R.string.terminal_tools_section_ai);
-        menu.add(Menu.NONE, TOOL_AI_CENTER, Menu.NONE, R.string.terminal_ai_cli_center_action);
         menu.add(Menu.NONE, TOOL_AI_CLAUDE, Menu.NONE, R.string.terminal_ai_launch_claude_action);
         menu.add(Menu.NONE, TOOL_AI_CODEX, Menu.NONE, R.string.terminal_ai_launch_codex_action);
         menu.add(Menu.NONE, TOOL_AI_CONFIRM, Menu.NONE, R.string.ai_action_confirm_selection);
