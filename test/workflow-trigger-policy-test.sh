@@ -25,6 +25,12 @@ if ! grep -Fq "branches: [dev, master, dev_dailyIteration, 'dev_*', 'hotfix_*']"
     echo "CI push 门禁必须覆盖 dev、master、dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1
 fi
+if ! grep -Fq 'is_dev_target_branch()' "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq 'git rev-list --count origin/dev..HEAD' "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq '相对 dev 没有待合并提交，视为分支对齐操作，仅运行静态门禁' "$project_dir/.github/workflows/ci.yml"; then
+    echo "CI 必须识别 dev_dailyIteration/dev_*/hotfix_* 对齐 dev 的空差异 push，避免无意义 Android 重门禁和邮件噪声。" >&2
+    exit 1
+fi
 if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ui-emulator.yml"; then
     echo "UI push 门禁必须覆盖 dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1

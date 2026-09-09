@@ -38,6 +38,7 @@ jobs:
         id: changes
         env:
           EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
           BEFORE_SHA: ${{ github.event.before }}
           BASE_REF: ${{ github.base_ref }}
           ANDROID_RUNTIME_INPUT: ${{ inputs.androidRuntime }}
@@ -53,10 +54,31 @@ jobs:
             esac
           }
 
+          is_dev_target_branch() {
+            case "$1" in
+              dev_dailyIteration|dev_*|hotfix_*)
+                return 0
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
           if [[ "$EVENT_NAME" == 'workflow_dispatch' && "$ANDROID_RUNTIME_INPUT" == 'false' ]]; then
             echo 'android_runtime=false' >> "$GITHUB_OUTPUT"
             echo '仅运行静态门禁：workflow_dispatch 明确关闭 Android 运行时门禁。'
             exit 0
+          fi
+
+          if [[ "$EVENT_NAME" == 'push' ]] && is_dev_target_branch "$REF_NAME"; then
+            git fetch --no-tags --depth=1 origin dev
+            ahead_of_dev="$(git rev-list --count origin/dev..HEAD)"
+            if [[ "$ahead_of_dev" == '0' ]]; then
+              echo 'android_runtime=false' >> "$GITHUB_OUTPUT"
+              echo "研发分支 $REF_NAME 相对 dev 没有待合并提交，视为分支对齐操作，仅运行静态门禁。"
+              exit 0
+            fi
           fi
 
           if [[ "$EVENT_NAME" == 'pull_request' && -n "$BASE_REF" ]]; then
