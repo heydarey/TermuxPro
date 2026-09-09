@@ -47,7 +47,7 @@ public class TaskSessionsActivityTest {
         assertTrue(otherWorkspaceRow.getText().toString().contains("其他工作区"));
         TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
         assertTrue(safetyHint.getText().toString().contains("当前工作区会话优先显示"));
-        assertTrue(safetyHint.getText().toString().contains("只允许进入"));
+        assertTrue(safetyHint.getText().toString().contains("必须确认后才能进入"));
         assertEquals(activity.getString(R.string.task_sessions_safety_hint),
             safetyHint.getContentDescription().toString());
 
@@ -82,7 +82,7 @@ public class TaskSessionsActivityTest {
         TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
         assertEquals(View.VISIBLE, status.getVisibility());
         assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
-        assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+        assertTrue(safetyHint.getContentDescription().toString().contains("必须确认后才能进入"));
         assertTrue(TaskSessionsActivity.hidesReadyMessageForFontScale(1.5f));
         assertTrue(!TaskSessionsActivity.hidesReadyMessageForFontScale(1.49f));
         // 行格式选择独立于远端结果，确保大字体仅收敛视觉信息而非放宽会话归属边界。
@@ -118,21 +118,27 @@ public class TaskSessionsActivityTest {
 
         sessions.performItemClick(sessions.getAdapter().getView(1, null, sessions), 1, 1);
         AlertDialog otherWorkspace = (AlertDialog) ShadowDialog.getLatestDialog();
-        assertAttachOnlyWithWarning(otherWorkspace, "不属于当前工作区");
+        assertExternalAttachRequiresConfirmation(activity, otherWorkspace, "不属于当前工作区");
         otherWorkspace.dismiss();
 
         sessions.performItemClick(sessions.getAdapter().getView(2, null, sessions), 2, 2);
         AlertDialog unknown = (AlertDialog) ShadowDialog.getLatestDialog();
-        assertAttachOnlyWithWarning(unknown, "无法可靠判断");
+        assertExternalAttachRequiresConfirmation(activity, unknown, "无法可靠判断");
     }
 
-    private void assertAttachOnlyWithWarning(AlertDialog dialog, String expectedWarning) {
-        assertEquals(1, dialog.getListView().getAdapter().getCount());
+    private void assertExternalAttachRequiresConfirmation(TaskSessionsActivity activity,
+                                                          AlertDialog dialog,
+                                                          String expectedWarning) {
+        assertTrue(dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getText().length() > 0);
+        assertEquals(activity.getString(R.string.task_sessions_attach_external_confirm),
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         assertTrue(dialog.getButton(AlertDialog.BUTTON_NEUTRAL) == null
             || dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getVisibility() != View.VISIBLE
             || dialog.getButton(AlertDialog.BUTTON_NEUTRAL).getText().length() == 0);
         assertTrue(((android.widget.TextView) dialog.findViewById(android.R.id.message))
             .getText().toString().contains(expectedWarning));
+        assertTrue(((android.widget.TextView) dialog.findViewById(android.R.id.message))
+            .getText().toString().contains("不会重命名、停止或写入"));
     }
 
     private TaskSessionsActivity previewActivity() {
