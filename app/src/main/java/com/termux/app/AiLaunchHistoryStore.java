@@ -56,6 +56,24 @@ final class AiLaunchHistoryStore {
         write(kept);
     }
 
+    boolean deleteEntry(@NonNull String workspaceId, long launchedAtMillis,
+                        @NonNull AiCliLaunchCommand.Tool tool,
+                        @NonNull AiCliLaunchCommand.Mode mode) {
+        List<Entry> kept = new ArrayList<>();
+        boolean deleted = false;
+        for (Entry entry : readAll()) {
+            if (!deleted && workspaceId.equals(entry.workspaceId)
+                && launchedAtMillis == entry.launchedAtMillis
+                && tool == entry.tool && mode == entry.mode) {
+                deleted = true;
+                continue;
+            }
+            kept.add(entry);
+        }
+        if (deleted) write(kept);
+        return deleted;
+    }
+
     @NonNull
     private List<Entry> readAll() {
         String serialized = mPreferences.getString(KEY_ENTRIES, "[]");

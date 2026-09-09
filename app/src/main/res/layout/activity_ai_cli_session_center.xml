@@ -249,17 +249,28 @@
                     android:textColor="#062118" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/ai_cli_center_clear_history"
+                    android:id="@+id/ai_cli_center_delete_latest"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="#25384A"
                     android:minHeight="52dp"
-                    android:text="@string/ai_cli_center_clear_history"
+                    android:text="@string/ai_cli_center_delete_latest"
                     android:textAllCaps="false"
                     android:textColor="#F5F8FA" />
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ai_cli_center_clear_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#3A2430"
+                android:minHeight="52dp"
+                android:text="@string/ai_cli_center_clear_history"
+                android:textAllCaps="false"
+                android:textColor="#F5D6DE" />
         </LinearLayout>
 
         <LinearLayout

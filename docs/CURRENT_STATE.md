@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-09T05:51:05Z
+- UTC：2026-09-09T06:11:03Z
 
 ## 当前目标
 
@@ -16,9 +16,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev`
-- 当前提交：`ffccecc5a1f9`
-- 最近提交：Merge pull request #270 from heydarey/dev_aiLaunchHistory_20260908
-- `origin/dev`：`ffccecc5a1f9`
+- 当前提交：`f4d6191f85fb`
+- 最近提交：Merge pull request #271 from heydarey/dev_aiLaunchHistoryEntrypoints_20260908
+- `origin/dev`：`f4d6191f85fb`
 - `origin/master`：`43c7a5794fc8`
 - 版本源：`0.10.0` / `100002`
 
@@ -35,7 +35,7 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-09T05:50:58.652Z",
+    "timestamp": "2026-09-09T06:10:52.514Z",
     "usedPercent": 17,
     "remainingPercent": 83,
     "resetsAt": 1789435930,
@@ -51,9 +51,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：0.74
-可用内存：11902 MiB
-工作区可用磁盘：11066 MiB
+CPU：8 核，1 分钟负载：4.77
+可用内存：8440 MiB
+工作区可用磁盘：10890 MiB
 工作区磁盘使用率：95%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -70,7 +70,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-09T05:44:57Z","databaseId":34316133948,"displayTitle":"TermuxPro CI","headSha":"ffccecc5a1f92dbce02afd2112254efe359a6d4c","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:28:43Z","databaseId":34315033475,"displayTitle":"TermuxPro CI","headSha":"fae9c079fc6e5e65e25d7e5739e4a66dea7867f9","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:21:04Z","databaseId":34314520413,"displayTitle":"TermuxPro CI","headSha":"e60c04e79827b5cee5919f8ee75eab479f5c8b0b","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-09T06:03:42Z","databaseId":34317412490,"displayTitle":"TermuxPro CI","headSha":"f4d6191f85fb88b82dcc6e488f75989c30a8a9af","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:44:57Z","databaseId":34316133948,"displayTitle":"TermuxPro CI","headSha":"ffccecc5a1f92dbce02afd2112254efe359a6d4c","status":"completed"},{"conclusion":"success","createdAt":"2026-09-09T05:28:43Z","databaseId":34315033475,"displayTitle":"TermuxPro CI","headSha":"fae9c079fc6e5e65e25d7e5739e4a66dea7867f9","status":"completed"}]
 ```
 
 ### 最近 Release
