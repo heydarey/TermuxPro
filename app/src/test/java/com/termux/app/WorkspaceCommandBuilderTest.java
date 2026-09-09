@@ -171,6 +171,8 @@ public class WorkspaceCommandBuilderTest {
             "/srv/team's app", "stash@{0}");
         String stashDrop = WorkspaceCommandBuilder.buildGitStashDropRemoteCommand(
             "/srv/team's app", "stash@{0}");
+        String showCommit = WorkspaceCommandBuilder.buildGitShowCommitRemoteCommand(
+            "/srv/team's app", "a1b2c3d");
 
         assertTrue(overview.contains("TP_OVERVIEW\\t"));
         assertTrue(overview.contains("TP_STASH"));
@@ -222,6 +224,8 @@ public class WorkspaceCommandBuilderTest {
         assertTrue(stashApply.contains("then exit 77; fi"));
         assertTrue(stashDrop.contains("git stash drop 'stash@{0}'"));
         assertTrue(!stashDrop.contains("git stash clear"));
+        assertTrue(showCommit.contains("git rev-parse --verify --quiet 'a1b2c3d^{commit}'"));
+        assertTrue(showCommit.contains("git show --no-ext-diff --no-color --decorate --format=fuller --stat 'a1b2c3d'"));
         String commit = WorkspaceCommandBuilder.buildGitCommitStagedRemoteCommand(
             "/srv/team's app", "fix: user's mobile flow");
         assertTrue(commit.contains("git diff --cached --name-only -z"));
@@ -252,6 +256,10 @@ public class WorkspaceCommandBuilderTest {
             () -> WorkspaceCommandBuilder.buildGitStashApplyRemoteCommand("~/app", "stash@{bad}"));
         assertThrows(IllegalArgumentException.class,
             () -> WorkspaceCommandBuilder.buildGitStashDropRemoteCommand("~/app", "stash@{0};rm"));
+        assertThrows(IllegalArgumentException.class,
+            () -> WorkspaceCommandBuilder.buildGitShowCommitRemoteCommand("~/app", "main"));
+        assertThrows(IllegalArgumentException.class,
+            () -> WorkspaceCommandBuilder.buildGitShowCommitRemoteCommand("~/app", "abc1234;id"));
     }
 
     @Test

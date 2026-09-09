@@ -313,6 +313,30 @@ final class WorkspaceCommandBuilder {
         return true;
     }
 
+    /** Git 概览协议只传递短哈希；详情读取仍限定为十六进制对象名，禁止把任意参数交给远端 Shell。 */
+    static boolean isSafeGitCommitHash(@NonNull String hash) {
+        if (hash.length() < 7 || hash.length() > 40) return false;
+        for (int index = 0; index < hash.length(); index++) {
+            char value = hash.charAt(index);
+            boolean hexadecimal = (value >= '0' && value <= '9')
+                || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
+            if (!hexadecimal) return false;
+        }
+        return true;
+    }
+
+    /** 只读展示用户在当前 Git 概览中显式选择的一条提交，不读取工作树或修改远端状态。 */
+    @NonNull
+    static String buildGitShowCommitRemoteCommand(@NonNull String path, @NonNull String commitHash) {
+        if (!isSafeGitCommitHash(commitHash)) throw new IllegalArgumentException("Invalid commit hash");
+        return "cd -- " + remotePathExpression(path)
+            + " && git rev-parse --is-inside-work-tree >/dev/null 2>&1"
+            + " && git rev-parse --verify --quiet " + shellQuote(commitHash + "^{commit}")
+            + " >/dev/null"
+            + " && git show --no-ext-diff --no-color --decorate --format=fuller --stat "
+            + shellQuote(commitHash);
+    }
+
     /** 只提交已经暂存的内容；不自动 add、不推送、不丢弃工作区文件。 */
     @NonNull
     static String buildGitCommitStagedRemoteCommand(@NonNull String path, @NonNull String message) {

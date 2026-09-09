@@ -3,7 +3,9 @@ package com.termux.app;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -13,12 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.termux.R;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /** 按工作区管理、预览并执行用户快捷指令。 */
 public final class CustomCommandsActivity extends AppCompatActivity {
@@ -33,7 +41,15 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private WorkspaceTarget mTarget;
     private LinearLayout mList;
     private TextView mEmpty;
-    private View mTemplateHint;
+    private TextView mTemplateHint;
+    private View mScenarioHint;
+    private EditText mSearchInput;
+    private TextView mSearchSummary;
+    private View mSearchEmpty;
+    private View mClearSearch;
+    private View mSearchContainer;
+    private View mSearchLabel;
+    private String mSearchQuery = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,10 +60,27 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mList = findViewById(R.id.custom_commands_list);
         mEmpty = findViewById(R.id.custom_commands_empty);
         mTemplateHint = findViewById(R.id.custom_commands_template_hint);
+        mScenarioHint = findViewById(R.id.custom_commands_scenario_hint);
+        configureTemplateHint();
+        mSearchInput = findViewById(R.id.custom_commands_search_input);
+        mSearchSummary = findViewById(R.id.custom_commands_search_summary);
+        mSearchEmpty = findViewById(R.id.custom_commands_search_empty);
+        mClearSearch = findViewById(R.id.custom_commands_clear_search);
+        mSearchContainer = (View) mSearchInput.getParent();
+        mSearchLabel = findViewById(R.id.custom_commands_search_label);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
         findViewById(R.id.custom_commands_templates).setOnClickListener(view -> showTemplates());
+        mClearSearch.setOnClickListener(view -> mSearchInput.setText(""));
+        mSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence value, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence value, int start, int before, int count) {
+                mSearchQuery = value.toString().trim();
+                renderCommands();
+            }
+            @Override public void afterTextChanged(Editable value) {}
+        });
         bindTarget();
         renderCommands();
     }
@@ -62,11 +95,27 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             details.setVisibility(View.GONE);
             add.setEnabled(false);
             templates.setEnabled(false);
+            mSearchInput.setEnabled(false);
+            mSearchContainer.setVisibility(View.GONE);
+            mSearchLabel.setVisibility(View.GONE);
             return;
         }
         name.setText(mTarget.name);
         details.setText(getString(R.string.custom_commands_target_details,
             mTarget.host, mTarget.port, mTarget.path));
+        mSearchInput.setEnabled(true);
+    }
+
+    /** 大字体优先呈现下一步；完整模板范围和安全语义仍提供给辅助技术。 */
+    private void configureTemplateHint() {
+        mTemplateHint.setText(templateHintResForFontScale(
+            getResources().getConfiguration().fontScale));
+        mTemplateHint.setContentDescription(getString(R.string.custom_commands_template_hint));
+    }
+
+    static int templateHintResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.custom_commands_template_hint_compact
+            : R.string.custom_commands_template_hint;
     }
 
     private void renderCommands() {
@@ -75,37 +124,126 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mEmpty.setText(R.string.custom_commands_invalid_workspace);
             mEmpty.setVisibility(View.VISIBLE);
             mTemplateHint.setVisibility(View.GONE);
+            mScenarioHint.setVisibility(View.GONE);
+            mSearchSummary.setVisibility(View.GONE);
+            mSearchEmpty.setVisibility(View.GONE);
+            mClearSearch.setVisibility(View.GONE);
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
+        boolean canSearch = commands.size() >= 4;
+        mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
+        mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
+        if (!canSearch && !mSearchQuery.isEmpty()) {
+            mSearchQuery = "";
+            mSearchInput.setText("");
+            return;
+        }
+        List<CustomCommand> filtered = filterCommands(commands, mSearchQuery);
         mEmpty.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
         mTemplateHint.setVisibility(commands.isEmpty() ? View.VISIBLE : View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        for (int index = 0; index < commands.size(); index++) {
-            CustomCommand command = commands.get(index);
-            View row = inflater.inflate(R.layout.item_custom_command, mList, false);
-            ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
-            ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
-                ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
+        // 首次使用时模板说明就是下一步，避免泛化介绍把它推到手机首屏之外。
+        mScenarioHint.setVisibility(commands.isEmpty() ? View.GONE : View.VISIBLE);
+        boolean searching = canSearch && !mSearchQuery.isEmpty();
+        mClearSearch.setVisibility(searching ? View.VISIBLE : View.GONE);
+        mSearchSummary.setVisibility(searching ? View.VISIBLE : View.GONE);
+        if (searching) mSearchSummary.setText(getString(R.string.custom_commands_search_summary,
+            filtered.size(), commands.size()));
+        mSearchEmpty.setVisibility(!commands.isEmpty() && filtered.isEmpty()
+            ? View.VISIBLE : View.GONE);
+        Map<String, List<IndexedCommand>> groupedCommands = new LinkedHashMap<>();
+        for (CustomCommand command : filtered) {
+            int index = commands.indexOf(command);
             String group = TextUtils.isEmpty(command.group)
                 ? getString(R.string.custom_commands_default_group) : command.group;
-            String directory = TextUtils.isEmpty(command.workingDirectory)
-                ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
-            ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
-                getString(R.string.custom_commands_summary, group, directory));
-            ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
-            boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
-                || CustomCommandValidator.isLikelyDangerous(command.command);
-            ((TextView) row.findViewById(R.id.custom_command_run)).setText(requiresPreview
-                ? R.string.custom_commands_run : R.string.custom_commands_run_now);
-            row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
-            row.findViewById(R.id.custom_command_run).setOnClickListener(view -> {
-                if (requiresPreview) preview(command); else execute(command);
-            });
-            int position = index;
-            row.findViewById(R.id.custom_command_manage).setOnClickListener(
-                view -> showManagement(view, command, position, commands.size()));
-            mList.addView(row);
+            String normalizedGroup = group.toLowerCase(Locale.ROOT);
+            groupedCommands.computeIfAbsent(normalizedGroup, key -> new ArrayList<>())
+                .add(new IndexedCommand(command, index, group));
+        }
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (List<IndexedCommand> grouped : groupedCommands.values()) {
+            if (grouped.isEmpty()) continue;
+            mList.addView(createGroupHeader(grouped.get(0).group));
+            for (IndexedCommand indexed : grouped) {
+                addCommandRow(inflater, indexed.command, indexed.position, commands.size());
+            }
+        }
+    }
+
+    @NonNull
+    static List<CustomCommand> filterCommands(@NonNull List<CustomCommand> commands,
+                                               @NonNull String query) {
+        String normalized = query.trim().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) return new ArrayList<>(commands);
+        List<CustomCommand> filtered = new ArrayList<>();
+        for (CustomCommand command : commands) {
+            if (containsIgnoreCase(command.name, normalized)
+                || containsIgnoreCase(command.group, normalized)
+                || containsIgnoreCase(command.command, normalized)
+                || containsIgnoreCase(command.workingDirectory, normalized)) {
+                filtered.add(command);
+            }
+        }
+        return filtered;
+    }
+
+    private static boolean containsIgnoreCase(@NonNull String value, @NonNull String normalizedQuery) {
+        return value.toLowerCase(Locale.ROOT).contains(normalizedQuery);
+    }
+
+    private void addCommandRow(LayoutInflater inflater, CustomCommand command, int position,
+                               int size) {
+        String group = TextUtils.isEmpty(command.group)
+            ? getString(R.string.custom_commands_default_group) : command.group;
+        View row = inflater.inflate(R.layout.item_custom_command, mList, false);
+        ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
+        ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
+            ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
+        String directory = TextUtils.isEmpty(command.workingDirectory)
+            ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
+        ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
+            getString(R.string.custom_commands_summary, group, directory));
+        ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
+        boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
+            || CustomCommandValidator.isLikelyDangerous(command.command);
+        ((TextView) row.findViewById(R.id.custom_command_run)).setText(requiresPreview
+            ? R.string.custom_commands_run : R.string.custom_commands_run_now);
+        row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
+        row.findViewById(R.id.custom_command_run).setOnClickListener(view -> {
+            if (requiresPreview) preview(command); else execute(command);
+        });
+        row.findViewById(R.id.custom_command_manage).setOnClickListener(
+            view -> showManagement(view, command, position, size));
+        mList.addView(row);
+    }
+
+    private TextView createGroupHeader(String group) {
+        TextView header = new TextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, dp(6), 0, dp(8));
+        header.setLayoutParams(params);
+        header.setText(getString(R.string.custom_commands_group_header, group));
+        header.setTextColor(ContextCompat.getColor(this, R.color.tp_text_primary));
+        header.setTextSize(15);
+        header.setTextIsSelectable(false);
+        header.setTypeface(header.getTypeface(), android.graphics.Typeface.BOLD);
+        return header;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private static final class IndexedCommand {
+        final CustomCommand command;
+        final int position;
+        final String group;
+
+        IndexedCommand(CustomCommand command, int position, String group) {
+            this.command = command;
+            this.position = position;
+            this.group = group;
         }
     }
 

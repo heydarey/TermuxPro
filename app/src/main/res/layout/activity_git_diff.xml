@@ -32,8 +32,13 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/git_diff_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="18sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
             android:minHeight="56dp"
             android:layout_weight="1"
             android:ellipsize="end"
@@ -41,6 +46,7 @@
             android:maxLines="1"
             android:minWidth="0dp"
             android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:text="@string/git_diff_title"
             android:textColor="#F5F8FA"
             android:textSize="18sp"
@@ -50,6 +56,7 @@
             android:id="@+id/git_diff_refresh_button"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:contentDescription="@string/git_diff_refresh"
@@ -129,6 +136,76 @@
                     android:textColor="#B4C3CF"
                     android:textSize="15sp" />
 
+                <LinearLayout
+                    android:id="@+id/git_overview_review_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="#142332"
+                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/git_workbench_review_changes"
+                        android:textColor="#F5F8FA"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/git_overview_files_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#68E0B7"
+                        android:minHeight="48dp"
+                        android:text="@string/git_workbench_review_files"
+                        android:textColor="#06231B" />
+
+                    <Button
+                        android:id="@+id/git_overview_changes_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#24394A"
+                        android:minHeight="48dp"
+                        android:text="@string/git_workbench_review_diff"
+                        android:textColor="#F5F8FA" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/git_overview_next_step"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="#142332"
+                    android:lineSpacingExtra="3dp"
+                    android:padding="14dp"
+                    android:textColor="#D8E4EC"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/git_overview_recent_commits_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/git_workbench_recent_commits"
+                    android:textColor="#F5F8FA"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/git_overview_recent_commits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="#B4C3CF"
+                    android:textIsSelectable="true"
+                    android:textSize="14sp" />
+
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -197,26 +274,6 @@
                             android:backgroundTint="#24394A"
                             android:minHeight="48dp"
                             android:text="@string/git_workbench_push"
-                            android:textColor="#F5F8FA" />
-
-                        <Button
-                            android:id="@+id/git_overview_changes_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:backgroundTint="#68E0B7"
-                            android:minHeight="48dp"
-                            android:text="@string/git_workbench_changes"
-                            android:textColor="#06231B" />
-
-                        <Button
-                            android:id="@+id/git_overview_files_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:backgroundTint="#24394A"
-                            android:minHeight="48dp"
-                            android:text="@string/git_workbench_files"
                             android:textColor="#F5F8FA" />
 
                         <Button

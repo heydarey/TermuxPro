@@ -2,6 +2,7 @@ package com.termux.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -9,12 +10,46 @@ import android.util.TypedValue;
 
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.button.MaterialButton;
+
 import com.termux.R;
 
 /** 统一 AI 会话选择弹窗的大字体可读性与品牌色。 */
 final class AiSessionDialog {
 
+    interface SelectionListener {
+        void onSelected(AiCliLaunchCommand.Mode mode);
+    }
+
     private AiSessionDialog() {}
+
+    static void showChoice(Activity activity, AiCliLaunchCommand.Tool tool, String context,
+                           SelectionListener listener) {
+        View content = activity.getLayoutInflater().inflate(R.layout.dialog_ai_session_choice,
+            null, false);
+        MaterialButton newSession = content.findViewById(R.id.ai_session_new_button);
+        MaterialButton history = content.findViewById(R.id.ai_session_history_button);
+        ((TextView) content.findViewById(R.id.ai_session_choice_context)).setText(context);
+        newSession.setText(AiCliLaunchMessage.buttonLabel(activity, tool,
+            AiCliLaunchCommand.Mode.NEW_SESSION));
+        history.setText(AiCliLaunchMessage.buttonLabel(activity, tool,
+            AiCliLaunchCommand.Mode.PICK_HISTORY));
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+            .setTitle(activity.getString(R.string.ai_session_launch_title,
+                AiCliLaunchCommand.displayName(tool)))
+            .setView(content)
+            .setNegativeButton(android.R.string.cancel, null)
+            .create();
+        newSession.setOnClickListener(view -> {
+            dialog.dismiss();
+            listener.onSelected(AiCliLaunchCommand.Mode.NEW_SESSION);
+        });
+        history.setOnClickListener(view -> {
+            dialog.dismiss();
+            listener.onSelected(AiCliLaunchCommand.Mode.PICK_HISTORY);
+        });
+        show(activity, dialog);
+    }
 
     static void show(Activity activity, AlertDialog dialog) {
         TermuxProDialogStyle.show(activity, dialog,
@@ -32,6 +67,19 @@ final class AiSessionDialog {
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
                 ContextCompat.getColor(activity, R.color.tp_primary));
+        }
+
+        MaterialButton newSession = dialog.findViewById(R.id.ai_session_new_button);
+        if (newSession != null) {
+            newSession.setTextColor(ContextCompat.getColor(activity, R.color.tp_on_primary));
+            newSession.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(activity, R.color.tp_primary)));
+        }
+        MaterialButton history = dialog.findViewById(R.id.ai_session_history_button);
+        if (history != null) {
+            history.setTextColor(ContextCompat.getColor(activity, R.color.tp_text_primary));
+            history.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(activity, R.color.tp_surface_elevated)));
         }
 
         ListView list = dialog.getListView();

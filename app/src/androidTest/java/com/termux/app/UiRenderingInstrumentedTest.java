@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** 在真实 Android 渲染器中逐页截图，防止厂商主题默认文字色和大字体回归。 */
 @RunWith(AndroidJUnit4.class)
@@ -47,7 +48,14 @@ public final class UiRenderingInstrumentedTest {
         forceSimplifiedChinese(context);
         Intent workspaceIntent = new Intent(context, WorkspaceActivity.class)
             .putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
-        capture(context, "workspace", workspaceIntent);
+        capture(context, "workspace", workspaceIntent, null, activity -> {
+            int[] fieldLabels = {
+                com.termux.R.id.workspace_host_label,
+                com.termux.R.id.workspace_port_label,
+                com.termux.R.id.workspace_path_label
+            };
+            for (int id : fieldLabels) assertViewHasVisibleBounds(activity.findViewById(id));
+        });
         capture(context, "workspace-policy", new Intent(workspaceIntent), activity -> {
             activity.findViewById(com.termux.R.id.workspace_advanced_button).performClick();
             View policy = activity.findViewById(com.termux.R.id.workspace_connection_policy_selector);
@@ -103,6 +111,19 @@ public final class UiRenderingInstrumentedTest {
             ((WorkspaceActivity) activity).onResume();
             activity.findViewById(com.termux.R.id.workspace_claude_button).performClick();
         });
+        capture(context, "ai-cli-session-center",
+            new Intent(context, AiCliSessionCenterActivity.class), activity -> {
+                ScrollView scroll = activity.findViewById(com.termux.R.id.ai_cli_center_scroll);
+                assertTrue("会话中心首屏不得预滚动", scroll.getScrollY() == 0);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_claude_new));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_claude_history));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_codex_new));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.ai_cli_center_codex_history));
+            });
         capture(context, "terminal-feedback", new Intent(workspaceIntent), activity -> {
             TextView feedback = (TextView) activity.getLayoutInflater().inflate(
                 com.termux.R.layout.view_terminal_feedback, null, false);
@@ -116,6 +137,7 @@ public final class UiRenderingInstrumentedTest {
             assertTrue(feedback.getVisibility() == View.VISIBLE);
             assertTrue(!feedback.getText().toString().isEmpty());
         });
+        AtomicReference<View> terminalNavigation = new AtomicReference<>();
         capture(context, "terminal-navigation", new Intent(workspaceIntent), activity -> {
             Context terminalContext = new ContextThemeWrapper(activity,
                 com.termux.R.style.Theme_TermuxActivity_DayNight_NoActionBar);
@@ -126,10 +148,23 @@ public final class UiRenderingInstrumentedTest {
             androidx.drawerlayout.widget.DrawerLayout drawer = terminal.findViewById(
                 com.termux.R.id.drawer_layout);
             drawer.openDrawer(Gravity.LEFT, false);
+            terminalNavigation.set(terminal);
+        }, activity -> {
+            View terminal = terminalNavigation.get();
+            assertNotNull(terminal);
             TextView workbench = terminal.findViewById(com.termux.R.id.workspace_home_button);
             assertTrue(workbench.getText().toString().contains("工作台"));
             assertTrue(!terminal.findViewById(com.termux.R.id.workspace_drawer_button)
                 .getContentDescription().toString().isEmpty());
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.workspace_drawer_button));
+            assertViewHasVisibleBounds(workbench);
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_ai_center_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.terminal_tools_button));
+            assertViewHasVisibleBounds(terminal.findViewById(
+                com.termux.R.id.new_session_button));
         });
         capture(context, "remote-files",
             RemoteFilesActivity.newIntent(context, "invalid", 0, "~/project"), activity ->
@@ -165,10 +200,24 @@ public final class UiRenderingInstrumentedTest {
                     com.termux.R.id.task_sessions_back_button,
                     com.termux.R.id.task_sessions_refresh_button);
                 TextView status = activity.findViewById(com.termux.R.id.task_sessions_status);
+                TextView safetyHint = activity.findViewById(
+                    com.termux.R.id.task_sessions_safety_hint);
                 TextView create = activity.findViewById(com.termux.R.id.task_sessions_create_button);
-                assertTrue(status.getText().length() > 0);
+                if (status.getVisibility() == View.VISIBLE) {
+                    assertTrue(status.getText().length() > 0);
+                    assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+                } else {
+                    assertTrue("大字体隐藏重复就绪说明时，安全结论仍须保留给辅助技术",
+                        safetyHint.getContentDescription().toString().contains("重命名或停止"));
+                    assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+                }
                 assertTrue(create.getVisibility() == View.VISIBLE);
                 assertTrue(create.getText().length() > 0);
+                assertViewHasVisibleBounds(create);
+                android.widget.ListView sessions = activity.findViewById(
+                    com.termux.R.id.task_sessions_list);
+                assertNotNull("tmux 列表首项必须在初始视口可见", sessions.getChildAt(0));
+                assertViewHasVisibleBounds(sessions.getChildAt(0));
                 });
         Intent sessionPreview = TaskSessionsActivity.newIntent(context, "dev@example.com", 22,
             "~/project", "11111111-2222-3333-4444-555555555555")
@@ -180,14 +229,20 @@ public final class UiRenderingInstrumentedTest {
         capture(context, "task-sessions-stop", new Intent(sessionPreview), activity ->
             ((TaskSessionsActivity) activity).showStopDialogForTesting());
         capture(context, "git-diff",
-            GitDiffActivity.newIntent(context, "invalid", 0, "~/project"), activity -> {
+            GitDiffActivity.newIntent(context, "hdr@192.168.1.153", 22, "~/project"), activity -> {
                 ((GitDiffActivity) activity).showOverviewForTesting("~/project",
                     "TP_OVERVIEW\tdev\t0\t3\t1\t2\t2\t1\t1\n"
                         + "TP_LOCAL\tdev\nTP_LOCAL\tmaster\n"
                         + "TP_REMOTE\torigin/dev\n"
-                        + "TP_LOG\ta1b2c3d\t2 小时前\t完善 Git 工作台\n");
+                        + "TP_LOG\ta1b2c3d\t2 小时前\t完善 Git 工作台\n"
+                        + "TP_STATUS_Z\000M  staged.txt\000 M unstaged.txt\000MM mixed.txt\000");
                 assertTrue(activity.findViewById(com.termux.R.id.git_overview_scroll)
                     .getVisibility() == View.VISIBLE);
+            }, activity -> {
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.git_overview_review_actions));
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.git_overview_files_button));
             });
         context.getSharedPreferences(WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE)
             .edit()
@@ -199,6 +254,15 @@ public final class UiRenderingInstrumentedTest {
             .commit();
         CustomCommandStore customCommands = new CustomCommandStore(context);
         customCommands.clear("ui-commands");
+        capture(context, "custom-commands-empty", new Intent(context, CustomCommandsActivity.class),
+            activity -> {
+                assertToolbarActionsVisible(activity, com.termux.R.id.custom_commands_back,
+                    com.termux.R.id.custom_commands_add);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.custom_commands_template_hint));
+                assertTrue(activity.findViewById(com.termux.R.id.custom_commands_scenario_hint)
+                    .getVisibility() == View.GONE);
+            });
         customCommands.save("ui-commands", new CustomCommand("ui-git-status", "查看 Git 状态",
             "git status --short --branch", "", "Git", true,
             CustomCommand.Confirmation.ALWAYS));
@@ -214,8 +278,10 @@ public final class UiRenderingInstrumentedTest {
             activity -> {
                 assertToolbarActionsVisible(activity, com.termux.R.id.custom_commands_back,
                     com.termux.R.id.custom_commands_add);
+                assertViewHasVisibleBounds(activity.findViewById(
+                    com.termux.R.id.custom_commands_scenario_hint));
                 assertTrue(((android.widget.LinearLayout) activity.findViewById(
-                    com.termux.R.id.custom_commands_list)).getChildCount() == 2);
+                    com.termux.R.id.custom_commands_list)).getChildCount() == 4);
             });
         capture(context, "custom-command-editor",
             new Intent(context, CustomCommandsActivity.class), activity ->
@@ -295,10 +361,16 @@ public final class UiRenderingInstrumentedTest {
 
     private void capture(Context context, String name, Intent intent, ScreenPreparer preparer)
         throws Exception {
+        capture(context, name, intent, preparer, null);
+    }
+
+    private void capture(Context context, String name, Intent intent, ScreenPreparer preparer,
+        ScreenVerifier verifier) throws Exception {
         try (ActivityScenario<? extends Activity> scenario = ActivityScenario.launch(intent)) {
             if (preparer != null) scenario.onActivity(preparer::prepare);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Thread.sleep(500L);
+            if (verifier != null) scenario.onActivity(verifier::verify);
             UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
             Bitmap screenshot = automation.takeScreenshot();
             assertNotNull("无法截取页面：" + name, screenshot);
@@ -310,6 +382,10 @@ public final class UiRenderingInstrumentedTest {
 
     private interface ScreenPreparer {
         void prepare(Activity activity);
+    }
+
+    private interface ScreenVerifier {
+        void verify(Activity activity);
     }
 
     private void writeScreenshot(Context context, Bitmap screenshot, String name) throws IOException {

@@ -40,7 +40,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("TermuxPro", activity.getTitle());
         assertEquals("继续远程项目", activity.getString(R.string.workspace_home_title));
         assertEquals("打开远程终端", activity.getString(R.string.workspace_connect_action));
-        assertEquals("服务器与项目", activity.getString(R.string.workspace_manage_action));
+        assertEquals("复制或删除当前工作区", activity.getString(R.string.workspace_manage_action));
         int[] visibleViews = {R.id.workspace_setup_button};
         for (int id : visibleViews) {
             View view = activity.findViewById(id);
@@ -78,7 +78,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("服务器与项目",
             ((TextView) activity.findViewById(R.id.workspace_remote_card_title))
                 .getText().toString());
-        assertEquals("服务器与项目",
+        assertEquals("复制或删除当前工作区",
             ((TextView) activity.findViewById(R.id.workspace_manage_button)).getText().toString());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_manage_button).getVisibility());
@@ -88,7 +88,14 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_port_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_path_label).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_label)
+            .getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_selector)
+            .getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_hint)
             .getVisibility());
         activity.finish();
     }
@@ -104,6 +111,8 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22"));
 
         activity.findViewById(R.id.workspace_edit_button).performClick();
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
@@ -126,6 +135,8 @@ public class WorkspaceActivitySmokeTest {
             ((EditText) activity.findViewById(R.id.workspace_port_input)).getText().toString());
         assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
             .getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains(":22022"));
         activity.finish();
     }
 
@@ -134,19 +145,57 @@ public class WorkspaceActivitySmokeTest {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
 
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertPersistentConnectionFieldLabels(activity);
+        assertEquals("tmux 连接方式",
+            ((TextView) activity.findViewById(R.id.workspace_advanced_button)).getText()
+                .toString());
+        assertEquals(View.GONE,
+            activity.findViewById(R.id.workspace_connection_policy_label).getVisibility());
         assertEquals(View.GONE,
             activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
+        assertEquals(View.GONE,
+            activity.findViewById(R.id.workspace_connection_policy_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_session_name_input).getVisibility());
 
         activity.findViewById(R.id.workspace_advanced_button).performClick();
+        assertEquals("收起 tmux 连接方式",
+            ((TextView) activity.findViewById(R.id.workspace_advanced_button)).getText()
+                .toString());
+        assertEquals(View.VISIBLE,
+            activity.findViewById(R.id.workspace_connection_policy_label).getVisibility());
         assertEquals(View.VISIBLE,
             activity.findViewById(R.id.workspace_connection_policy_selector).getVisibility());
+        assertEquals(View.VISIBLE,
+            activity.findViewById(R.id.workspace_connection_policy_hint).getVisibility());
+        assertEquals("连接后如何处理 tmux",
+            ((TextView) activity.findViewById(R.id.workspace_connection_policy_label))
+                .getText().toString());
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_connection_policy_hint))
+            .getText().toString().contains("默认只建立 SSH"));
+        assertEquals("仅 SSH（推荐）",
+            ((Spinner) activity.findViewById(R.id.workspace_connection_policy_selector))
+                .getSelectedItem().toString());
         assertEquals(View.GONE,
             activity.findViewById(R.id.workspace_session_name_input).getVisibility());
         ((Spinner) activity.findViewById(R.id.workspace_connection_policy_selector)).setSelection(2);
         assertEquals(View.VISIBLE,
             activity.findViewById(R.id.workspace_session_name_input).getVisibility());
         activity.finish();
+    }
+
+    private void assertPersistentConnectionFieldLabels(WorkspaceActivity activity) {
+        assertEquals("SSH 地址（支持粘贴 ssh 命令）",
+            ((TextView) activity.findViewById(R.id.workspace_host_label)).getText().toString());
+        int[][] labels = {
+            {R.id.workspace_host_label, R.id.workspace_host_input},
+            {R.id.workspace_port_label, R.id.workspace_port_input},
+            {R.id.workspace_path_label, R.id.workspace_path_input}
+        };
+        for (int[] pair : labels) {
+            TextView label = activity.findViewById(pair[0]);
+            assertEquals(View.VISIBLE, label.getVisibility());
+            assertEquals(pair[1], label.getLabelFor());
+        }
     }
 
     @Test
@@ -165,6 +214,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
         assertTrue(selectedView.getText().toString().contains("远程开发 副本"));
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("尚未验证"));
         assertEquals("hdr@192.168.1.153",
@@ -178,6 +228,7 @@ public class WorkspaceActivitySmokeTest {
         TextView restoredOption = (TextView) ((Spinner) restored.findViewById(R.id.workspace_selector))
             .getAdapter().getView(1, null, restored.findViewById(R.id.workspace_selector));
         assertTrue(restoredOption.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(restoredOption.getText().toString().contains(":22"));
         assertEquals("hdr@192.168.1.153",
             ((EditText) restored.findViewById(R.id.workspace_host_input)).getText().toString());
         restored.finish();
@@ -203,6 +254,7 @@ public class WorkspaceActivitySmokeTest {
             selector.getSelectedItemPosition(), null, selector);
 
         assertTrue(selectedView.getText().toString().contains("hdr@192.168.1.153"));
+        assertTrue(selectedView.getText().toString().contains(":22"));
         assertTrue(selectedView.getText().toString().contains("~/termux-pro"));
         assertTrue(selectedView.getText().toString().contains("最近验证"));
         assertEquals(3, selectedView.getMaxLines());
@@ -349,12 +401,14 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("启动 Claude Code", shadowOf(dialog).getTitle());
         assertTrue(dialogMessage(dialog).contains("当前目标未完整配置"));
         assertTrue(dialogMessage(dialog).contains("Claude Code 常见于共享远程账号"));
-        assertEquals("新建会话（安全默认）\n将执行：claude\n在当前项目干净启动；共享 Claude 账号推荐使用。",
-            dialog.getListView().getAdapter().getItem(0));
-        assertEquals("选择历史会话\n将执行：claude --resume\n只打开 CLI 原生选择器，TermuxPro 不自动进入最近会话。",
-            dialog.getListView().getAdapter().getItem(1));
-        assertEquals(2,
-            dialog.getListView().getAdapter().getCount());
+        TextView newSession = dialog.findViewById(R.id.ai_session_new_button);
+        TextView history = dialog.findViewById(R.id.ai_session_history_button);
+        TextView context = dialog.findViewById(R.id.ai_session_choice_context);
+        assertNotNull(newSession);
+        assertNotNull(history);
+        assertEquals("新建会话（安全默认）\nclaude", newSession.getText().toString());
+        assertEquals("选择历史会话（不自动恢复）\nclaude --resume", history.getText().toString());
+        assertTrue(context.getText().toString().contains("Claude Code 常见于共享远程账号"));
         assertEquals(activity.getColor(R.color.tp_primary),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
         dialog.dismiss();
@@ -387,6 +441,9 @@ public class WorkspaceActivitySmokeTest {
 
     private static String dialogMessage(AlertDialog dialog) {
         TextView message = dialog.findViewById(android.R.id.message);
+        if (message == null || message.getText().length() == 0) {
+            message = dialog.findViewById(R.id.ai_session_choice_context);
+        }
         assertNotNull(message);
         return message.getText().toString();
     }

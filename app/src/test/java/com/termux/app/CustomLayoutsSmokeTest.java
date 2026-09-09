@@ -93,8 +93,10 @@ public class CustomLayoutsSmokeTest {
             R.layout.activity_termux, new FrameLayout(context), false);
         TextView workbench = page.findViewById(R.id.workspace_home_button);
         TextView sessions = page.findViewById(R.id.workspace_drawer_button);
+        TextView aiCenter = page.findViewById(R.id.terminal_ai_center_button);
         TextView tools = page.findViewById(R.id.terminal_tools_button);
         TextView closeSession = page.findViewById(R.id.close_session_button);
+        TextView newSession = page.findViewById(R.id.new_session_button);
         ImageButton settings = page.findViewById(R.id.settings_button);
         float density = context.getResources().getDisplayMetrics().density;
 
@@ -106,13 +108,21 @@ public class CustomLayoutsSmokeTest {
             sessions.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_sessions_short),
             sessions.getText().toString());
+        assertEquals(context.getString(R.string.terminal_ai_short), aiCenter.getText().toString());
+        assertEquals(context.getString(R.string.terminal_ai_cli_center_action),
+            aiCenter.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_tools_action), tools.getText().toString());
         assertEquals(context.getString(R.string.workspace_tools_action),
             tools.getContentDescription().toString());
         assertEquals(context.getString(R.string.action_close_session),
             closeSession.getText().toString());
+        assertEquals(context.getString(R.string.terminal_drawer_new_session_short),
+            newSession.getText().toString());
+        assertEquals(context.getString(R.string.action_new_session),
+            newSession.getContentDescription().toString());
         assertTrue(tools.getLayoutParams().height >= Math.round(48 * density));
         assertTrue(closeSession.getLayoutParams().height >= Math.round(48 * density));
+        assertTrue(newSession.getLayoutParams().width == 0);
         assertTrue(settings.getLayoutParams().width >= Math.round(48 * density));
         assertTrue(settings.getLayoutParams().height >= Math.round(48 * density));
     }
@@ -228,6 +238,14 @@ public class CustomLayoutsSmokeTest {
                 action.getLeft() >= 0 && action.getRight() <= width);
             assertEquals(View.VISIBLE, back.getVisibility());
             assertEquals(View.VISIBLE, action.getVisibility());
+            if (layouts[index] == R.layout.activity_git_diff) {
+                TextView title = page.findViewById(R.id.git_diff_title);
+                assertEquals("Git 标题在超大字体下仍保持单行", 1, title.getMaxLines());
+                assertEquals("Git 标题应按可用宽度缩放", TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                    title.getAutoSizeTextType());
+                assertTrue("Git 标题与刷新操作必须保留可见间距",
+                    action.getLeft() - title.getRight() >= Math.round(8 * density));
+            }
             if (layouts[index] == R.layout.activity_custom_commands) {
                 TextView title = page.findViewById(R.id.custom_commands_title);
                 assertEquals("快捷指令标题在超大字体下仍保持单行", 1, title.getMaxLines());

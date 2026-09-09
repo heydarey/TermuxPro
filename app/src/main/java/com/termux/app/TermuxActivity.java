@@ -691,11 +691,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
-        findViewById(R.id.terminal_claude_button).setOnClickListener(view ->
-            showAiLaunchDialog(AiCliLaunchCommand.Tool.CLAUDE));
-        findViewById(R.id.terminal_codex_button).setOnClickListener(view ->
-            showAiLaunchDialog(AiCliLaunchCommand.Tool.CODEX));
-        findViewById(R.id.terminal_prompt_button).setOnClickListener(view -> showPromptComposer());
+        findViewById(R.id.terminal_ai_center_button).setOnClickListener(view ->
+            startActivity(new Intent(this, AiCliSessionCenterActivity.class)));
         findViewById(R.id.terminal_tools_button).setOnClickListener(this::showProjectTools);
         updateTerminalToolsButtonState();
     }
@@ -706,9 +703,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (tools == null || mPreferences == null) return;
         boolean tuiMode = TerminalView.TOUCH_SCROLL_MODE_TUI.equals(
             mPreferences.getTerminalTouchScrollMode());
-        int label = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
-        tools.setText(label);
-        tools.setContentDescription(getString(label));
+        int description = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
+        tools.setText(R.string.workspace_tools_action);
+        tools.setContentDescription(getString(description));
     }
 
     private void startAiCli(String command) {
@@ -717,21 +714,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
-        String[] actions = {
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.NEW_SESSION),
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.PICK_HISTORY)
-        };
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.ai_session_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
-            .setMessage(AiCliLaunchMessage.forTerminalTarget(this, tool,
-                WorkspaceTargetStore.readActive(this)))
-            .setItems(actions, (selectionDialog, which) -> startAiCli(AiCliLaunchCommand.command(tool,
-                which == 0 ? AiCliLaunchCommand.Mode.NEW_SESSION :
-                    AiCliLaunchCommand.Mode.PICK_HISTORY)))
-            .setNegativeButton(android.R.string.cancel, null)
-            .create();
-        AiSessionDialog.show(this, dialog);
+        AiSessionDialog.showChoice(this, tool, AiCliLaunchMessage.forTerminalTarget(this, tool,
+            WorkspaceTargetStore.readActive(this)),
+            mode -> startAiCli(AiCliLaunchCommand.command(tool, mode)));
     }
 
     private void showProjectTools(View anchor) {
@@ -740,6 +725,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             TerminalView.TOUCH_SCROLL_MODE_TUI.equals(mPreferences.getTerminalTouchScrollMode()));
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
+                case TerminalProjectToolsMenu.TOOL_PROMPT_COMPOSER:
+                    showPromptComposer();
+                    return true;
                 case TerminalProjectToolsMenu.TOOL_SEARCH_OUTPUT:
                     showTerminalSearch();
                     return true;

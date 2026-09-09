@@ -33,6 +33,18 @@ add_test() {
 needs_android_compile=0
 for file in "${changed_files[@]}"; do
     case "$file" in
+        app/src/main/res/layout/activity_ai_cli_session_center.xml|app/src/test/java/com/termux/app/AiCliSessionCenterActivityTest.java)
+            add_test "com.termux.app.AiCliSessionCenterActivityTest"
+            add_test "com.termux.app.AiCliLaunchCommandTest"
+            needs_android_compile=1
+            ;;
+        app/src/main/res/values/strings.xml|app/src/main/res/values-*/strings.xml)
+            # 文案资源也可能改变增值页面的安全决策；保留三类核心页面的最小回归集合。
+            add_test "com.termux.app.WorkspaceActivitySmokeTest"
+            add_test "com.termux.app.AiCliSessionCenterActivityTest"
+            add_test "com.termux.app.CustomLayoutsSmokeTest"
+            needs_android_compile=1
+            ;;
         app/src/main/res/*|app/src/main/java/com/termux/app/WorkspaceActivity.java|app/src/main/java/com/termux/app/AiSessionDialog.java)
             add_test "com.termux.app.WorkspaceActivitySmokeTest"
             add_test "com.termux.app.CustomLayoutsSmokeTest"
@@ -118,6 +130,7 @@ static_checks=(
     "./test/workflow-trigger-policy-test.sh"
     "./test/github-cli-wrapper-test.sh"
     "./test/github-check-suites-test.sh"
+    "./test/context-checkpoint-test.sh"
 )
 
 for check in "${static_checks[@]}"; do

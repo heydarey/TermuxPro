@@ -52,9 +52,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
     static final String EXTRA_UI_TEST_SSH_READY = "com.termux.app.extra.UI_TEST_SSH_READY";
 
     private static final int REQUEST_NOTIFICATIONS = 1001;
-    private static final int MANAGE_NEW = 1;
-    private static final int MANAGE_COPY = 2;
-    private static final int MANAGE_DELETE = 3;
+    private static final int MANAGE_COPY = 1;
+    private static final int MANAGE_DELETE = 2;
 
     private static final String PREFERENCES_NAME = "ai_terminal_workspace";
     private static final String KEY_NAME = "name";
@@ -354,7 +353,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
             return getString(R.string.workspace_selector_unconfigured, profile.name);
         }
         return getString(R.string.workspace_selector_target, profile.name, profile.host,
-            profile.path, workspaceSelectorStatus(profile.id));
+            profile.port, profile.path, workspaceSelectorStatus(profile.id));
     }
 
     private String workspaceSelectorStatus(String profileId) {
@@ -433,13 +432,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     private void showWorkspaceManagement(View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
-        popup.getMenu().add(Menu.NONE, MANAGE_NEW, Menu.NONE, R.string.workspace_new_action);
         popup.getMenu().add(Menu.NONE, MANAGE_COPY, Menu.NONE, R.string.workspace_copy_action);
         popup.getMenu().add(Menu.NONE, MANAGE_DELETE, Menu.NONE, R.string.workspace_delete_action);
         popup.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == MANAGE_NEW) {
-                runAfterDiscardConfirmation(this::createWorkspace);
-            } else if (item.getItemId() == MANAGE_COPY) {
+            if (item.getItemId() == MANAGE_COPY) {
                 copyCurrentWorkspace();
             } else if (item.getItemId() == MANAGE_DELETE) {
                 confirmDeleteWorkspace();
@@ -618,20 +614,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
     }
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
-        String[] actions = {
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.NEW_SESSION),
-            AiCliLaunchMessage.actionLabel(this, tool, AiCliLaunchCommand.Mode.PICK_HISTORY)
-        };
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.ai_session_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
-            .setMessage(aiLaunchMessage(tool))
-            .setItems(actions, (selectionDialog, which) -> launchRemote(AiCliLaunchCommand.command(tool,
-                which == 0 ? AiCliLaunchCommand.Mode.NEW_SESSION :
-                    AiCliLaunchCommand.Mode.PICK_HISTORY)))
-            .setNegativeButton(android.R.string.cancel, null)
-            .create();
-        AiSessionDialog.show(this, dialog);
+        AiSessionDialog.showChoice(this, tool, aiLaunchMessage(tool),
+            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode)));
     }
 
     private String aiLaunchMessage(AiCliLaunchCommand.Tool tool) {
@@ -684,13 +668,16 @@ public final class WorkspaceActivity extends AppCompatActivity {
         boolean showEditor = !configured || mEditingProfile;
         int editorVisibility = showEditor ? View.VISIBLE : View.GONE;
         int[] basicEditorViews = {
-            R.id.workspace_host_input, R.id.workspace_port_input, R.id.workspace_path_input,
+            R.id.workspace_host_label, R.id.workspace_host_input,
+            R.id.workspace_port_label, R.id.workspace_port_input,
+            R.id.workspace_path_label, R.id.workspace_path_input,
             R.id.workspace_advanced_button
         };
         for (int id : basicEditorViews) findViewById(id).setVisibility(editorVisibility);
         int advancedVisibility = showEditor && mAdvancedEditing ? View.VISIBLE : View.GONE;
         int[] advancedEditorViews = {
-            R.id.workspace_name_input, R.id.workspace_connection_policy_selector
+            R.id.workspace_name_input, R.id.workspace_connection_policy_label,
+            R.id.workspace_connection_policy_selector, R.id.workspace_connection_policy_hint
         };
         for (int id : advancedEditorViews) findViewById(id).setVisibility(advancedVisibility);
         updateSessionNameState();
@@ -715,7 +702,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
                     ? getString(R.string.workspace_status_verification_expired)
                     : getString(R.string.workspace_status_unverified);
             ((TextView) findViewById(R.id.workspace_summary_details)).setText(getString(
-                R.string.workspace_summary_details, profile.host, profile.path, status));
+                R.string.workspace_summary_details, profile.host, profile.port, profile.path,
+                status));
         }
 
         WorkspaceConnectionState currentState = mConnectionStateStore.read(profile.id);

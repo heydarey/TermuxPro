@@ -26,6 +26,9 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 28, qualifiers = "zh-rCN")
 public class CustomCommandsActivityTest {
@@ -53,6 +56,19 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals("选用模板", ((TextView) activity.findViewById(
+            R.id.custom_commands_templates)).getText().toString());
+        assertEquals("新建指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_add)).getText().toString());
+        TextView templateHint = activity.findViewById(R.id.custom_commands_template_hint);
+        assertEquals(activity.getString(R.string.custom_commands_template_hint),
+            templateHint.getContentDescription().toString());
+        assertEquals(R.string.custom_commands_template_hint,
+            CustomCommandsActivity.templateHintResForFontScale(1.49f));
+        assertEquals(R.string.custom_commands_template_hint_compact,
+            CustomCommandsActivity.templateHintResForFontScale(1.5f));
 
         activity.findViewById(R.id.custom_commands_add).performClick();
         shadowOf(Looper.getMainLooper()).idle();
@@ -68,10 +84,13 @@ public class CustomCommandsActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
 
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
-        assertEquals(1, list.getChildCount());
+        assertEquals(2, list.getChildCount());
+        assertEquals("未分组 场景", ((TextView) list.getChildAt(0)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_scenario_hint).getVisibility());
     }
 
     @Test
@@ -127,7 +146,7 @@ public class CustomCommandsActivityTest {
             CustomCommandsActivity.class).setup().get();
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
 
-        list.getChildAt(0).findViewById(R.id.custom_command_run).performClick();
+        list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
         String message = ((TextView) preview.findViewById(android.R.id.message))
             .getText().toString();
@@ -154,17 +173,105 @@ public class CustomCommandsActivityTest {
             CustomCommandsActivity.class).setup().get();
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
 
-        assertEquals("git status --short", ((TextView) list.getChildAt(0)
+        assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        assertEquals("git status --short", ((TextView) list.getChildAt(1)
             .findViewById(R.id.custom_command_value)).getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
-            ((TextView) list.getChildAt(0).findViewById(R.id.custom_command_run)).getText().toString());
-        list.getChildAt(0).findViewById(R.id.custom_command_run).performClick();
+            ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
+        list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
         assertTrue(intent.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("git status --short"));
+    }
+
+    @Test
+    public void filtersCommandsByNameGroupCommandAndDirectoryWithoutChangingStoreOrder() {
+        CustomCommand git = new CustomCommand("git-status", "查看状态", "git status --short", "",
+            "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY);
+        CustomCommand ai = new CustomCommand("ai-resume", "继续 Codex", "codex resume", "apps/mobile",
+            "AI", true, CustomCommand.Confirmation.ALWAYS);
+        CustomCommand test = new CustomCommand("frontend-test", "前端检查", "pnpm test", "apps/web",
+            "测试", true, CustomCommand.Confirmation.ALWAYS);
+        CustomCommand build = new CustomCommand("android-build", "构建 Android", "./gradlew assembleDebug",
+            "", "构建", true, CustomCommand.Confirmation.ALWAYS);
+        List<CustomCommand> commands = Arrays.asList(git, ai, test, build);
+
+        assertEquals(Arrays.asList(ai), CustomCommandsActivity.filterCommands(commands, "codex"));
+        assertEquals(Arrays.asList(git), CustomCommandsActivity.filterCommands(commands, "git"));
+        assertEquals(Arrays.asList(ai), CustomCommandsActivity.filterCommands(commands, "mobile"));
+        assertEquals(Arrays.asList(test), CustomCommandsActivity.filterCommands(commands, "测试"));
+        assertEquals(commands, CustomCommandsActivity.filterCommands(commands, "  "));
+        assertTrue(CustomCommandsActivity.filterCommands(commands, "not-found").isEmpty());
+
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        for (CustomCommand command : commands) store.save("workspace-a", command);
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+        EditText search = activity.findViewById(R.id.custom_commands_search_input);
+        search.setText("codex");
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals("已显示 1 / 4 条快捷指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_search_summary)).getText().toString());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_clear_search).getVisibility());
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+        assertEquals(2, list.getChildCount());
+        assertTrue(((TextView) list.getChildAt(1).findViewById(R.id.custom_command_name)).getText()
+            .toString().contains("Codex"));
+
+        search.setText("not-found");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.custom_commands_search_empty).getVisibility());
+        activity.findViewById(R.id.custom_commands_clear_search).performClick();
+        assertEquals("", search.getText().toString());
+        assertEquals(8, list.getChildCount());
+    }
+
+    @Test
+    public void keepsSmallShortcutListsFocusedOnExecutionInsteadOfShowingUnusedSearch() {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", CustomCommand.create("查看状态", "git status --short", "", "Git",
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", CustomCommand.create("继续 Codex", "codex resume", "", "AI",
+            CustomCommand.Confirmation.ALWAYS));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_search_label)
+            .getVisibility());
+        assertEquals(View.GONE, ((View) activity.findViewById(R.id.custom_commands_search_input)
+            .getParent()).getVisibility());
+    }
+
+    @Test
+    public void groupsCommandsByScenarioWithoutChangingStoredOrder() {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("ai-resume", "Codex 历史",
+            "codex resume", "", "AI", true, CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("git-log", "Git 提交",
+            "git log --oneline -n 5", "", "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY));
+
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+
+        assertEquals(5, list.getChildCount());
+        assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        assertEquals("Git 状态", ((TextView) list.getChildAt(1)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("Git 提交", ((TextView) list.getChildAt(2)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
+        assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
+            .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("Git 状态", store.list("workspace-a").get(0).name);
+        assertEquals("Codex 历史", store.list("workspace-a").get(1).name);
+        assertEquals("Git 提交", store.list("workspace-a").get(2).name);
     }
 
     @Test

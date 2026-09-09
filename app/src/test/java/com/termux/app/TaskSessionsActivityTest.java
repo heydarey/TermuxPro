@@ -40,7 +40,7 @@ public class TaskSessionsActivityTest {
         TextView ownedRow = (TextView) sessions.getAdapter().getView(0, null, sessions);
         String rowText = ownedRow.getText().toString();
         assertTrue(rowText.startsWith("feature-login"));
-        assertTrue(rowText.contains("TermuxPro 创建"));
+        assertTrue(rowText.contains("当前工作区 · TermuxPro 创建"));
         assertTrue(rowText.contains("创建 "));
         assertTrue(rowText.contains("活跃 "));
         TextView otherWorkspaceRow = (TextView) sessions.getAdapter().getView(1, null, sessions);
@@ -48,12 +48,48 @@ public class TaskSessionsActivityTest {
         TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
         assertTrue(safetyHint.getText().toString().contains("当前工作区会话优先显示"));
         assertTrue(safetyHint.getText().toString().contains("只允许进入"));
+        assertEquals(activity.getString(R.string.task_sessions_safety_hint),
+            safetyHint.getContentDescription().toString());
 
         create.performClick();
         AlertDialog dialog = (AlertDialog) ShadowDialog.getLatestDialog();
         assertNotNull(dialog);
         assertTrue(dialog.isShowing());
         assertNotNull(dialog.findViewById(R.id.task_session_name_input));
+    }
+
+    @Test
+    public void largeFontUsesCompactSafetyHintWithoutWeakeningAccessibilityDescription() {
+        assertEquals(R.string.task_sessions_safety_hint,
+            TaskSessionsActivity.safetyHintResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_safety_hint_compact,
+            TaskSessionsActivity.safetyHintResForFontScale(1.5f));
+        assertEquals(R.string.task_sessions_ready,
+            TaskSessionsActivity.readyMessageResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_ready_compact,
+            TaskSessionsActivity.readyMessageResForFontScale(1.5f));
+        assertEquals(R.string.task_sessions_row,
+            TaskSessionsActivity.sessionRowResForFontScale(1.49f));
+        assertEquals(R.string.task_sessions_row_compact,
+            TaskSessionsActivity.sessionRowResForFontScale(1.5f));
+    }
+
+    @Test
+    public void compactRowKeepsNameStateAndOwnershipBeforeLowPriorityTimestamps() {
+        TaskSessionsActivity activity = previewActivity();
+        ListView sessions = activity.findViewById(R.id.task_sessions_list);
+        TextView status = activity.findViewById(R.id.task_sessions_status);
+        TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
+        assertEquals(View.VISIBLE, status.getVisibility());
+        assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+        assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+        assertTrue(TaskSessionsActivity.hidesReadyMessageForFontScale(1.5f));
+        assertTrue(!TaskSessionsActivity.hidesReadyMessageForFontScale(1.49f));
+        // 行格式选择独立于远端结果，确保大字体仅收敛视觉信息而非放宽会话归属边界。
+        assertEquals(R.string.task_sessions_row_compact,
+            TaskSessionsActivity.sessionRowResForFontScale(1.5f));
+        assertTrue(((TextView) sessions.getAdapter().getView(0, null, sessions)).getText().toString()
+            .contains("当前工作区"));
     }
 
     @Test

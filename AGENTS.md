@@ -1,8 +1,9 @@
 # TermuxPro 智能体协作规则
 
 涉及本项目的产品、架构、开发、测试、发布或回归任务，先读取并遵循
-`.agents/skills/termuxpro-development/SKILL.md`。以代码、测试结果和设备证据为准，不以旧对话或计划代替
-当前事实。
+`.agents/skills/termuxpro-development/SKILL.md`。恢复会话或模型切换后同时读取 `docs/CURRENT_STATE.md`
+（若存在），必要时运行 `scripts/update-context-checkpoint.sh` 刷新仓库级检查点。以代码、测试结果和
+设备证据为准，不以旧对话或计划代替当前事实。
 
 项目负责人必须主动维护产品，不以首版发布为终点，也不等待用户逐项指出问题。按需组织产品经理、
 UI/UX 设计师、架构、Android/全栈开发、测试、安全和发布角色；现有能力不足时主动增加专项角色。
@@ -96,6 +97,9 @@ Codex 额度只设一个门禁，不再按自然日计算或限制：以当前�
 `192.168.1.153`、SSH、tmux 或 Codex 会话中断并恢复后，必须重新续跑当前持久 Goal：先检查 Goal、分支、
 工作树、未完成测试、PR 和 CI，再从最近安全检查点继续。不得因网络重连创建重复任务，也不得让“持续
 迭代”在无人在线时静默终止；恢复判断以落盘文件和 GitHub 状态为准，不依赖临时对话记忆。
+上下文检查点统一用 `scripts/update-context-checkpoint.sh` 生成或输出，默认写入 `docs/CURRENT_STATE.md`；
+脚本必须只使用仓库内工具和项目级配置，不依赖用户主目录、全局 `PATH` 或系统 Python 包。恢复后若该文件
+与 GitHub 当前状态冲突，以实时 Git/GitHub/测试结果为准并立即刷新。
 
 从 tmux 会话内运行隔离 tmux 测试时，禁止只设置 `TMUX_TMPDIR` 后直接调用 `tmux`；子进程必须显式
 移除继承的 `TMUX`，或者每条命令统一使用唯一的 `tmux -L <socket-name>` / `tmux -S <socket-path>`。

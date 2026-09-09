@@ -75,6 +75,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mRecovery = findViewById(R.id.task_sessions_recovery_button);
         mCreate = findViewById(R.id.task_sessions_create_button);
         mList = findViewById(R.id.task_sessions_list);
+        configureSafetyHint();
         ((TextView) findViewById(R.id.task_sessions_target)).setText(
             getString(R.string.task_sessions_target, String.valueOf(mHost), mPort,
                 String.valueOf(mProjectPath)));
@@ -108,6 +109,53 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         }
     }
 
+    /** 大字体时保留共享会话的安全结论，避免静态说明挤掉首个可操作会话。 */
+    private void configureSafetyHint() {
+        TextView hint = findViewById(R.id.task_sessions_safety_hint);
+        float fontScale = getResources().getConfiguration().fontScale;
+        hint.setText(safetyHintResForFontScale(fontScale));
+        // 视觉上可收敛，但辅助技术仍能读到完整的归属与权限边界。
+        hint.setContentDescription(usesCompactHierarchy()
+            ? getString(R.string.task_sessions_safety_hint) + " "
+                + getString(R.string.task_sessions_ready)
+            : getString(R.string.task_sessions_safety_hint));
+    }
+
+    static int safetyHintResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_safety_hint_compact
+            : R.string.task_sessions_safety_hint;
+    }
+
+    static int readyMessageResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_ready_compact
+            : R.string.task_sessions_ready;
+    }
+
+    static int sessionRowResForFontScale(float fontScale) {
+        return fontScale >= 1.5f ? R.string.task_sessions_row_compact
+            : R.string.task_sessions_row;
+    }
+
+    private boolean usesCompactHierarchy() {
+        return hidesReadyMessageForFontScale(getResources().getConfiguration().fontScale);
+    }
+
+    static boolean hidesReadyMessageForFontScale(float fontScale) {
+        return fontScale >= 1.5f;
+    }
+
+    /** 保留完整说明给辅助技术，大字体视觉层优先让第一个可操作会话进入首屏。 */
+    private void showReadyMessage() {
+        // 大字体首屏已有目标与归属结论；不再重复占用高度，把首个可操作会话留在可视范围内。
+        if (hidesReadyMessageForFontScale(getResources().getConfiguration().fontScale)) {
+            mStatus.setVisibility(View.GONE);
+            return;
+        }
+        mStatus.setVisibility(View.VISIBLE);
+        mStatus.setText(readyMessageResForFontScale(getResources().getConfiguration().fontScale));
+        mStatus.setContentDescription(getString(R.string.task_sessions_ready));
+    }
+
     private void showPreviewForUiTest() {
         String fingerprint = WorkspaceCommandBuilder.workspaceFingerprint(mHost, mPort, mProjectPath);
         String output = "feature-login\0002\0000\0001788153600\0001788157200\000" + mOwnerToken
@@ -121,7 +169,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
         mCreate.setVisibility(View.VISIBLE);
         styleCreateButton(false);
-        mStatus.setText(R.string.task_sessions_ready);
+        showReadyMessage();
     }
 
     private void loadSessions() {
@@ -134,6 +182,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mRefresh.setEnabled(false);
         configureReturnToWorkspace();
         mRecovery.setVisibility(View.GONE);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(R.string.task_sessions_loading);
         mExecutor.execute(() -> {
             RemoteCommandRunner.Result result = mRunner.run(mHost, mPort,
@@ -161,13 +210,20 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mCreate.setVisibility(View.VISIBLE);
         mList.setEnabled(true);
         styleCreateButton(mSessions.isEmpty());
-        mStatus.setText(mSessions.isEmpty() ? R.string.task_sessions_empty : R.string.task_sessions_ready);
+        if (mSessions.isEmpty()) {
+            mStatus.setVisibility(View.VISIBLE);
+            mStatus.setText(R.string.task_sessions_empty);
+            mStatus.setContentDescription(null);
+        } else {
+            showReadyMessage();
+        }
     }
 
     private void showFailure(int message) {
         mProgress.setVisibility(View.GONE);
         mCreate.setVisibility(View.GONE);
         mRefresh.setEnabled(true);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(message);
         mRecovery.setVisibility(View.VISIBLE);
     }
@@ -176,6 +232,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         mProgress.setVisibility(View.GONE);
         mCreate.setVisibility(View.GONE);
         mRefresh.setEnabled(true);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(R.string.task_sessions_tmux_missing);
         mRecovery.setText(R.string.task_sessions_open_plain_ssh);
         mRecovery.setOnClickListener(view -> openPlainSsh());
@@ -199,6 +256,11 @@ public final class TaskSessionsActivity extends AppCompatActivity {
         String state = session.attached ? getString(R.string.task_sessions_attached) :
             getString(R.string.task_sessions_background);
         String ownership = ownershipLabel(session);
+        if (usesCompactHierarchy()) {
+            return getString(sessionRowResForFontScale(getResources().getConfiguration().fontScale),
+                session.name, session.windows, state,
+                ownership);
+        }
         String created = formatSessionTime(session.createdEpochSeconds);
         String activity = formatSessionTime(session.activityEpochSeconds);
         return getString(R.string.task_sessions_row, session.name, session.windows, state, ownership,
@@ -362,6 +424,7 @@ public final class TaskSessionsActivity extends AppCompatActivity {
 
     private void showMutationFailure(int message) {
         mProgress.setVisibility(View.GONE);
+        mStatus.setVisibility(View.VISIBLE);
         mStatus.setText(getString(R.string.task_sessions_mutation_uncertain, getString(message)));
         mRecovery.setText(R.string.task_sessions_refresh_result);
         mRecovery.setOnClickListener(view -> loadSessions());

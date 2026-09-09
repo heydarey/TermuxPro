@@ -44,6 +44,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     private String mOwnerToken;
     private ProgressBar mProgress;
     private TextView mType;
+    private TextView mTarget;
     private TextView mStatus;
     private Button mRecovery;
     private ListView mList;
@@ -68,6 +69,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mOwnerToken = getIntent().getStringExtra(EXTRA_OWNER_TOKEN);
         mProgress = findViewById(R.id.project_tasks_progress);
         mType = findViewById(R.id.project_tasks_type);
+        mTarget = findViewById(R.id.project_tasks_target);
         mStatus = findViewById(R.id.project_tasks_status);
         mRecovery = findViewById(R.id.project_tasks_recovery_button);
         mList = findViewById(R.id.project_tasks_list);
@@ -77,6 +79,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         findViewById(R.id.project_tasks_back_button).setOnClickListener(view -> finish());
         mRefresh = findViewById(R.id.project_tasks_refresh_button);
         mRefresh.setOnClickListener(view -> detect());
+        bindTarget();
         mRecovery.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
         if (mHost == null || mHost.trim().isEmpty() || mProjectPath == null || mProjectPath.trim().isEmpty()
             || !WorkspaceOwnershipStore.isValid(mOwnerToken)
@@ -86,6 +89,16 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         } else {
             detect();
         }
+    }
+
+    private void bindTarget() {
+        String host = mHost == null || mHost.trim().isEmpty()
+            ? getString(R.string.project_tasks_target_missing)
+            : mHost.trim();
+        String path = mProjectPath == null || mProjectPath.trim().isEmpty()
+            ? getString(R.string.project_tasks_target_missing)
+            : mProjectPath.trim();
+        mTarget.setText(getString(R.string.project_tasks_target, host, mPort, path));
     }
 
     private void detect() {

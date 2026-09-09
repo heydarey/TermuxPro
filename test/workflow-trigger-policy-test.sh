@@ -120,6 +120,14 @@ if ! grep -Fq 'GH_COMMAND_TIMEOUT_SECONDS: 45' "$auto_dev_pr_file"; then
     echo "自动研发 PR 工作流必须给 GitHub CLI 调用设置命令级超时，避免网络/API 卡死造成长时间失败提醒。" >&2
     exit 1
 fi
+if ! grep -Fq '创建 PR、等待门禁、合并并验证 dev' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 的 GitHub 可见步骤必须说明会等待门禁和 dev 收尾 CI，避免误判为创建 PR 卡死。" >&2
+    exit 1
+fi
+if ! grep -Fq '不代表创建 PR 卡死' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须在 Step Summary 解释长时间运行含义，减少 Actions 状态误读。" >&2
+    exit 1
+fi
 if ! grep -Fq 'gh_retry()' "$auto_dev_pr_file"; then
     echo "自动研发 PR 工作流必须封装 GitHub CLI 重试，避免偶发 API 抖动直接中断自治流水线。" >&2
     exit 1
