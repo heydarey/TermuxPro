@@ -342,6 +342,7 @@
     <string name="ai_cli_center_history_mode_new">new session</string>
     <string name="ai_cli_center_history_mode_pick">history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
+    <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_clear_history">Clear records</string>
     <string name="ai_cli_center_tmux_warning">On shared accounts or multi-user tmux environments, confirm ownership in the tmux session center first. Unmarked or other-owned sessions should only be attached explicitly, never auto-resumed or managed.</string>
     <string name="ai_cli_center_open_workspace">Server and project settings</string>

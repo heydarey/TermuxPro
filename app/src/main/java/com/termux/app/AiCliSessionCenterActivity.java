@@ -48,6 +48,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_codex_history).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
         findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
+        findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
+            deleteLatestHistory());
         findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view -> clearCurrentHistory());
 
         bindTarget();
@@ -148,12 +150,14 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void bindHistory() {
         TextView summary = findViewById(R.id.ai_cli_center_history_summary);
         View repeat = findViewById(R.id.ai_cli_center_repeat_last);
+        View deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
         View clear = findViewById(R.id.ai_cli_center_clear_history);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || !workspace.isConfigured()) {
             mLaunchHistory = java.util.Collections.emptyList();
             summary.setText(R.string.ai_cli_center_history_missing_workspace);
             repeat.setEnabled(false);
+            deleteLatest.setEnabled(false);
             clear.setEnabled(false);
             return;
         }
@@ -161,6 +165,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         if (mLaunchHistory.isEmpty()) {
             summary.setText(R.string.ai_cli_center_history_empty);
             repeat.setEnabled(false);
+            deleteLatest.setEnabled(false);
             clear.setEnabled(false);
             return;
         }
@@ -178,6 +183,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         }
         summary.setText(builder.toString());
         repeat.setEnabled(true);
+        deleteLatest.setEnabled(true);
         clear.setEnabled(true);
     }
 
@@ -194,6 +200,19 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         }
         AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
         launchAiCli(entry.tool, entry.mode);
+    }
+
+    private void deleteLatestHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()
+            || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        mLaunchHistoryStore.deleteEntry(workspace.id, entry.launchedAtMillis,
+            entry.tool, entry.mode);
+        bindHistory();
     }
 
     private void clearCurrentHistory() {

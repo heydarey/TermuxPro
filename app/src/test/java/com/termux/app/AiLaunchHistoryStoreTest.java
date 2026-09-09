@@ -75,4 +75,21 @@ public class AiLaunchHistoryStoreTest {
         assertTrue(store.readForWorkspace("a").isEmpty());
         assertEquals(1, store.readForWorkspace("b").size());
     }
+
+    @Test
+    public void deletesOnlySelectedEntryFromWorkspaceHistory() {
+        WorkspaceTarget workspace = new WorkspaceTarget("a", "A", "a@example.com", 22, "~/a");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+
+        AiLaunchHistoryStore.Entry latest = store.readForWorkspace("a").get(0);
+        assertTrue(store.deleteEntry("a", latest.launchedAtMillis, latest.tool, latest.mode));
+
+        List<AiLaunchHistoryStore.Entry> entries = store.readForWorkspace("a");
+        assertEquals(1, entries.size());
+        assertEquals(AiCliLaunchCommand.Tool.CLAUDE, entries.get(0).tool);
+        assertEquals(AiCliLaunchCommand.Mode.NEW_SESSION, entries.get(0).mode);
+    }
 }

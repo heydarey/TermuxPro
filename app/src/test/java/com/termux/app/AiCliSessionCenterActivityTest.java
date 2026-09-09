@@ -141,7 +141,7 @@ public class AiCliSessionCenterActivityTest {
     }
 
     @Test
-    public void repeatsAndClearsOnlyCurrentWorkspaceLaunchHistory() {
+    public void repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
             .putString(WorkspaceTargetStore.KEY_PROFILES,
@@ -151,6 +151,9 @@ public class AiCliSessionCenterActivityTest {
         AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
         store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
                 "~/project"),
+            AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
             AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY);
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
@@ -158,11 +161,16 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
 
+        activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
+        String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
+        assertTrue(afterDelete.contains("Claude Code"));
+        assertTrue(!afterDelete.contains("Codex CLI"));
+
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
         Intent repeated = shadowOf(activity).getNextStartedActivity();
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
-            .contains("codex resume"));
+            .contains("exec claude"));
 
         activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
