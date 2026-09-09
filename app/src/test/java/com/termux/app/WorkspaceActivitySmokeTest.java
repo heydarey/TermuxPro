@@ -120,6 +120,67 @@ public class WorkspaceActivitySmokeTest {
         activity.findViewById(R.id.workspace_edit_button).performClick();
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_summary).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+        activity.finish();
+    }
+
+    @Test
+    public void editingExistingWorkspaceCanReturnToSummaryWithoutLeavingPage() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+        EditText host = activity.findViewById(R.id.workspace_host_input);
+        host.setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+
+        activity.findViewById(R.id.workspace_edit_button).performClick();
+        host.setText("wrong.example.com");
+        activity.findViewById(R.id.workspace_back_button).performClick();
+        AlertDialog dialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(dialog);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertFalse(activity.isFinishing());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains("hdr@192.168.1.153"));
+        activity.finish();
+    }
+
+    @Test
+    public void workspaceOpenedFromTerminalShowsBackToPreviousPage() {
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK_TO_TERMINAL, true);
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+            .setup().get();
+
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+        activity.findViewById(R.id.workspace_back_button).performClick();
+
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void deletingLastWorkspaceClearsSavedTargetInsteadOfKeepingEmptyProfile() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+        assertNotNull(WorkspaceTargetStore.readActive(activity));
+
+        activity.findViewById(R.id.workspace_edit_button).performClick();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_delete_button).getVisibility());
+        activity.findViewById(R.id.workspace_delete_button).performClick();
+        AlertDialog dialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(dialog);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(null, WorkspaceTargetStore.readActive(activity));
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_delete_button).getVisibility());
+        assertEquals("", ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .getText().toString());
         activity.finish();
     }
 
