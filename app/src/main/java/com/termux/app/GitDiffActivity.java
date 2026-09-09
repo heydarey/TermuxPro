@@ -421,11 +421,30 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         return new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_commits)
-            .setMessage(R.string.git_workbench_commit_detail_hint)
+            .setMessage(commitHistoryMessage())
             .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list, labels),
                 (selectionDialog, which) -> loadCommitDetails(mOverview.commits.get(which).shortHash))
             .setNegativeButton(android.R.string.cancel, null)
             .create();
+    }
+
+    @NonNull
+    private String commitHistoryMessage() {
+        if (mOverview == null) return getString(R.string.git_workbench_commit_detail_hint);
+        ConnectionTarget target = currentTargetWithoutSideEffects();
+        String targetLabel = target == null ? getString(R.string.git_workbench_unknown_target)
+            : getString(R.string.git_workbench_target, target.host, target.port, target.path);
+        return getString(R.string.git_workbench_commit_detail_hint_with_context,
+            mOverview.head, targetLabel);
+    }
+
+    @Nullable
+    private ConnectionTarget currentTargetWithoutSideEffects() {
+        String host = getIntent().getStringExtra(EXTRA_HOST);
+        String path = getIntent().getStringExtra(EXTRA_PATH);
+        int port = getIntent().getIntExtra(EXTRA_PORT, 22);
+        if (host == null || path == null || port < 1 || port > 65535) return null;
+        return new ConnectionTarget(host, port, path);
     }
 
     private void loadCommitDetails(@NonNull String shortHash) {
