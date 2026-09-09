@@ -186,6 +186,15 @@
                     android:textColor="#D8E4EC"
                     android:textSize="15sp" />
 
+                <Button
+                    android:id="@+id/git_overview_primary_action_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#68E0B7"
+                    android:minHeight="48dp"
+                    android:textColor="#06231B" />
+
                 <TextView
                     android:id="@+id/git_overview_recent_commits_title"
                     android:layout_width="match_parent"

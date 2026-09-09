@@ -266,6 +266,7 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         ((TextView) findViewById(R.id.git_overview_next_step)).setText(
             nextStepGuidance(overview));
+        bindPrimaryAction(overview);
         ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
             recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
@@ -281,6 +282,69 @@ public final class GitDiffActivity extends AppCompatActivity {
         Button push = findViewById(R.id.git_overview_push_button);
         push.setEnabled(canPush);
         push.setAlpha(canPush ? 1f : 0.48f);
+    }
+
+    /** 将“下一步建议”落实为首屏主操作，避免手机上在横向按钮长条中寻找动作。 */
+    private void bindPrimaryAction(@NonNull GitRepositoryOverview overview) {
+        Button action = findViewById(R.id.git_overview_primary_action_button);
+        action.setVisibility(View.VISIBLE);
+        action.setEnabled(true);
+        action.setAlpha(1f);
+        if (overview.detached) {
+            action.setText(R.string.git_workbench_primary_branch);
+            action.setContentDescription(getString(R.string.git_workbench_primary_branch_description));
+            action.setOnClickListener(view -> showBranches());
+            return;
+        }
+        if (overview.changedFiles > 0) {
+            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
+                action.setText(R.string.git_workbench_primary_commit);
+                action.setContentDescription(getString(R.string.git_workbench_primary_commit_description));
+                action.setOnClickListener(view -> showCommitDialog());
+                return;
+            }
+            if (!overview.fileChanges.isEmpty()) {
+                action.setText(R.string.git_workbench_primary_review_files);
+                action.setContentDescription(getString(
+                    R.string.git_workbench_primary_review_files_description));
+                action.setOnClickListener(view -> showChangedFiles());
+                return;
+            }
+            action.setText(R.string.git_workbench_primary_review_diff);
+            action.setContentDescription(getString(
+                R.string.git_workbench_primary_review_diff_description));
+            action.setOnClickListener(view -> loadDiff());
+            return;
+        }
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            action.setText(R.string.git_workbench_primary_create_branch);
+            action.setContentDescription(getString(
+                R.string.git_workbench_primary_create_branch_description));
+            action.setOnClickListener(view -> showCreateBranchDialog());
+            return;
+        }
+        if (overview.behind > 0) {
+            action.setText(R.string.git_workbench_primary_pull);
+            action.setContentDescription(getString(R.string.git_workbench_primary_pull_description));
+            action.setOnClickListener(view -> confirmPullFastForward());
+            return;
+        }
+        if (overview.ahead > 0) {
+            action.setText(R.string.git_workbench_primary_push);
+            action.setContentDescription(getString(R.string.git_workbench_primary_push_description));
+            action.setOnClickListener(view -> confirmPushUpstream());
+            return;
+        }
+        if (!overview.commits.isEmpty()) {
+            action.setText(R.string.git_workbench_primary_commits);
+            action.setContentDescription(getString(R.string.git_workbench_primary_commits_description));
+            action.setOnClickListener(view -> showCommits());
+            return;
+        }
+        action.setText(R.string.git_workbench_primary_create_branch);
+        action.setContentDescription(getString(
+            R.string.git_workbench_primary_create_branch_description));
+        action.setOnClickListener(view -> showCreateBranchDialog());
     }
 
     @NonNull
