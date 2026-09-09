@@ -532,7 +532,7 @@
     <string name="git_workbench_stash_drop_failed">Git did not delete the stash.\n\n%1$s</string>
     <string name="git_workbench_commit">Commit</string>
     <string name="git_workbench_commit_hint">For example fix: improve mobile terminal UX</string>
-    <string name="git_workbench_commit_message">Commit %1$d staged file(s). %2$d unstaged file(s) will stay outside this commit. Nothing is pushed.</string>
+    <string name="git_workbench_commit_message">Commit %1$d staged file(s) to branch %3$s.\n\nTarget: %4$s:%5$d · %6$s\n\n%2$d unstaged file(s) will stay outside this commit. Nothing is pushed.</string>
     <string name="git_workbench_commit_action">Commit staged</string>
     <string name="git_workbench_commit_invalid">Use a non-empty single-line message up to 200 characters. Control characters are not allowed.</string>
     <string name="git_workbench_committing">Committing staged changes…</string>

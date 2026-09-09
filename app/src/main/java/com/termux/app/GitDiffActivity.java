@@ -730,6 +730,8 @@ public final class GitDiffActivity extends AppCompatActivity {
     @Nullable
     AlertDialog createCommitDialog() {
         if (mOverview == null) return null;
+        ConnectionTarget target = readTarget();
+        if (target == null) return null;
         if (mOverview.stagedFiles <= 0) {
             showStatus(getString(R.string.git_workbench_no_staged_changes), false);
             return null;
@@ -745,7 +747,7 @@ public final class GitDiffActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_commit)
             .setMessage(getString(R.string.git_workbench_commit_message, mOverview.stagedFiles,
-                mOverview.unstagedFiles))
+                mOverview.unstagedFiles, mOverview.head, target.host, target.port, target.path))
             .setView(input)
             .setPositiveButton(R.string.git_workbench_commit_action, null)
             .setNegativeButton(android.R.string.cancel, null)
