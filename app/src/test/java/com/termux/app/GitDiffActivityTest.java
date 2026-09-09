@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -215,14 +216,27 @@ public final class GitDiffActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertEquals(activity.getColor(R.color.tp_text_secondary),
             commits.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
-        String message = ((TextView) commits.findViewById(android.R.id.message)).getText()
+        String message = ((TextView) commits.findViewById(R.id.git_commit_history_message)).getText()
             .toString();
         assertTrue(message.contains("当前分支：dev"));
         assertTrue(message.contains("当前目标：hdr@192.168.1.153:22 · ~/repo"));
         assertTrue(message.contains("只读"));
-        assertEquals(2, commits.getListView().getAdapter().getCount());
-        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("abc1234"));
-        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("修复滚动"));
+        ListView list = commits.findViewById(R.id.git_commit_history_list);
+        assertNotNull(list);
+        assertEquals(2, list.getAdapter().getCount());
+        assertTrue(list.getAdapter().getItem(0).toString().contains("abc1234"));
+        assertTrue(list.getAdapter().getItem(0).toString().contains("修复滚动"));
+        EditText filter = commits.findViewById(R.id.git_commit_history_filter);
+        assertNotNull(filter);
+        filter.setText("Git");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(1, list.getAdapter().getCount());
+        assertTrue(list.getAdapter().getItem(0).toString().contains("def5678"));
+        filter.setText("missing");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(0, list.getAdapter().getCount());
+        assertTrue(((TextView) commits.findViewById(R.id.git_commit_history_empty)).getText()
+            .toString().contains("missing"));
     }
 
     @Test
