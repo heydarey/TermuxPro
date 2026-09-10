@@ -231,6 +231,9 @@
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
     <string name="ai_cli_center_delete_latest_target">删除最近：%1$s · %2$s</string>
+    <string name="ai_cli_center_delete_latest_title">删除最近这条 AI 启动记录？</string>
+    <string name="ai_cli_center_delete_latest_message">将删除 TermuxPro 本地记录：%1$s · %2$s\n%3$s:%4$d · %5$s\n\n不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
+    <string name="ai_cli_center_delete_latest_action">删除本地记录</string>
     <string name="ai_cli_center_clear_history">清空记录</string>
     <string name="ai_cli_center_clear_history_title">清空当前工作区的 AI 启动记录？</string>
     <string name="ai_cli_center_clear_history_message">将删除“%1$s”中由 TermuxPro 记录的 %2$d 条本地启动记录。\n\n不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>

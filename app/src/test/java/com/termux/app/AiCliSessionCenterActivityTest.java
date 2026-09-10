@@ -172,6 +172,23 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_delete_latest));
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
+        AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(deleteConfirm);
+        assertEquals("删除最近这条 AI 启动记录？", shadowOf(deleteConfirm).getTitle());
+        String deleteMessage = ((TextView) deleteConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(deleteMessage.contains("Codex CLI · 历史选择"));
+        assertTrue(deleteMessage.contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(deleteMessage.contains("不会删除 Claude/Codex 远端历史"));
+        assertEquals("删除本地记录",
+            deleteConfirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        deleteConfirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
+
+        activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
+        deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        deleteConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
         assertTrue(afterDelete.contains("Claude Code"));
         assertTrue(!afterDelete.contains("Codex CLI"));
