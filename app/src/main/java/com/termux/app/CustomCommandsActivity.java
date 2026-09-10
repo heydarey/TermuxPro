@@ -363,7 +363,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         CustomCommandTemplate[] templates = CustomCommandTemplate.defaults(this);
         String[] labels = new String[templates.length];
         for (int index = 0; index < templates.length; index++) {
-            labels[index] = templates[index].name + "\n" + templates[index].command;
+            labels[index] = templates[index].name;
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.custom_commands_template_title)

@@ -799,7 +799,7 @@
     <string name="custom_commands_empty">No quick commands yet. Use a template and adapt it to this project, or create a command from scratch.</string>
     <string name="custom_commands_group_header">%1$s workflow</string>
     <string name="custom_commands_template_title">Choose a quick command template</string>
-    <string name="custom_commands_template_message">Templates only fill the editor. Nothing is saved before you confirm, and every run still follows confirmation and dangerous-command checks.</string>
+    <string name="custom_commands_template_message">Choose a template by scenario, then verify the full command in the editor. Nothing is saved before you confirm, and choosing a template never runs it.</string>
     <string name="custom_commands_template_codex_new">Codex: new isolated session</string>
     <string name="custom_commands_template_codex">Codex: choose a past session</string>
     <string name="custom_commands_template_claude_new">Claude: new isolated session</string>

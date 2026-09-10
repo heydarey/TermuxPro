@@ -106,13 +106,12 @@ public class CustomCommandsActivityTest {
             shadowOf(templateDialog).getTitle());
         ListView listView = templateDialog.getListView();
         assertTrue(listView.getAdapter().getCount() >= 8);
-        assertTrue(listView.getAdapter().getItem(0).toString().contains("Codex：新建独立会话"));
-        assertTrue(listView.getAdapter().getItem(0).toString().contains("\ncodex"));
-        assertTrue(listView.getAdapter().getItem(1).toString().contains("Codex：选择历史会话"));
-        assertTrue(listView.getAdapter().getItem(1).toString().contains("codex resume"));
-        assertTrue(listView.getAdapter().getItem(2).toString().contains("claude"));
-        assertFalse(listView.getAdapter().getItem(2).toString().contains("--continue"));
-        assertTrue(listView.getAdapter().getItem(3).toString().contains("claude --resume"));
+        assertEquals("Codex：新建独立会话", listView.getAdapter().getItem(0).toString());
+        assertEquals("Codex：选择历史会话", listView.getAdapter().getItem(1).toString());
+        assertEquals("Claude：新建独立会话", listView.getAdapter().getItem(2).toString());
+        assertEquals("Claude：选择历史会话", listView.getAdapter().getItem(3).toString());
+        assertFalse(listView.getAdapter().getItem(0).toString().contains("\n"));
+        assertFalse(listView.getAdapter().getItem(3).toString().contains("claude --resume"));
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
             .list("workspace-a").size());
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
