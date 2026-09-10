@@ -162,6 +162,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_edit_button).setOnClickListener(view -> {
             mEditingProfile = true;
             mAdvancedEditing = false;
+            mToolboxExpanded = false;
             refreshHomeState();
             mHostInput.requestFocus();
         });
@@ -418,6 +419,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         setWorkspaceDirty(false);
         mEditingProfile = TextUtils.isEmpty(profile.host);
         mAdvancedEditing = false;
+        mToolboxExpanded = false;
         refreshConnectionState();
     }
 
