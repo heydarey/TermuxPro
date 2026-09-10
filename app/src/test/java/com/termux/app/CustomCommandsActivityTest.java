@@ -57,6 +57,8 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_action_feedback).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
@@ -91,6 +93,11 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertEquals(View.VISIBLE, feedback.getVisibility());
+        assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
+        assertTrue(feedback.getText().toString().contains("查看并运行"));
+        assertEquals(feedback.getText().toString(), feedback.getContentDescription().toString());
     }
 
     @Test
@@ -297,5 +304,7 @@ public class CustomCommandsActivityTest {
             ((TextView) activity.findViewById(R.id.custom_commands_empty)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_action_feedback).getVisibility());
     }
 }
