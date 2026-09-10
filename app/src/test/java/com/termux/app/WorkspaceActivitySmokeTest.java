@@ -132,6 +132,9 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("快捷指令",
             ((TextView) activity.findViewById(R.id.workspace_custom_commands_button))
                 .getText().toString());
+        assertEquals("Git 工作台",
+            ((TextView) activity.findViewById(R.id.workspace_review_diff_button))
+                .getText().toString());
 
         activity.findViewById(R.id.workspace_toolbox_button).performClick();
 
