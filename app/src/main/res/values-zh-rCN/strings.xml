@@ -564,6 +564,15 @@
     <string name="project_tasks_confirm_message">将在新的持久终端会话中运行。\n\n目标：%1$s\n\n命令：\n%2$s</string>
     <string name="project_tasks_run">运行任务</string>
     <string name="project_tasks_view_sessions">查看任务会话</string>
+    <string name="project_tasks_sessions_loading">正在检查当前工作区的任务会话…</string>
+    <string name="project_tasks_sessions_empty">当前工作区暂无项目任务会话；运行任务后会在这里提示，可再进入 tmux 管理查看。</string>
+    <string name="project_tasks_sessions_unavailable">暂时无法读取任务会话；不会自动进入任何 tmux，可点“查看任务会话”重试。</string>
+    <plurals name="project_tasks_sessions_summary">
+        <item quantity="other">当前工作区有 %1$d 个项目任务会话，最近：%2$s · %3$s；另有 %4$d 个其他工作区任务不会自动进入。</item>
+    </plurals>
+    <plurals name="project_tasks_sessions_other_only">
+        <item quantity="other">当前工作区暂无任务会话；检测到 %1$d 个其他工作区任务，TermuxPro 不会自动进入或管理。</item>
+    </plurals>
     <string name="workspace_diagnostic_action">环境诊断</string>
     <string name="connection_diagnostic_title">连接诊断</string>
     <string name="connection_diagnostic_running">正在检查活动 SSH 连接和远端工具…</string>

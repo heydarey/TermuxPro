@@ -26,12 +26,14 @@ import java.lang.reflect.Method;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 28, qualifiers = "zh-rCN")
 public final class ProjectTasksActivityTest {
+    private static final String OWNER = "11111111-2222-3333-4444-555555555555";
+
 
     @Test
     public void confirmationNamesRemoteTargetAndCommand() throws Exception {
         ProjectTasksActivity activity = Robolectric.buildActivity(ProjectTasksActivity.class,
             ProjectTasksActivity.newIntent(RuntimeEnvironment.getApplication(),
-                "hdr@192.168.1.153", 22, "~/project", "11111111-2222-3333-4444-555555555555"))
+                "hdr@192.168.1.153", 22, "~/project", OWNER))
             .setup().get();
 
         Method confirmTask = ProjectTasksActivity.class.getDeclaredMethod("confirmTask",
@@ -52,7 +54,7 @@ public final class ProjectTasksActivityTest {
     public void validWorkspaceCanOpenTaskSessionManager() {
         ProjectTasksActivity activity = Robolectric.buildActivity(ProjectTasksActivity.class,
             ProjectTasksActivity.newIntent(RuntimeEnvironment.getApplication(),
-                "hdr@192.168.1.153", 22, "~/project", "11111111-2222-3333-4444-555555555555"))
+                "hdr@192.168.1.153", 22, "~/project", OWNER))
             .setup().get();
 
         View sessions = activity.findViewById(R.id.project_tasks_sessions_button);
@@ -62,5 +64,44 @@ public final class ProjectTasksActivityTest {
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
         assertEquals(TaskSessionsActivity.class.getName(), intent.getComponent().getClassName());
+    }
+
+    @Test
+    public void taskSessionSummaryHighlightsOnlyCurrentWorkspaceTasks() {
+        String current = WorkspaceCommandBuilder.workspaceFingerprint(
+            "hdr@192.168.1.153", 22, "~/project");
+        String output = session("mobile-task-current", 1, false, 1788153600L, 1788157200L,
+            OWNER, current)
+            + session("mobile-task-other", 1, false, 1788150000L, 1788153600L,
+            OWNER, "other-workspace");
+
+        String summary = ProjectTasksActivity.taskSessionSummaryText(RuntimeEnvironment.getApplication(),
+            "hdr@192.168.1.153", 22, "~/project", OWNER, output);
+
+        assertTrue(summary.contains("当前工作区有 1 个项目任务会话"));
+        assertTrue(summary.contains("mobile-task-current"));
+        assertTrue(summary.contains("后台运行"));
+        assertTrue(summary.contains("另有 1 个其他工作区任务不会自动进入"));
+        assertTrue(!summary.contains("mobile-task-other ·"));
+    }
+
+    @Test
+    public void taskSessionSummaryDoesNotAutoRecoverOtherWorkspaceTasks() {
+        String output = session("mobile-task-other", 1, true, 1788150000L, 1788153600L,
+            OWNER, "other-workspace");
+
+        String summary = ProjectTasksActivity.taskSessionSummaryText(RuntimeEnvironment.getApplication(),
+            "hdr@192.168.1.153", 22, "~/project", OWNER, output);
+
+        assertTrue(summary.contains("当前工作区暂无任务会话"));
+        assertTrue(summary.contains("1 个其他工作区任务"));
+        assertTrue(summary.contains("不会自动进入或管理"));
+        assertTrue(!summary.contains("mobile-task-other"));
+    }
+
+    private static String session(String name, int windows, boolean attached, long created,
+                                  long activity, String owner, String fingerprint) {
+        return name + "\0" + windows + "\0" + (attached ? "1" : "0") + "\0"
+            + created + "\0" + activity + "\0" + owner + "\0" + fingerprint + "\0";
     }
 }
