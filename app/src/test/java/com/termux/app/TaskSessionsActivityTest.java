@@ -81,7 +81,7 @@ public class TaskSessionsActivityTest {
         TextView status = activity.findViewById(R.id.task_sessions_status);
         TextView safetyHint = activity.findViewById(R.id.task_sessions_safety_hint);
         assertEquals(View.VISIBLE, status.getVisibility());
-        assertTrue(status.getContentDescription().toString().contains("重命名或停止"));
+        assertTrue(status.getContentDescription().toString().contains("新建、进入、重命名和停止"));
         assertTrue(safetyHint.getContentDescription().toString().contains("必须确认后才能进入"));
         assertTrue(TaskSessionsActivity.hidesReadyMessageForFontScale(1.5f));
         assertTrue(!TaskSessionsActivity.hidesReadyMessageForFontScale(1.49f));
@@ -102,6 +102,19 @@ public class TaskSessionsActivityTest {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
         assertTrue(dialog.isShowing());
+    }
+
+    @Test
+    public void pageCopyCommunicatesTmuxManagementInsteadOfReadOnlyList() {
+        TaskSessionsActivity activity = previewActivity();
+        TextView title = activity.findViewById(R.id.task_sessions_title);
+        TextView status = activity.findViewById(R.id.task_sessions_status);
+        TextView create = activity.findViewById(R.id.task_sessions_create_button);
+
+        assertEquals("tmux 管理", title.getText().toString());
+        assertEquals("新建当前工作区会话", create.getText().toString());
+        assertTrue(status.getContentDescription().toString().contains("新建、进入、重命名和停止"));
+        assertTrue(status.getContentDescription().toString().contains("只有当前工作区"));
     }
 
     @Test

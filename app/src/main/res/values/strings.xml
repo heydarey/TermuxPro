@@ -439,7 +439,7 @@
     <string name="terminal_web_preview_invalid_workspace">No valid Web preview ports are configured for the current workspace. Return to the workbench and configure the remote and phone ports first.</string>
     <string name="terminal_connection_diagnostic_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="terminal_ssh_keys_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
-    <string name="workspace_tmux_sessions_action">tmux sessions</string>
+    <string name="workspace_tmux_sessions_action">tmux manager</string>
     <string name="terminal_task_sessions_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure the server, project directory, and tmux policy first.</string>
     <string name="workspace_interrupt_action">Interrupt (Ctrl+C)</string>
     <string name="workspace_preview_title">Web preview</string>
@@ -718,7 +718,7 @@
     <string name="ssh_keys_install_message">Open an interactive terminal to install the public key on %1$s?\n\n%2$s</string>
     <string name="ssh_keys_clipboard_label">SSH public key</string>
     <string name="ssh_keys_copied">Public key copied</string>
-    <string name="workspace_task_sessions_action">tmux sessions</string>
+    <string name="workspace_task_sessions_action">tmux manager</string>
     <string name="workspace_development_tools_title">Development tools</string>
     <string name="workspace_development_tools_description">Review code, inspect files, run tasks, and manage the remote environment.</string>
     <string name="terminal_search_action">Search output</string>
@@ -733,10 +733,10 @@
     <string name="terminal_session_close_message">This will stop the local terminal session %1$s and its foreground process. Remote tmux sessions are not touched.</string>
     <string name="terminal_session_close_action">Close session</string>
     <string name="terminal_session_close_missing">No active session to close.</string>
-    <string name="task_sessions_title">tmux sessions</string>
+    <string name="task_sessions_title">tmux manager</string>
     <string name="task_sessions_loading">Loading remote tmux sessions…</string>
-    <string name="task_sessions_ready">Tap to enter. TermuxPro-owned sessions can also be renamed or stopped.</string>
-    <string name="task_sessions_ready_compact">Tap to enter. Sessions in this workspace can be managed.</string>
+    <string name="task_sessions_ready">This page supports create, attach, rename, and stop. Only TermuxPro sessions from the current workspace can be renamed or stopped.</string>
+    <string name="task_sessions_ready_compact">Create or attach; only current workspace sessions can be renamed or stopped.</string>
     <string name="task_sessions_empty">No tmux sessions yet. Create an isolated session for this workspace.</string>
     <string name="task_sessions_invalid_workspace">The workspace connection information is invalid.</string>
     <string name="task_sessions_failed">tmux sessions are temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
@@ -750,7 +750,7 @@
     <string name="task_sessions_attach_external_message">This will connect to an existing tmux session on %1$s:%2$d (%3$s). Continue only if it belongs to your current task. TermuxPro will not rename, stop, or write ownership markers to this session.</string>
     <string name="task_sessions_attach_external_confirm">Attach without managing</string>
     <string name="task_sessions_stop">Stop session</string>
-    <string name="task_sessions_create">New session</string>
+    <string name="task_sessions_create">New current workspace session</string>
     <string name="task_sessions_rename">Rename</string>
     <string name="task_sessions_create_title">New workspace session</string>
     <string name="task_sessions_rename_title">Rename TermuxPro session</string>

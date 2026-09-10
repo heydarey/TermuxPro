@@ -318,7 +318,7 @@
     <string name="terminal_web_preview_invalid_workspace">当前工作区没有可用的 Web 预览端口。请先回到工作台配置远端端口和手机端口。</string>
     <string name="terminal_connection_diagnostic_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="terminal_ssh_keys_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
-    <string name="workspace_tmux_sessions_action">tmux 会话</string>
+    <string name="workspace_tmux_sessions_action">tmux 管理</string>
     <string name="terminal_task_sessions_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器、项目目录和 tmux 策略。</string>
     <string name="workspace_interrupt_action">中断（Ctrl+C）</string>
     <string name="workspace_preview_title">Web 项目预览</string>
@@ -596,7 +596,7 @@
     <string name="ssh_keys_install_message">要打开交互终端，将公钥安装到 %1$s 吗？\n\n%2$s</string>
     <string name="ssh_keys_clipboard_label">SSH 公钥</string>
     <string name="ssh_keys_copied">公钥已复制</string>
-    <string name="workspace_task_sessions_action">tmux 会话</string>
+    <string name="workspace_task_sessions_action">tmux 管理</string>
     <string name="workspace_development_tools_title">开发工具</string>
     <string name="workspace_development_tools_description">集中完成代码审查、文件查看、任务运行和远端环境管理。</string>
     <string name="terminal_search_action">搜索终端输出</string>
@@ -611,10 +611,10 @@
     <string name="terminal_session_close_message">将停止本地终端会话 %1$s 及其中的前台进程，不会影响远端 tmux 会话。</string>
     <string name="terminal_session_close_action">关闭会话</string>
     <string name="terminal_session_close_missing">当前没有可关闭的活动会话。</string>
-    <string name="task_sessions_title">tmux 会话</string>
+    <string name="task_sessions_title">tmux 管理</string>
     <string name="task_sessions_loading">正在读取远端 tmux 会话…</string>
-    <string name="task_sessions_ready">点击会话可进入；TermuxPro 自有会话还可重命名或停止。</string>
-    <string name="task_sessions_ready_compact">点击会话进入；当前工作区会话可管理。</string>
+    <string name="task_sessions_ready">当前页支持新建、进入、重命名和停止；只有当前工作区的 TermuxPro 会话可被重命名或停止。</string>
+    <string name="task_sessions_ready_compact">可新建/进入；仅当前工作区会话可改名或停止。</string>
     <string name="task_sessions_empty">还没有 tmux 会话，可以为当前工作区新建一个隔离会话。</string>
     <string name="task_sessions_invalid_workspace">工作区连接信息无效。</string>
     <string name="task_sessions_failed">暂时无法读取 tmux 会话。请返回工作区重新连接，再回来重试。</string>
@@ -628,7 +628,7 @@
     <string name="task_sessions_attach_external_message">进入后会连接到 %1$s:%2$d（%3$s）的现有 tmux 会话。请确认它属于当前任务；TermuxPro 不会重命名、停止或写入该会话的归属标记。</string>
     <string name="task_sessions_attach_external_confirm">确认进入（不管理）</string>
     <string name="task_sessions_stop">停止会话</string>
-    <string name="task_sessions_create">新建会话</string>
+    <string name="task_sessions_create">新建当前工作区会话</string>
     <string name="task_sessions_rename">重命名</string>
     <string name="task_sessions_create_title">新建当前工作区会话</string>
     <string name="task_sessions_rename_title">重命名 TermuxPro 会话</string>
