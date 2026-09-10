@@ -150,6 +150,43 @@ public class WorkspaceActivitySmokeTest {
     }
 
     @Test
+    public void unconfiguredWorkspaceEditorStillShowsBackControl() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+
+        activity.finish();
+    }
+
+    @Test
+    public void newlyCreatedUnconfiguredWorkspaceCanBeDeleted() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+
+        activity.findViewById(R.id.workspace_new_button).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals("", ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .getText().toString());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_delete_button).getVisibility());
+
+        activity.findViewById(R.id.workspace_delete_button).performClick();
+        AlertDialog dialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(dialog);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertNotNull(WorkspaceTargetStore.readActive(activity));
+        assertTrue(((TextView) activity.findViewById(R.id.workspace_summary_details))
+            .getText().toString().contains("hdr@192.168.1.153"));
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_host_input).getVisibility());
+        activity.finish();
+    }
+
+    @Test
     public void workspaceOpenedFromTerminalShowsBackToPreviousPage() {
         Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
         intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
@@ -175,7 +212,7 @@ public class WorkspaceActivitySmokeTest {
     @Test
     public void reorderedWorkspaceReadsBackFlagFromNewIntent() {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
-        assertEquals(View.GONE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
 
         Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
         intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
