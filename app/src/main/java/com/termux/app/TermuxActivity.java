@@ -688,7 +688,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         findViewById(R.id.workspace_drawer_button).setOnClickListener(view -> getDrawer().openDrawer(Gravity.LEFT));
         findViewById(R.id.workspace_home_button).setOnClickListener(view -> {
             Intent intent = new Intent(this, WorkspaceActivity.class)
-                .putExtra(WorkspaceActivity.EXTRA_SHOW_BACK_TO_TERMINAL, true);
+                .putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });

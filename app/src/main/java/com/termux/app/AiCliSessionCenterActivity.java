@@ -30,7 +30,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
         findViewById(R.id.ai_cli_center_back).setOnClickListener(view -> finish());
         findViewById(R.id.ai_cli_center_open_workspace).setOnClickListener(view ->
-            startActivity(new Intent(this, WorkspaceActivity.class)));
+            openWorkspaceWithBack());
         findViewById(R.id.ai_cli_center_open_templates).setOnClickListener(view ->
             startActivity(new Intent(this, CustomCommandsActivity.class)));
         findViewById(R.id.ai_cli_center_open_diagnostic).setOnClickListener(view ->
@@ -207,7 +207,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
     private void repeatLastAiLaunch() {
         if (mLaunchHistory == null || mLaunchHistory.isEmpty()) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
@@ -240,7 +240,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openTmuxSessions() {
         Intent intent = TaskSessionsNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -249,7 +249,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openGitWorkbench() {
         Intent intent = GitWorkbenchNavigation.newIntentForActiveWorkspace(this, false);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -258,7 +258,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openProjectTasks() {
         Intent intent = ProjectTasksNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -267,7 +267,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openEnvironmentPreflight() {
         Intent intent = ConnectionDiagnosticNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -278,7 +278,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         if (workspace == null || !SshTargetValidator.isValid(workspace.host)
             || workspace.port < 1 || workspace.port > 65535
             || workspace.path == null || workspace.path.trim().isEmpty()) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         String command = WorkspaceCommandBuilder.buildSshCommand(
@@ -290,5 +290,10 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         startActivity(new Intent(this, TermuxActivity.class)
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, command)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true));
+    }
+
+    private void openWorkspaceWithBack() {
+        startActivity(new Intent(this, WorkspaceActivity.class)
+            .putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true));
     }
 }

@@ -50,6 +50,8 @@ import java.util.UUID;
 public final class WorkspaceActivity extends AppCompatActivity {
 
     static final String EXTRA_UI_TEST_SSH_READY = "com.termux.app.extra.UI_TEST_SSH_READY";
+    static final String EXTRA_SHOW_BACK = "com.termux.app.extra.SHOW_BACK";
+    /** 旧终端入口兼容字段，新入口统一使用 {@link #EXTRA_SHOW_BACK}。 */
     static final String EXTRA_SHOW_BACK_TO_TERMINAL = "com.termux.app.extra.SHOW_BACK_TO_TERMINAL";
 
     private static final int REQUEST_NOTIFICATIONS = 1001;
@@ -81,7 +83,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
     private boolean mEditingProfile;
     private boolean mAdvancedEditing;
     private boolean mHasSavedProfiles;
-    private boolean mShowBackToTerminal;
+    private boolean mShowBack;
     private WorkspaceConnectionStateStore mConnectionStateStore;
     private WorkspaceOwnershipStore mOwnershipStore;
 
@@ -104,7 +106,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mConnectionPolicySelector = findViewById(R.id.workspace_connection_policy_selector);
         mConnectionStateStore = new WorkspaceConnectionStateStore(this);
         mOwnershipStore = new WorkspaceOwnershipStore(this);
-        mShowBackToTerminal = getIntent().getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false);
+        mShowBack = getIntent().getBooleanExtra(EXTRA_SHOW_BACK, false)
+            || getIntent().getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false);
 
         ArrayAdapter<CharSequence> policyAdapter = ArrayAdapter.createFromResource(this,
             R.array.workspace_connection_policy_labels, R.layout.item_workspace_spinner);
@@ -771,7 +774,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
     }
 
     private boolean shouldShowWorkspaceBack(boolean showEditor, boolean configured) {
-        return mShowBackToTerminal || showEditor && configured;
+        return mShowBack || showEditor && configured;
     }
 
     private boolean isEditingConfiguredProfile() {

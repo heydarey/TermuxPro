@@ -150,7 +150,7 @@ public class WorkspaceActivitySmokeTest {
     @Test
     public void workspaceOpenedFromTerminalShowsBackToPreviousPage() {
         Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
-        intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK_TO_TERMINAL, true);
+        intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
             .setup().get();
 
@@ -158,6 +158,16 @@ public class WorkspaceActivitySmokeTest {
         activity.findViewById(R.id.workspace_back_button).performClick();
 
         assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void legacyTerminalBackExtraStillShowsBackToPreviousPage() {
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK_TO_TERMINAL, true);
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+            .setup().get();
+
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
     }
 
     @Test
