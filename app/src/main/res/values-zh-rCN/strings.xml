@@ -229,6 +229,7 @@
     <string name="ai_cli_center_history_mode_new">新建会话</string>
     <string name="ai_cli_center_history_mode_pick">历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
+    <string name="ai_cli_center_repeat_last_target">重复：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
     <string name="ai_cli_center_delete_latest_target">删除最近：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条 AI 启动记录？</string>

@@ -152,7 +152,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void bindHistory() {
         TextView summary = findViewById(R.id.ai_cli_center_history_summary);
         TextView nextStep = findViewById(R.id.ai_cli_center_history_next_step);
-        View repeat = findViewById(R.id.ai_cli_center_repeat_last);
+        TextView repeat = findViewById(R.id.ai_cli_center_repeat_last);
         TextView deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
         View clear = findViewById(R.id.ai_cli_center_clear_history);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
@@ -161,6 +161,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             summary.setText(R.string.ai_cli_center_history_missing_workspace);
             nextStep.setText(R.string.ai_cli_center_history_next_missing_workspace);
             repeat.setEnabled(false);
+            repeat.setText(R.string.ai_cli_center_repeat_last);
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
             clear.setEnabled(false);
@@ -171,6 +172,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             summary.setText(R.string.ai_cli_center_history_empty);
             nextStep.setText(R.string.ai_cli_center_history_next_empty);
             repeat.setEnabled(false);
+            repeat.setText(R.string.ai_cli_center_repeat_last);
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
             clear.setEnabled(false);
@@ -195,6 +197,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         nextStep.setText(getString(R.string.ai_cli_center_history_next_ready,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
         repeat.setEnabled(true);
+        repeat.setText(getString(R.string.ai_cli_center_repeat_last_target,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
         deleteLatest.setEnabled(true);
         deleteLatest.setText(getString(R.string.ai_cli_center_delete_latest_target,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
