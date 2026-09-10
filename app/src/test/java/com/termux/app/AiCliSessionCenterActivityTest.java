@@ -251,5 +251,9 @@ public class AiCliSessionCenterActivityTest {
                                            Class<?> expectedClass) {
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertEquals(expectedClass.getName(), intent.getComponent().getClassName());
+        if (expectedClass == WorkspaceActivity.class) {
+            assertTrue("从 AI 会话中心进入工作区必须显示上一页返回入口",
+                intent.getBooleanExtra(WorkspaceActivity.EXTRA_SHOW_BACK, false));
+        }
     }
 }
