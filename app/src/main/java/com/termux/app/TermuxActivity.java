@@ -707,6 +707,17 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         int touchModeLabel = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
         tools.setText(touchModeLabel);
         tools.setContentDescription(getString(touchModeLabel));
+        updateTouchScrollModeBanner(tuiMode);
+    }
+
+    /** TUI 滚动模式会改变手机手指上下滑动的含义，必须保留持久状态提示和回切线索。 */
+    private void updateTouchScrollModeBanner(boolean tuiMode) {
+        if (mFeedbackController == null) return;
+        if (tuiMode) {
+            mFeedbackController.showPersistent(getString(R.string.terminal_touch_scroll_tui_active_hint));
+        } else {
+            mFeedbackController.hidePersistent();
+        }
     }
 
     private void startAiCli(String command) {
