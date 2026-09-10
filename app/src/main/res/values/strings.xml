@@ -687,6 +687,17 @@
     <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s</string>
     <string name="project_tasks_run">Run task</string>
     <string name="project_tasks_view_sessions">View task sessions</string>
+    <string name="project_tasks_sessions_loading">Checking task sessions for this workspace…</string>
+    <string name="project_tasks_sessions_empty">No project task sessions in this workspace yet. After you run a task, this page will point you back to tmux manager.</string>
+    <string name="project_tasks_sessions_unavailable">Task sessions are temporarily unavailable. TermuxPro will not auto-attach to any tmux session; use “View task sessions” to retry.</string>
+    <plurals name="project_tasks_sessions_summary">
+        <item quantity="one">%1$d project task session in this workspace. Latest: %2$s · %3$s. %4$d other workspace task(s) will not be auto-attached.</item>
+        <item quantity="other">%1$d project task sessions in this workspace. Latest: %2$s · %3$s. %4$d other workspace task(s) will not be auto-attached.</item>
+    </plurals>
+    <plurals name="project_tasks_sessions_other_only">
+        <item quantity="one">No task sessions in this workspace. %1$d other workspace task exists; TermuxPro will not auto-attach or manage it.</item>
+        <item quantity="other">No task sessions in this workspace. %1$d other workspace tasks exist; TermuxPro will not auto-attach or manage them.</item>
+    </plurals>
     <string name="workspace_diagnostic_action">Environment</string>
     <string name="connection_diagnostic_title">Connection diagnostics</string>
     <string name="connection_diagnostic_running">Checking the active SSH connection and remote tools…</string>

@@ -33,6 +33,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     private static final String EXTRA_PROJECT_PATH = "project_path";
     private static final String EXTRA_OWNER_TOKEN = "owner_token";
     private static final int MAX_METADATA_BYTES = 600_000;
+    private static final int MAX_TASK_SESSION_BYTES = 128_000;
 
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
@@ -45,6 +46,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     private ProgressBar mProgress;
     private TextView mType;
     private TextView mTarget;
+    private TextView mTaskSessionSummary;
     private TextView mStatus;
     private Button mRecovery;
     private Button mTaskSessions;
@@ -71,6 +73,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mProgress = findViewById(R.id.project_tasks_progress);
         mType = findViewById(R.id.project_tasks_type);
         mTarget = findViewById(R.id.project_tasks_target);
+        mTaskSessionSummary = findViewById(R.id.project_tasks_session_summary);
         mStatus = findViewById(R.id.project_tasks_status);
         mRecovery = findViewById(R.id.project_tasks_recovery_button);
         mTaskSessions = findViewById(R.id.project_tasks_sessions_button);
@@ -89,9 +92,11 @@ public final class ProjectTasksActivity extends AppCompatActivity {
             || mPort < 1 || mPort > 65535) {
             mRefresh.setEnabled(false);
             mTaskSessions.setVisibility(View.GONE);
+            mTaskSessionSummary.setVisibility(View.GONE);
             showError(R.string.project_tasks_invalid_workspace);
         } else {
             mTaskSessions.setVisibility(View.VISIBLE);
+            mTaskSessionSummary.setVisibility(View.VISIBLE);
             detect();
         }
     }
@@ -112,6 +117,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mStatus.setVisibility(View.GONE);
         mRecovery.setVisibility(View.GONE);
         mList.setVisibility(View.VISIBLE);
+        mTaskSessionSummary.setText(R.string.project_tasks_sessions_loading);
         mType.setText(R.string.project_tasks_detecting);
         mTasks.clear();
         mAdapter.notifyDataSetChanged();
@@ -119,6 +125,10 @@ public final class ProjectTasksActivity extends AppCompatActivity {
             RemoteCommandRunner.Result result = mRunner.run(mHost, mPort,
                 WorkspaceCommandBuilder.buildProjectMetadataCommand(mProjectPath), MAX_METADATA_BYTES);
             mMainHandler.post(() -> showResult(result));
+            RemoteCommandRunner.Result taskSessions = mRunner.run(mHost, mPort,
+                WorkspaceCommandBuilder.buildListTaskSessionsRemoteCommand(mOwnerToken),
+                MAX_TASK_SESSION_BYTES);
+            mMainHandler.post(() -> showTaskSessionSummary(taskSessions));
         });
     }
 
@@ -154,6 +164,51 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mStatus.setVisibility(View.VISIBLE);
         mRecovery.setVisibility(View.GONE);
         mList.setVisibility(View.GONE);
+    }
+
+    private void showTaskSessionSummary(RemoteCommandRunner.Result result) {
+        if (isFinishing() || isDestroyed()) return;
+        if (mHost == null || mProjectPath == null) return;
+        if (result.exitCode != 0) {
+            mTaskSessionSummary.setText(R.string.project_tasks_sessions_unavailable);
+            return;
+        }
+        mTaskSessionSummary.setText(taskSessionSummaryText(this, mHost, mPort, mProjectPath,
+            mOwnerToken, result.output));
+    }
+
+    static String taskSessionSummaryText(@NonNull Context context, @NonNull String host, int port,
+                                         @NonNull String projectPath, @NonNull String ownerToken,
+                                         @NonNull String output) {
+        String fingerprint = WorkspaceCommandBuilder.workspaceFingerprint(host, port, projectPath);
+        List<TmuxSessionInfo> sessions = TmuxSessionDisplayOrder.sorted(
+            TmuxSessionParser.parse(output, ownerToken, fingerprint));
+        int currentWorkspace = 0;
+        int otherWorkspace = 0;
+        TmuxSessionInfo latest = null;
+        for (TmuxSessionInfo session : sessions) {
+            if (session.ownershipState == TmuxSessionInfo.OwnershipState.CURRENT_WORKSPACE) {
+                currentWorkspace++;
+                if (latest == null || session.activityEpochSeconds > latest.activityEpochSeconds) {
+                    latest = session;
+                }
+            } else {
+                otherWorkspace++;
+            }
+        }
+        if (currentWorkspace == 0 && otherWorkspace == 0) {
+            return context.getString(R.string.project_tasks_sessions_empty);
+        }
+        if (currentWorkspace == 0) {
+            return context.getResources().getQuantityString(R.plurals.project_tasks_sessions_other_only,
+                otherWorkspace, otherWorkspace);
+        }
+        String state = latest != null && latest.attached
+            ? context.getString(R.string.task_sessions_attached)
+            : context.getString(R.string.task_sessions_background);
+        return context.getResources().getQuantityString(R.plurals.project_tasks_sessions_summary,
+            currentWorkspace, currentWorkspace, latest == null ? "-" : latest.name, state,
+            otherWorkspace);
     }
 
     private void confirmTask(ProjectTaskDetector.Task task) {
