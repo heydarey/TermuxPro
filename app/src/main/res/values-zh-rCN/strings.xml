@@ -341,6 +341,7 @@
     <string name="terminal_touch_scroll_switch_to_tui">改为控制 AI/TUI 面板</string>
     <string name="terminal_touch_scroll_scrollback_applied">手指上下滑动已改为查看终端历史</string>
     <string name="terminal_touch_scroll_tui_applied">手指上下滑动已改为控制支持鼠标事件的 AI/TUI 面板</string>
+    <string name="terminal_touch_scroll_tui_active_hint">当前为 AI/TUI 控制模式：手指上下滑动会优先控制支持鼠标事件的面板。若要查看上方终端输出，请点“工具箱·TUI”切回历史模式。</string>
     <string name="workspace_review_diff_action">Git 工作台</string>
     <string name="workspace_custom_commands_action">快捷指令</string>
     <string name="git_diff_title">Git 工作台</string>

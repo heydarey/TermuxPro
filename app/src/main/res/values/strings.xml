@@ -462,6 +462,7 @@
     <string name="terminal_touch_scroll_switch_to_tui">Use AI/TUI panel scrolling</string>
     <string name="terminal_touch_scroll_scrollback_applied">Finger swipes now read terminal history</string>
     <string name="terminal_touch_scroll_tui_applied">Finger swipes now control AI/TUI panels that support mouse events</string>
+    <string name="terminal_touch_scroll_tui_active_hint">AI/TUI control mode is active: finger swipes first control panels that support mouse events. To read earlier terminal output, tap “Tools · TUI” and switch back to history mode.</string>
     <string name="workspace_review_diff_action">Git workbench</string>
     <string name="workspace_custom_commands_action">Commands</string>
     <string name="git_diff_title">Git workbench</string>

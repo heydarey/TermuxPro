@@ -55,6 +55,47 @@ public class TerminalFeedbackControllerTest {
 
     @Test
     @LooperMode(LooperMode.Mode.PAUSED)
+    public void temporaryFeedbackRestoresPersistentStatusAfterTimeout() {
+        TextView banner = new TextView(RuntimeEnvironment.getApplication());
+        banner.setVisibility(View.GONE);
+        TerminalFeedbackController controller = new TerminalFeedbackController(banner);
+
+        controller.showPersistent("当前为 AI/TUI 控制模式");
+        assertEquals(View.VISIBLE, banner.getVisibility());
+        assertEquals("当前为 AI/TUI 控制模式", banner.getText().toString());
+
+        controller.show("手指上下滑动已改为控制 AI/TUI 面板", false);
+        assertEquals("手指上下滑动已改为控制 AI/TUI 面板", banner.getText().toString());
+
+        Shadows.shadowOf(Looper.getMainLooper())
+            .idleFor(TerminalFeedbackController.SHORT_DURATION_MS, java.util.concurrent.TimeUnit.MILLISECONDS);
+
+        assertEquals(View.VISIBLE, banner.getVisibility());
+        assertEquals("当前为 AI/TUI 控制模式", banner.getText().toString());
+        assertEquals("当前为 AI/TUI 控制模式", banner.getContentDescription().toString());
+    }
+
+    @Test
+    @LooperMode(LooperMode.Mode.PAUSED)
+    public void hidingPersistentStatusLetsTemporaryFeedbackDisappearNormally() {
+        TextView banner = new TextView(RuntimeEnvironment.getApplication());
+        banner.setVisibility(View.GONE);
+        TerminalFeedbackController controller = new TerminalFeedbackController(banner);
+
+        controller.showPersistent("当前为 AI/TUI 控制模式");
+        controller.hidePersistent();
+
+        assertEquals(View.GONE, banner.getVisibility());
+
+        controller.show("手指上下滑动已改为查看终端历史", false);
+        Shadows.shadowOf(Looper.getMainLooper())
+            .idleFor(TerminalFeedbackController.SHORT_DURATION_MS, java.util.concurrent.TimeUnit.MILLISECONDS);
+
+        assertEquals(View.GONE, banner.getVisibility());
+    }
+
+    @Test
+    @LooperMode(LooperMode.Mode.PAUSED)
     public void sharedLoggerRoutesForegroundFeedbackToApplicationSurface() {
         FeedbackContext context = new FeedbackContext(RuntimeEnvironment.getApplication());
 
