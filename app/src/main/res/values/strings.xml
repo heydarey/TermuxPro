@@ -683,7 +683,8 @@
     <string name="project_tasks_invalid_metadata">The project metadata is invalid or too large.</string>
     <string name="project_tasks_empty">No supported tasks were found.</string>
     <string name="project_tasks_confirm_title">Run %1$s?</string>
-    <string name="project_tasks_confirm_message">A new persistent terminal session will run:\n\n%1$s</string>
+    <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
+    <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s</string>
     <string name="project_tasks_run">Run task</string>
     <string name="workspace_diagnostic_action">Environment</string>
     <string name="connection_diagnostic_title">Connection diagnostics</string>
