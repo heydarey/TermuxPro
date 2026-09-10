@@ -515,6 +515,12 @@
     <string name="git_workbench_primary_create_branch_description">Open local branch creation. Nothing is pushed and existing branches are not overwritten.</string>
     <string name="git_workbench_primary_commits">Recommended: view commits</string>
     <string name="git_workbench_primary_commits_description">View recent commit details read-only. It never switches branches, commits, or pushes.</string>
+    <string name="git_workbench_toolbox_title">Git toolbox</string>
+    <string name="git_workbench_toolbox_description">Grouped by branches, sync, changes, and history. Every write action asks for confirmation and never force pushes, merges, rebases, or discards files automatically.</string>
+    <string name="git_workbench_branch_tools">Branch management</string>
+    <string name="git_workbench_sync_tools">Remote sync</string>
+    <string name="git_workbench_change_tools">Change handling</string>
+    <string name="git_workbench_history_tools">History and stash</string>
     <string name="git_workbench_branches">Branches</string>
     <string name="git_workbench_fetch">Fetch</string>
     <string name="git_workbench_fetching">Fetching %1$s without merging…</string>
