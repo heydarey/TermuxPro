@@ -50,7 +50,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
         findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
         findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
-            deleteLatestHistory());
+            confirmDeleteLatestHistory());
         findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view ->
             confirmClearCurrentHistory());
 
@@ -227,6 +227,28 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         mLaunchHistoryStore.deleteEntry(workspace.id, entry.launchedAtMillis,
             entry.tool, entry.mode);
         bindHistory();
+    }
+
+    private void confirmDeleteLatestHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()
+            || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_delete_latest_title)
+            .setMessage(getString(R.string.ai_cli_center_delete_latest_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> deleteLatestHistory())
+            .create());
     }
 
     private void confirmClearCurrentHistory() {
