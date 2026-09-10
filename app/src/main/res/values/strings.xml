@@ -353,6 +353,9 @@
     <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_delete_latest_target">Delete latest: %1$s · %2$s</string>
     <string name="ai_cli_center_clear_history">Clear records</string>
+    <string name="ai_cli_center_clear_history_title">Clear AI launch records for this workspace?</string>
+    <string name="ai_cli_center_clear_history_message">This deletes %2$d local TermuxPro launch record(s) for “%1$s”.\n\nClaude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
+    <string name="ai_cli_center_clear_history_action">Clear local records</string>
     <string name="ai_cli_center_tmux_warning">On shared accounts or multi-user tmux environments, confirm ownership in the tmux session center first. Unmarked or other-owned sessions should only be attached explicitly, never auto-resumed or managed.</string>
     <string name="ai_cli_center_open_workspace">Server and project settings</string>
     <string name="ai_cli_center_open_templates">Manage quick command templates</string>
