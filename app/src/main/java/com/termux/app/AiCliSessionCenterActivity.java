@@ -192,6 +192,12 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 entry.port,
                 entry.path));
         }
+        int hiddenCount = mLaunchHistory.size() - count;
+        if (hiddenCount > 0) {
+            builder.append("\n\n");
+            builder.append(getResources().getQuantityString(
+                R.plurals.ai_cli_center_history_more, hiddenCount, hiddenCount));
+        }
         summary.setText(builder.toString());
         AiLaunchHistoryStore.Entry latest = mLaunchHistory.get(0);
         nextStep.setText(getString(R.string.ai_cli_center_history_next_ready,

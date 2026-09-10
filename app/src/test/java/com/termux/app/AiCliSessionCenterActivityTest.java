@@ -230,6 +230,36 @@ public class AiCliSessionCenterActivityTest {
     }
 
     @Test
+    public void historySummaryShowsCollapsedLocalCountWhenMoreThanThreeLaunchesExist() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        WorkspaceTarget workspace = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/project");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        String summary = text(activity, R.id.ai_cli_center_history_summary);
+        assertTrue(summary.contains("最近 3 条启动"));
+        assertTrue(summary.contains("还有 1 条已折叠"));
+        assertTrue(summary.contains("仅保存在当前工作区本地记录中"));
+        assertEquals("重复：Codex CLI · 历史选择",
+            text(activity, R.id.ai_cli_center_repeat_last));
+    }
+
+    @Test
     public void aiRiskCueExplainsPlainSshPolicyBeforeLaunch() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()

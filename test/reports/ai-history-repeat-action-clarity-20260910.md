@@ -9,6 +9,10 @@
 复核 200% 字体场景后，最近启动区的“重复/删除”操作不再使用左右两列。两列在动态文案变长后会挤压
 按钮内容，手机上容易让用户只看到一半动作；现改为纵向全宽按钮，保证主要动作和危险动作都可完整阅读。
 
+继续复核多次启动场景：TermuxPro 每个工作区最多保留 5 条本地启动记录，但页面只展开最近 3 条。
+如果不提示折叠数量，用户会误以为只有 3 条记录。现补充“还有 N 条已折叠，仅保存在当前工作区本地记录中”，
+明确记录范围和隐私边界。
+
 ## 主动发现候选
 
 | 候选 | 证据 | 增值服务分类 | 结论 |
@@ -21,6 +25,7 @@
 
 - 最近记录存在时，重复按钮必须展示具体工具和模式，不依赖用户记住上方说明。
 - 最近记录区的重复、删除和清空操作必须纵向展示，避免 200% 字体下横向挤压。
+- 超过 3 条记录时必须展示折叠数量，并说明仅属于当前工作区本地记录。
 - 删除按钮继续展示具体目标，清空仍需二次确认。
 - 只操作 TermuxPro 本地启动记录；不读取、不修改 Claude/Codex 私有历史，不进入 tmux，不影响原始终端。
 - 无有效工作区或无记录时，重复按钮恢复通用禁用态，避免显示过期目标。
@@ -28,5 +33,6 @@
 ## 回归范围
 
 - `AiCliSessionCenterActivityTest.repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory`
+- `AiCliSessionCenterActivityTest.historySummaryShowsCollapsedLocalCountWhenMoreThanThreeLaunchesExist`
 - `AiCliSessionCenterActivity.bindHistory()`
 - 中文与英文资源字符串
