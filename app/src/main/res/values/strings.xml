@@ -686,6 +686,7 @@
     <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
     <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s</string>
     <string name="project_tasks_run">Run task</string>
+    <string name="project_tasks_view_sessions">View task sessions</string>
     <string name="workspace_diagnostic_action">Environment</string>
     <string name="connection_diagnostic_title">Connection diagnostics</string>
     <string name="connection_diagnostic_running">Checking the active SSH connection and remote tools…</string>

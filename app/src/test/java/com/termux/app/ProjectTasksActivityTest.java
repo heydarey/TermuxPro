@@ -1,9 +1,13 @@
 package com.termux.app;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -42,5 +46,21 @@ public final class ProjectTasksActivityTest {
         assertTrue(message.contains("命令："));
         assertTrue(message.contains("pnpm test"));
         assertTrue(message.contains("新的持久终端会话"));
+    }
+
+    @Test
+    public void validWorkspaceCanOpenTaskSessionManager() {
+        ProjectTasksActivity activity = Robolectric.buildActivity(ProjectTasksActivity.class,
+            ProjectTasksActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/project", "11111111-2222-3333-4444-555555555555"))
+            .setup().get();
+
+        View sessions = activity.findViewById(R.id.project_tasks_sessions_button);
+        assertEquals(View.VISIBLE, sessions.getVisibility());
+        sessions.performClick();
+
+        Intent intent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(intent);
+        assertEquals(TaskSessionsActivity.class.getName(), intent.getComponent().getClassName());
     }
 }

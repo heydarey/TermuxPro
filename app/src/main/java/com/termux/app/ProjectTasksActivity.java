@@ -47,6 +47,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     private TextView mTarget;
     private TextView mStatus;
     private Button mRecovery;
+    private Button mTaskSessions;
     private ListView mList;
     private ArrayAdapter<ProjectTaskDetector.Task> mAdapter;
     private View mRefresh;
@@ -72,6 +73,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mTarget = findViewById(R.id.project_tasks_target);
         mStatus = findViewById(R.id.project_tasks_status);
         mRecovery = findViewById(R.id.project_tasks_recovery_button);
+        mTaskSessions = findViewById(R.id.project_tasks_sessions_button);
         mList = findViewById(R.id.project_tasks_list);
         mAdapter = new ArrayAdapter<>(this, R.layout.item_termuxpro_list, mTasks);
         mList.setAdapter(mAdapter);
@@ -79,14 +81,17 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         findViewById(R.id.project_tasks_back_button).setOnClickListener(view -> finish());
         mRefresh = findViewById(R.id.project_tasks_refresh_button);
         mRefresh.setOnClickListener(view -> detect());
+        mTaskSessions.setOnClickListener(view -> openTaskSessions());
         bindTarget();
         mRecovery.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
         if (mHost == null || mHost.trim().isEmpty() || mProjectPath == null || mProjectPath.trim().isEmpty()
             || !WorkspaceOwnershipStore.isValid(mOwnerToken)
             || mPort < 1 || mPort > 65535) {
             mRefresh.setEnabled(false);
+            mTaskSessions.setVisibility(View.GONE);
             showError(R.string.project_tasks_invalid_workspace);
         } else {
+            mTaskSessions.setVisibility(View.VISIBLE);
             detect();
         }
     }
@@ -168,6 +173,11 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         startActivity(new Intent(this, TermuxActivity.class)
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, startup)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true));
+    }
+
+    private void openTaskSessions() {
+        startActivity(TaskSessionsActivity.newIntent(this, mHost.trim(), mPort, mProjectPath.trim(),
+            mOwnerToken));
     }
 
     @Override
