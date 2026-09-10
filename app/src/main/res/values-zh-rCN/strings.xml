@@ -252,8 +252,8 @@
     <string name="workspace_error_path">请输入远程项目路径。</string>
     <string name="workspace_open_sessions">打开终端会话列表</string>
     <string name="workspace_sessions_short">会话</string>
-    <string name="workspace_open_workbench">工作台</string>
-    <string name="workspace_open_workbench_description">返回服务器、项目目录和远程入口</string>
+    <string name="workspace_open_workbench">远程配置</string>
+    <string name="workspace_open_workbench_description">返回远程工作区配置，管理服务器、项目目录和连接策略</string>
     <string name="terminal_sessions_title">终端会话</string>
     <string name="terminal_sessions_hint">点击切换，长按重命名；点“关闭”停止当前会话</string>
     <string name="workspace_command_confirm_title">发送命令到当前会话？</string>
