@@ -141,6 +141,30 @@ public class WorkspaceActivitySmokeTest {
     }
 
     @Test
+    public void toolboxExpansionDoesNotLeakAcrossWorkspaceEditingContext() {
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+            .setup().get();
+
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+        activity.findViewById(R.id.workspace_toolbox_button).performClick();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+
+        activity.findViewById(R.id.workspace_edit_button).performClick();
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_toolbox_button).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+
+        activity.findViewById(R.id.workspace_save_button).performClick();
+        assertEquals("打开工具箱",
+            ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+        activity.finish();
+    }
+
+    @Test
     public void savedWorkspaceCollapsesEditorIntoConnectionSummary() {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
         ((EditText) activity.findViewById(R.id.workspace_host_input))
