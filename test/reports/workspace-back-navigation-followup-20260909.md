@@ -20,6 +20,7 @@
 |---|---|---|---|---|
 | AI CLI 会话中心打开工作区没有传递上一页语义 | 负责人代码走查 | AI CLI → 工作区配置 → 返回 AI 中心 | P1 | 本轮修复 |
 | `EXTRA_SHOW_BACK_TO_TERMINAL` 命名过窄，后续非终端入口容易误用或漏用 | 负责人架构走查 | 所有增值页 → 工作区 | P2 | 本轮新增通用 `EXTRA_SHOW_BACK` 并保留旧字段兼容 |
+| `FLAG_ACTIVITY_REORDER_TO_FRONT` 复用已有工作台实例时不会重新执行 `onCreate` | 负责人生命周期走查 | 终端/AI 中心 → 已存在工作台实例 → 返回上一页 | P1 | 本轮补 `onNewIntent` 读取新返回语义 |
 | backlog 已验证项仍标记“进行中”，容易造成重复返工 | 流程走查 | 日常维护计划 | P2 | 本轮校准为“已完成”，并补当前证据链接 |
 
 ## 改动
@@ -27,8 +28,9 @@
 1. `WorkspaceActivity` 新增通用 `EXTRA_SHOW_BACK`，旧 `EXTRA_SHOW_BACK_TO_TERMINAL` 继续兼容。
 2. `TermuxActivity` 的工作台入口改用通用返回字段。
 3. `AiCliSessionCenterActivity` 新增 `openWorkspaceWithBack()`，所有打开工作区或无效工作区兜底路径统一携带返回字段。
-4. `AiCliSessionCenterActivityTest` 断言从 AI 会话中心进入工作区必须携带返回字段。
-5. `WorkspaceActivitySmokeTest` 同时覆盖新通用字段和旧终端字段。
+4. `WorkspaceActivity.onNewIntent()` 重新读取返回字段，覆盖 `REORDER_TO_FRONT` 复用已有工作台实例的场景。
+5. `AiCliSessionCenterActivityTest` 断言从 AI 会话中心进入工作区必须携带返回字段。
+6. `WorkspaceActivitySmokeTest` 同时覆盖新通用字段、旧终端字段和复用实例的新 Intent。
 
 ## 验收标准
 

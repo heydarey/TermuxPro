@@ -106,8 +106,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mConnectionPolicySelector = findViewById(R.id.workspace_connection_policy_selector);
         mConnectionStateStore = new WorkspaceConnectionStateStore(this);
         mOwnershipStore = new WorkspaceOwnershipStore(this);
-        mShowBack = getIntent().getBooleanExtra(EXTRA_SHOW_BACK, false)
-            || getIntent().getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false);
+        mShowBack = shouldShowBackFromIntent(getIntent());
 
         ArrayAdapter<CharSequence> policyAdapter = ArrayAdapter.createFromResource(this,
             R.array.workspace_connection_policy_labels, R.layout.item_workspace_spinner);
@@ -697,6 +696,19 @@ public final class WorkspaceActivity extends AppCompatActivity {
         }
         feedback.setContentDescription(feedback.getText());
         refreshHomeState();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        mShowBack = shouldShowBackFromIntent(intent);
+        refreshHomeState();
+    }
+
+    private boolean shouldShowBackFromIntent(Intent intent) {
+        return intent != null && (intent.getBooleanExtra(EXTRA_SHOW_BACK, false)
+            || intent.getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false));
     }
 
     /** 首页只展示当前任务所需信息；连接参数仅在首次配置或主动编辑时出现。 */

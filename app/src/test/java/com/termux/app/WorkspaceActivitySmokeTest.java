@@ -171,6 +171,20 @@ public class WorkspaceActivitySmokeTest {
     }
 
     @Test
+    public void reorderedWorkspaceReadsBackFlagFromNewIntent() {
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
+        activity.onNewIntent(intent);
+
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_back_button).getVisibility());
+        activity.findViewById(R.id.workspace_back_button).performClick();
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
     public void deletingLastWorkspaceClearsSavedTargetInsteadOfKeepingEmptyProfile() {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
         ((EditText) activity.findViewById(R.id.workspace_host_input))
