@@ -152,9 +152,11 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     }
 
     private void confirmTask(ProjectTaskDetector.Task task) {
+        String target = getString(R.string.project_tasks_confirm_target,
+            mHost.trim(), mPort, mProjectPath.trim());
         TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
             .setTitle(getString(R.string.project_tasks_confirm_title, task.label))
-            .setMessage(getString(R.string.project_tasks_confirm_message, task.command))
+            .setMessage(getString(R.string.project_tasks_confirm_message, target, task.command))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.project_tasks_run, (dialog, which) -> runTask(task))
             .create());
