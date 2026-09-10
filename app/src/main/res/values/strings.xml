@@ -799,7 +799,8 @@
     <string name="custom_commands_group_header">%1$s workflow</string>
     <string name="custom_commands_template_title">Choose a quick command template</string>
     <string name="custom_commands_template_message">Templates only fill the editor. Nothing is saved before you confirm, and every run still follows confirmation and dangerous-command checks.</string>
-    <string name="custom_commands_template_codex">Codex: resume a session</string>
+    <string name="custom_commands_template_codex_new">Codex: new isolated session</string>
+    <string name="custom_commands_template_codex">Codex: choose a past session</string>
     <string name="custom_commands_template_claude_new">Claude: new isolated session</string>
     <string name="custom_commands_template_claude_history">Claude: choose a past session</string>
     <string name="custom_commands_template_git_status">Git: show current status</string>
@@ -836,7 +837,7 @@
     <string name="custom_commands_execute">Run</string>
     <string name="custom_commands_disabled_message">This command is disabled. Enable it from the manage menu first.</string>
     <string name="custom_commands_edit">Edit</string>
-    <string name="custom_commands_copy">Copy</string>
+    <string name="custom_commands_copy">Duplicate as new command</string>
     <string name="custom_commands_move_up">Move up</string>
     <string name="custom_commands_move_down">Move down</string>
     <string name="custom_commands_enable">Enable</string>
