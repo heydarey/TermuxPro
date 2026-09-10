@@ -745,7 +745,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_new_button).setVisibility(
             configured && !showEditor ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_delete_button).setVisibility(
-            showEditor && mHasSavedProfiles ? View.VISIBLE : View.GONE);
+            shouldShowDeleteWorkspace(showEditor) ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_back_button).setVisibility(
             shouldShowWorkspaceBack(showEditor, configured) ? View.VISIBLE : View.GONE);
         if (configured) {
@@ -786,7 +786,11 @@ public final class WorkspaceActivity extends AppCompatActivity {
     }
 
     private boolean shouldShowWorkspaceBack(boolean showEditor, boolean configured) {
-        return mShowBack || showEditor && configured;
+        return mShowBack || showEditor;
+    }
+
+    private boolean shouldShowDeleteWorkspace(boolean showEditor) {
+        return showEditor && mHasSavedProfiles && !mProfiles.isEmpty();
     }
 
     private boolean isEditingConfiguredProfile() {
