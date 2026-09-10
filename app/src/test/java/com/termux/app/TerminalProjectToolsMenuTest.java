@@ -29,7 +29,7 @@ public class TerminalProjectToolsMenuTest {
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CENTER, menu.getItem(1).getItemId());
         assertEquals("AI CLI 会话中心", menu.getItem(1).getTitle().toString());
         assertEquals(TerminalProjectToolsMenu.TOOL_GIT_STATUS, menu.getItem(2).getItemId());
-        assertEquals("Git 状态", menu.getItem(2).getTitle().toString());
+        assertEquals("Git 工作台", menu.getItem(2).getTitle().toString());
         assertEquals(TerminalProjectToolsMenu.TOOL_TMUX_SESSIONS, menu.getItem(3).getItemId());
         assertEquals(TerminalProjectToolsMenu.TOOL_CUSTOM_COMMANDS, menu.getItem(4).getItemId());
 
