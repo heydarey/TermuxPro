@@ -111,8 +111,9 @@ public class CustomLayoutsSmokeTest {
         assertEquals(context.getString(R.string.terminal_ai_short), aiCenter.getText().toString());
         assertEquals(context.getString(R.string.terminal_ai_cli_center_action),
             aiCenter.getContentDescription().toString());
-        assertEquals(context.getString(R.string.workspace_tools_action), tools.getText().toString());
-        assertEquals(context.getString(R.string.workspace_tools_action),
+        assertEquals(context.getString(R.string.workspace_tools_scrollback_action),
+            tools.getText().toString());
+        assertEquals(context.getString(R.string.workspace_tools_scrollback_action),
             tools.getContentDescription().toString());
         assertEquals(context.getString(R.string.action_close_session),
             closeSession.getText().toString());
