@@ -105,11 +105,14 @@ public class CustomCommandsActivityTest {
         assertEquals(activity.getString(R.string.custom_commands_template_title),
             shadowOf(templateDialog).getTitle());
         ListView listView = templateDialog.getListView();
-        assertTrue(listView.getAdapter().getCount() >= 7);
-        assertTrue(listView.getAdapter().getItem(0).toString().contains("codex resume"));
-        assertTrue(listView.getAdapter().getItem(1).toString().contains("claude"));
-        assertFalse(listView.getAdapter().getItem(1).toString().contains("--continue"));
-        assertTrue(listView.getAdapter().getItem(2).toString().contains("claude --resume"));
+        assertTrue(listView.getAdapter().getCount() >= 8);
+        assertTrue(listView.getAdapter().getItem(0).toString().contains("Codex：新建独立会话"));
+        assertTrue(listView.getAdapter().getItem(0).toString().contains("\ncodex"));
+        assertTrue(listView.getAdapter().getItem(1).toString().contains("Codex：选择历史会话"));
+        assertTrue(listView.getAdapter().getItem(1).toString().contains("codex resume"));
+        assertTrue(listView.getAdapter().getItem(2).toString().contains("claude"));
+        assertFalse(listView.getAdapter().getItem(2).toString().contains("--continue"));
+        assertTrue(listView.getAdapter().getItem(3).toString().contains("claude --resume"));
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
             .list("workspace-a").size());
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
@@ -121,9 +124,9 @@ public class CustomCommandsActivityTest {
         assertNotNull(editor);
         assertEquals(activity.getString(R.string.custom_commands_create_title),
             shadowOf(editor).getTitle());
-        assertEquals("Codex：打开历史会话", ((EditText) editor.findViewById(
+        assertEquals("Codex：新建独立会话", ((EditText) editor.findViewById(
             R.id.custom_command_name_input)).getText().toString());
-        assertEquals("codex resume", ((EditText) editor.findViewById(
+        assertEquals("codex", ((EditText) editor.findViewById(
             R.id.custom_command_value_input)).getText().toString());
         assertEquals("AI", ((EditText) editor.findViewById(
             R.id.custom_command_group_input)).getText().toString());
@@ -244,6 +247,14 @@ public class CustomCommandsActivityTest {
             .getVisibility());
         assertEquals(View.GONE, ((View) activity.findViewById(R.id.custom_commands_search_input)
             .getParent()).getVisibility());
+    }
+
+    @Test
+    public void managementCopyLabelExplainsThatItCreatesANewCommand() {
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        assertEquals("复制为新指令", activity.getString(R.string.custom_commands_copy));
     }
 
     @Test

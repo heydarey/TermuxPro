@@ -435,6 +435,10 @@ public final class CustomCommandsActivity extends AppCompatActivity {
 
         static CustomCommandTemplate[] defaults(AppCompatActivity activity) {
             return new CustomCommandTemplate[] {
+                new CustomCommandTemplate(activity.getString(R.string.custom_commands_template_codex_new),
+                    AiCliLaunchCommand.command(AiCliLaunchCommand.Tool.CODEX,
+                        AiCliLaunchCommand.Mode.NEW_SESSION),
+                    "", "AI", CustomCommand.Confirmation.ALWAYS),
                 new CustomCommandTemplate(activity.getString(R.string.custom_commands_template_codex),
                     AiCliLaunchCommand.command(AiCliLaunchCommand.Tool.CODEX,
                         AiCliLaunchCommand.Mode.PICK_HISTORY),
