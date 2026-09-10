@@ -423,7 +423,7 @@
     <string name="workspace_delete_message">Connection metadata for “%1$s” will be removed. SSH keys and remote files are not affected.</string>
     <string name="workspace_toolbox_show_action">Open toolbox</string>
     <string name="workspace_toolbox_hide_action">Hide toolbox</string>
-    <string name="workspace_toolbox_description">Open Git, files, tasks, tmux, diagnostics, SSH keys, and Web preview tools when needed</string>
+    <string name="workspace_toolbox_description">Open custom commands, Git, files, tasks, tmux, diagnostics, SSH keys, and Web preview tools when needed</string>
     <string name="workspace_tools_action">Toolbox</string>
     <string name="terminal_ai_short">AI</string>
     <string name="terminal_drawer_keyboard_short">Keys</string>
@@ -463,6 +463,7 @@
     <string name="terminal_touch_scroll_scrollback_applied">Finger swipes now read terminal history</string>
     <string name="terminal_touch_scroll_tui_applied">Finger swipes now control AI/TUI panels that support mouse events</string>
     <string name="workspace_review_diff_action">Git changes</string>
+    <string name="workspace_custom_commands_action">Commands</string>
     <string name="git_diff_title">Git workbench</string>
     <string name="git_diff_back">Back</string>
     <string name="git_diff_refresh">Refresh</string>

@@ -481,11 +481,24 @@
                 android:textColor="#8FA3B5"
                 android:textSize="13sp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/workspace_custom_commands_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minWidth="0dp"
+                android:minHeight="52dp"
+                android:text="@string/workspace_custom_commands_action"
+                android:textAllCaps="false"
+                android:textColor="#D8E4EC"
+                android:textSize="13sp"
+                android:backgroundTint="#24394A" />
+
             <LinearLayout
                 android:id="@+id/workspace_tools_row_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/workspace_review_diff_button"
