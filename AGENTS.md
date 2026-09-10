@@ -108,6 +108,10 @@ SHA-256、新功能、修复、已知限制、验收状态和用户动作。
 检测到远程或共享服务器时，先运行 `scripts/resource-guard.sh`。Gradle 默认最多 2 个 worker，不并行
 运行多个全量构建；模拟器仅在 KVM 和 CPU/内存/磁盘余量满足时单实例运行。所有项目工具安装到
 `.tooling/`，禁止修改全局 JDK、SDK、PATH、服务、软件源或影响其他用户的文件与进程。
+无 KVM 的共享服务器不得强行启动本地 Android 模拟器；此时只能跑 JVM/Robolectric/静态/Lint/构建等低资源
+验证，并在报告中明确“待设备验收”。普通研发 PR 的 Android 运行时证据优先使用 GitHub Runner 隔离模拟器；
+候选版和正式版必须有 APK 安装级证据，涉及触摸滚动、软键盘、网络切换、后台恢复或厂商 ROM 行为时必须
+补真机或云真机样本。不得把低资源验证冒充完整验收。
 
 Codex 额度只设一个门禁，不再按自然日计算或限制：以当前线程最新 `rate_limits.primary.used_percent` 计算
 总剩余额度 `100-used_percent`。总剩余额度大于或等于 15% 时必须保持 Goal 连续运行并按正常节奏迭代，
