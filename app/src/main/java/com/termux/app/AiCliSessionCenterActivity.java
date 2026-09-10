@@ -1,5 +1,6 @@
 package com.termux.app;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -50,7 +51,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
         findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
             deleteLatestHistory());
-        findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view -> clearCurrentHistory());
+        findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view ->
+            confirmClearCurrentHistory());
 
         bindTarget();
         configureLargeFontHierarchy();
@@ -225,6 +227,26 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         mLaunchHistoryStore.deleteEntry(workspace.id, entry.launchedAtMillis,
             entry.tool, entry.mode);
         bindHistory();
+    }
+
+    private void confirmClearCurrentHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            bindHistory();
+            return;
+        }
+        if (mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_clear_history_title)
+            .setMessage(getString(R.string.ai_cli_center_clear_history_message,
+                workspace.name, mLaunchHistory.size()))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_clear_history_action,
+                (dialog, which) -> clearCurrentHistory())
+            .create());
     }
 
     private void clearCurrentHistory() {

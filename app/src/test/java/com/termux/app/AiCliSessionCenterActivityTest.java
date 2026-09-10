@@ -1,12 +1,15 @@
 package com.termux.app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -18,6 +21,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 28, qualifiers = "zh-rCN")
@@ -182,6 +186,23 @@ public class AiCliSessionCenterActivityTest {
             .contains("exec claude"));
 
         activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
+        AlertDialog confirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(confirm);
+        assertEquals("清空当前工作区的 AI 启动记录？", shadowOf(confirm).getTitle());
+        String message = ((TextView) confirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("远程开发"));
+        assertTrue(message.contains("2 条本地启动记录"));
+        assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
+        assertEquals("清空本地记录",
+            confirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        confirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Claude Code"));
+
+        activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
+        confirm = ShadowAlertDialog.getLatestAlertDialog();
+        confirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
     }
