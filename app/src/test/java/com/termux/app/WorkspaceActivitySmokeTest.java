@@ -129,6 +129,9 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
+        assertEquals("快捷指令",
+            ((TextView) activity.findViewById(R.id.workspace_custom_commands_button))
+                .getText().toString());
 
         activity.findViewById(R.id.workspace_toolbox_button).performClick();
 
@@ -161,6 +164,27 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("打开工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+        activity.finish();
+    }
+
+    @Test
+    public void toolboxOpensCustomCommandsForCurrentWorkspace() {
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+            .setup().get();
+
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+        activity.findViewById(R.id.workspace_toolbox_button).performClick();
+
+        activity.findViewById(R.id.workspace_custom_commands_button).performClick();
+
+        Intent next = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(next);
+        assertEquals(CustomCommandsActivity.class.getName(),
+            next.getComponent().getClassName());
         activity.finish();
     }
 

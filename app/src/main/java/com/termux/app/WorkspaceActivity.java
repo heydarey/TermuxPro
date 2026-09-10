@@ -180,6 +180,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_delete_button).setOnClickListener(view -> confirmDeleteWorkspace());
         findViewById(R.id.workspace_start_preview_button).setOnClickListener(view -> startPreviewTunnel());
         findViewById(R.id.workspace_open_preview_button).setOnClickListener(view -> openPreviewInBrowser());
+        findViewById(R.id.workspace_custom_commands_button).setOnClickListener(view -> openCustomCommands());
         findViewById(R.id.workspace_review_diff_button).setOnClickListener(view -> openGitDiffReview());
         findViewById(R.id.workspace_remote_files_button).setOnClickListener(view -> openRemoteFiles());
         findViewById(R.id.workspace_project_tasks_button).setOnClickListener(view -> openProjectTasks());
@@ -972,6 +973,11 @@ public final class WorkspaceActivity extends AppCompatActivity {
         WorkspaceProfile profile = mProfiles.get(findActiveProfileIndex());
         startActivity(ProjectTasksActivity.newIntent(this, host, sshPort, path,
             mOwnershipStore.getOrCreate(profile.id)));
+    }
+
+    private void openCustomCommands() {
+        if (!saveCurrentWorkspace()) return;
+        startActivity(new Intent(this, CustomCommandsActivity.class));
     }
 
     private void openConnectionDiagnostic() {
