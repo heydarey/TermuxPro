@@ -386,7 +386,8 @@
     <string name="workspace_selector_unconfigured">%1$s\nServer not configured</string>
     <string name="workspace_selector_target">%1$s\n%2$s:%3$s · %4$s · %5$s</string>
     <string name="workspace_new_action">New workspace</string>
-    <string name="workspace_manage_action">Copy or delete this workspace</string>
+    <string name="workspace_manage_action">Connection actions</string>
+    <string name="workspace_manage_description">Copy or delete this SSH workspace. Remote files are unchanged.</string>
     <string name="workspace_edit_action">Edit connection</string>
     <string name="workspace_advanced_action">tmux connection mode</string>
     <string name="workspace_advanced_hide_action">Hide tmux connection mode</string>
@@ -404,8 +405,8 @@
     <string name="workspace_status_check_failed">Check failed</string>
     <string name="workspace_status_unknown">Unknown status</string>
     <string name="workspace_save_action">Save</string>
-    <string name="workspace_copy_action">Copy</string>
-    <string name="workspace_delete_action">Delete</string>
+    <string name="workspace_copy_action">Copy connection</string>
+    <string name="workspace_delete_action">Delete connection</string>
     <string name="workspace_unsaved_changes">Unsaved changes</string>
     <string name="workspace_discard_changes_title">Discard unsaved changes?</string>
     <string name="workspace_discard_changes_message">Leaving “%1$s” will discard its unsaved edits.</string>

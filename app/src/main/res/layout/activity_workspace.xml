@@ -121,6 +121,7 @@
                     android:id="@+id/workspace_manage_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/workspace_manage_description"
                     android:minHeight="48dp"
                     android:text="@string/workspace_manage_action"
                     android:textAllCaps="false"

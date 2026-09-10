@@ -265,7 +265,8 @@
     <string name="workspace_selector_unconfigured">%1$s\n未配置服务器</string>
     <string name="workspace_selector_target">%1$s\n%2$s:%3$s · %4$s · %5$s</string>
     <string name="workspace_new_action">新建工作区</string>
-    <string name="workspace_manage_action">复制或删除当前工作区</string>
+    <string name="workspace_manage_action">连接操作</string>
+    <string name="workspace_manage_description">复制或删除当前 SSH 工作区；不会影响远端文件。</string>
     <string name="workspace_edit_action">编辑连接</string>
     <string name="workspace_advanced_action">tmux 连接方式</string>
     <string name="workspace_advanced_hide_action">收起 tmux 连接方式</string>
@@ -283,8 +284,8 @@
     <string name="workspace_status_check_failed">检查失败</string>
     <string name="workspace_status_unknown">状态未知</string>
     <string name="workspace_save_action">保存</string>
-    <string name="workspace_copy_action">复制</string>
-    <string name="workspace_delete_action">删除</string>
+    <string name="workspace_copy_action">复制当前连接</string>
+    <string name="workspace_delete_action">删除当前连接</string>
     <string name="workspace_unsaved_changes">有未保存的修改</string>
     <string name="workspace_discard_changes_title">放弃未保存的修改？</string>
     <string name="workspace_discard_changes_message">离开“%1$s”将丢弃尚未保存的修改。</string>
