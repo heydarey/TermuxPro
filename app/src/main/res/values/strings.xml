@@ -347,6 +347,10 @@
         <item quantity="other">Latest %1$d launches</item>
     </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
+    <plurals name="ai_cli_center_history_more">
+        <item quantity="one">%1$d more launch is collapsed and only stored as a local record for this workspace.</item>
+        <item quantity="other">%1$d more launches are collapsed and only stored as local records for this workspace.</item>
+    </plurals>
     <string name="ai_cli_center_history_mode_new">new session</string>
     <string name="ai_cli_center_history_mode_pick">history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>

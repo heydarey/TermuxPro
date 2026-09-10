@@ -226,6 +226,9 @@
         <item quantity="other">最近 %1$d 条启动</item>
     </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
+    <plurals name="ai_cli_center_history_more">
+        <item quantity="other">还有 %1$d 条已折叠，仅保存在当前工作区本地记录中。</item>
+    </plurals>
     <string name="ai_cli_center_history_mode_new">新建会话</string>
     <string name="ai_cli_center_history_mode_pick">历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
