@@ -425,8 +425,8 @@
     <string name="terminal_ai_short">AI</string>
     <string name="terminal_drawer_keyboard_short">Keys</string>
     <string name="terminal_drawer_new_session_short">New</string>
-    <string name="workspace_tools_scrollback_action">Toolbox · Swipe history</string>
-    <string name="workspace_tools_tui_scroll_action">Toolbox · Swipe TUI</string>
+    <string name="workspace_tools_scrollback_action">Tools · History</string>
+    <string name="workspace_tools_tui_scroll_action">Tools · TUI</string>
     <string name="workspace_git_status_action">Git status</string>
     <string name="workspace_git_diff_action">Review Git diff</string>
     <string name="terminal_git_workbench_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
@@ -455,8 +455,8 @@
     <string name="workspace_keys_shell_applied">Shell keys enabled</string>
     <string name="workspace_keys_ai_applied">AI CLI keys enabled</string>
     <string name="workspace_keys_vim_applied">Vim keys enabled</string>
-    <string name="terminal_touch_scroll_switch_to_scrollback">Swipe: AI/TUI panel → history</string>
-    <string name="terminal_touch_scroll_switch_to_tui">Swipe: terminal history (recommended) → AI/TUI</string>
+    <string name="terminal_touch_scroll_switch_to_scrollback">Use terminal history scrolling (recommended)</string>
+    <string name="terminal_touch_scroll_switch_to_tui">Use AI/TUI panel scrolling</string>
     <string name="terminal_touch_scroll_scrollback_applied">Finger swipes now read terminal history</string>
     <string name="terminal_touch_scroll_tui_applied">Finger swipes now control AI/TUI panels that support mouse events</string>
     <string name="workspace_review_diff_action">Git changes</string>

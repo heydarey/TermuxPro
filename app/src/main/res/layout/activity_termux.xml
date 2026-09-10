@@ -84,10 +84,10 @@
                     android:layout_height="48dp"
                     android:layout_marginStart="5dp"
                     android:backgroundTint="#24394A"
-                    android:contentDescription="@string/workspace_tools_action"
+                    android:contentDescription="@string/workspace_tools_scrollback_action"
                     android:minWidth="0dp"
                     android:paddingHorizontal="9dp"
-                    android:text="@string/workspace_tools_action"
+                    android:text="@string/workspace_tools_scrollback_action"
                     android:textAllCaps="false"
                     android:textColor="#D8E4EC"
                     android:textSize="12sp" />

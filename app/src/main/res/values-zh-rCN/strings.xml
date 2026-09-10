@@ -304,8 +304,8 @@
     <string name="terminal_ai_short">AI</string>
     <string name="terminal_drawer_keyboard_short">键盘</string>
     <string name="terminal_drawer_new_session_short">新建</string>
-    <string name="workspace_tools_scrollback_action">工具箱 · 滑动看历史</string>
-    <string name="workspace_tools_tui_scroll_action">工具箱 · 滑动控 TUI</string>
+    <string name="workspace_tools_scrollback_action">工具箱·历史</string>
+    <string name="workspace_tools_tui_scroll_action">工具箱·TUI</string>
     <string name="workspace_git_status_action">Git 状态</string>
     <string name="workspace_git_diff_action">审查 Git Diff</string>
     <string name="terminal_git_workbench_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
@@ -334,8 +334,8 @@
     <string name="workspace_keys_shell_applied">已切换为 Shell 键区</string>
     <string name="workspace_keys_ai_applied">已切换为 AI CLI 键区</string>
     <string name="workspace_keys_vim_applied">已切换为 Vim 键区</string>
-    <string name="terminal_touch_scroll_switch_to_scrollback">滑动：AI/TUI 面板 → 切到历史</string>
-    <string name="terminal_touch_scroll_switch_to_tui">滑动：终端历史（推荐）→ 切到 AI/TUI</string>
+    <string name="terminal_touch_scroll_switch_to_scrollback">改为查看终端历史（推荐）</string>
+    <string name="terminal_touch_scroll_switch_to_tui">改为控制 AI/TUI 面板</string>
     <string name="terminal_touch_scroll_scrollback_applied">手指上下滑动已改为查看终端历史</string>
     <string name="terminal_touch_scroll_tui_applied">手指上下滑动已改为控制支持鼠标事件的 AI/TUI 面板</string>
     <string name="workspace_review_diff_action">Git 修改</string>
