@@ -858,6 +858,14 @@
     <string name="custom_commands_delete_title">Delete “%1$s”?</string>
     <string name="custom_commands_delete_message">Only this quick command in the current workspace will be removed. Its command will not run.</string>
     <string name="custom_commands_copy_suffix">%1$s copy</string>
+    <string name="custom_commands_saved_new">Saved “%1$s”. Next: use Review and run to verify the target and command first.</string>
+    <string name="custom_commands_saved_existing">Updated “%1$s”. The target and command are still checked according to its confirmation rule.</string>
+    <string name="custom_commands_copied">Duplicated as “%1$s”. Edit it before using it in this workspace.</string>
+    <string name="custom_commands_action_enabled">Enabled “%1$s”.</string>
+    <string name="custom_commands_action_disabled">Disabled “%1$s”. It stays in the list and can be enabled again.</string>
+    <string name="custom_commands_moved_up">Moved “%1$s” up.</string>
+    <string name="custom_commands_moved_down">Moved “%1$s” down.</string>
+    <string name="custom_commands_deleted">Deleted “%1$s”. Only the local quick command was removed; no remote command ran.</string>
     <string name="custom_commands_invalid_workspace">No valid remote workspace is selected. Return to the workspace and configure a server and project directory first.</string>
     <string name="terminal_tools_section_recommended">Recommended actions</string>
     <string name="terminal_tools_section_context">Current terminal</string>

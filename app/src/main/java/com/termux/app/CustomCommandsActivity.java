@@ -42,6 +42,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private LinearLayout mList;
     private TextView mEmpty;
     private TextView mTemplateHint;
+    private TextView mActionFeedback;
     private View mScenarioHint;
     private EditText mSearchInput;
     private TextView mSearchSummary;
@@ -60,6 +61,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mList = findViewById(R.id.custom_commands_list);
         mEmpty = findViewById(R.id.custom_commands_empty);
         mTemplateHint = findViewById(R.id.custom_commands_template_hint);
+        mActionFeedback = findViewById(R.id.custom_commands_action_feedback);
         mScenarioHint = findViewById(R.id.custom_commands_scenario_hint);
         configureTemplateHint();
         mSearchInput = findViewById(R.id.custom_commands_search_input);
@@ -125,6 +127,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mEmpty.setVisibility(View.VISIBLE);
             mTemplateHint.setVisibility(View.GONE);
             mScenarioHint.setVisibility(View.GONE);
+            mActionFeedback.setVisibility(View.GONE);
             mSearchSummary.setVisibility(View.GONE);
             mSearchEmpty.setVisibility(View.GONE);
             mClearSearch.setVisibility(View.GONE);
@@ -269,18 +272,23 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                         command.workingDirectory, command.group, command.enabled, command.confirmation);
                     mStore.save(mTarget.id, copy);
                     renderCommands();
+                    showActionFeedback(R.string.custom_commands_copied, copy.name);
                     return true;
                 case ACTION_TOGGLE:
                     mStore.save(mTarget.id, command.withEnabled(!command.enabled));
                     renderCommands();
+                    showActionFeedback(command.enabled ? R.string.custom_commands_action_disabled
+                        : R.string.custom_commands_action_enabled, command.name);
                     return true;
                 case ACTION_MOVE_UP:
                     mStore.move(mTarget.id, command.id, position - 1);
                     renderCommands();
+                    showActionFeedback(R.string.custom_commands_moved_up, command.name);
                     return true;
                 case ACTION_MOVE_DOWN:
                     mStore.move(mTarget.id, command.id, position + 1);
                     renderCommands();
+                    showActionFeedback(R.string.custom_commands_moved_down, command.name);
                     return true;
                 case ACTION_DELETE:
                     confirmDelete(command);
@@ -351,9 +359,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 } else if (error != null) {
                     value.setError(getString(R.string.custom_commands_invalid));
                 } else {
+                    boolean creating = existing == null;
                     mStore.save(mTarget.id, candidate);
                     shownDialog.dismiss();
                     renderCommands();
+                    showActionFeedback(creating ? R.string.custom_commands_saved_new
+                        : R.string.custom_commands_saved_existing, candidate.name);
                 }
             });
         });
@@ -412,9 +423,18 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             .setPositiveButton(R.string.custom_commands_delete, (selectionDialog, which) -> {
                 mStore.delete(mTarget.id, command.id);
                 renderCommands();
+                showActionFeedback(R.string.custom_commands_deleted, command.name);
             })
             .create();
         TermuxProDialogStyle.show(this, dialog);
+    }
+
+    private void showActionFeedback(int messageRes, Object... args) {
+        String message = getString(messageRes, args);
+        mActionFeedback.setText(message);
+        mActionFeedback.setContentDescription(message);
+        mActionFeedback.setVisibility(View.VISIBLE);
+        mActionFeedback.announceForAccessibility(message);
     }
 
     private static final class CustomCommandTemplate {

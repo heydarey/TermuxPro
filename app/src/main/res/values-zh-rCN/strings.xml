@@ -735,6 +735,14 @@
     <string name="custom_commands_delete_title">删除“%1$s”？</string>
     <string name="custom_commands_delete_message">只会删除当前工作区中的这条快捷指令，不会执行其命令。</string>
     <string name="custom_commands_copy_suffix">%1$s 副本</string>
+    <string name="custom_commands_saved_new">已保存“%1$s”。下一步：可点“查看并运行”先核对目标和命令。</string>
+    <string name="custom_commands_saved_existing">已更新“%1$s”。运行前仍会按确认规则核对目标和命令。</string>
+    <string name="custom_commands_copied">已复制为“%1$s”。请编辑后再用于当前工作区。</string>
+    <string name="custom_commands_action_enabled">已启用“%1$s”。</string>
+    <string name="custom_commands_action_disabled">已停用“%1$s”，列表中仍保留，可随时重新启用。</string>
+    <string name="custom_commands_moved_up">“%1$s”已上移。</string>
+    <string name="custom_commands_moved_down">“%1$s”已下移。</string>
+    <string name="custom_commands_deleted">已删除“%1$s”。只删除本地快捷指令，没有执行远端命令。</string>
     <string name="custom_commands_invalid_workspace">当前没有可用的远程工作区。请先返回工作台配置服务器和项目目录。</string>
     <string name="terminal_tools_section_recommended">推荐操作</string>
     <string name="terminal_tools_section_context">当前终端</string>

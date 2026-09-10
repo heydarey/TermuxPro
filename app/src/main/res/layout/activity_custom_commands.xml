@@ -103,6 +103,21 @@
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/custom_commands_action_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:accessibilityLiveRegion="polite"
+            android:background="@drawable/tp_terminal_feedback_background"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/tp_text_primary"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/custom_commands_search_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
