@@ -350,6 +350,7 @@
     <string name="ai_cli_center_history_mode_new">new session</string>
     <string name="ai_cli_center_history_mode_pick">history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
+    <string name="ai_cli_center_repeat_last_target">Repeat: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_delete_latest_target">Delete latest: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">Delete this latest AI launch record?</string>
