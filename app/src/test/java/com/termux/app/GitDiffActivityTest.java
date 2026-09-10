@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -198,6 +199,41 @@ public final class GitDiffActivityTest {
         assertEquals("当前仓库还没有提交记录。",
             ((TextView) activity.findViewById(R.id.git_overview_recent_commits)).getText()
                 .toString());
+    }
+
+    @Test
+    public void overviewToolboxGroupsGitActionsForMobileInsteadOfHorizontalScrolling() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t3\t1\t2\t1\t0\t1\torigin/dev\n"
+                + "TP_LOCAL\tdev\n"
+                + "TP_LOCAL\tmobile-ui\n"
+                + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n"
+                + "TP_STASH\tstash@{0}\t1 hour ago\tWIP mobile\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        assertEquals("Git 工具箱", ((TextView) activity.findViewById(
+            R.id.git_overview_toolbox_title)).getText().toString());
+        assertEquals("分支管理", ((TextView) activity.findViewById(
+            R.id.git_workbench_branch_tools_title)).getText().toString());
+        assertEquals("远端同步", ((TextView) activity.findViewById(
+            R.id.git_workbench_sync_tools_title)).getText().toString());
+        assertEquals("改动处理", ((TextView) activity.findViewById(
+            R.id.git_workbench_change_tools_title)).getText().toString());
+        assertEquals("历史与临时保存", ((TextView) activity.findViewById(
+            R.id.git_workbench_history_tools_title)).getText().toString());
+
+        Button branches = activity.findViewById(R.id.git_overview_branches_button);
+        Button createBranch = activity.findViewById(R.id.git_overview_create_branch_button);
+        Button deleteBranch = activity.findViewById(R.id.git_overview_delete_branch_button);
+        Button commits = activity.findViewById(R.id.git_overview_commits_button);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, branches.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, createBranch.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, deleteBranch.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, commits.getLayoutParams().width);
+        assertTrue(((TextView) activity.findViewById(R.id.git_overview_toolbox_title))
+            .getContentDescription() == null);
     }
 
     @Test

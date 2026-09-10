@@ -393,6 +393,12 @@
     <string name="git_workbench_primary_create_branch_description">打开新建本地分支确认，不推送、不覆盖已有分支。</string>
     <string name="git_workbench_primary_commits">推荐：查看提交记录</string>
     <string name="git_workbench_primary_commits_description">查看最近提交详情，只读，不切换分支、不提交、不推送。</string>
+    <string name="git_workbench_toolbox_title">Git 工具箱</string>
+    <string name="git_workbench_toolbox_description">按分支、同步、改动和历史分组；所有操作都会先确认，不会自动 force push、merge、rebase 或丢弃文件。</string>
+    <string name="git_workbench_branch_tools">分支管理</string>
+    <string name="git_workbench_sync_tools">远端同步</string>
+    <string name="git_workbench_change_tools">改动处理</string>
+    <string name="git_workbench_history_tools">历史与临时保存</string>
     <string name="git_workbench_branches">分支</string>
     <string name="git_workbench_fetch">更新远端</string>
     <string name="git_workbench_fetching">正在更新 %1$s 的远端状态，不会合并…</string>
