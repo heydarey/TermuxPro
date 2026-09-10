@@ -21,6 +21,7 @@
     <style name="Theme.TermuxPro.DayNight.NoActionBar" parent="Theme.TermuxApp.DayNight.NoActionBar">
         <item name="colorPrimary">@color/tp_surface</item>
         <item name="colorPrimaryVariant">@color/tp_background</item>
+        <item name="colorPrimaryDark">@color/tp_surface</item>
         <item name="colorOnPrimary">@color/tp_text_primary</item>
         <item name="colorSecondary">@color/tp_primary</item>
         <item name="colorOnSecondary">@color/tp_on_primary</item>
