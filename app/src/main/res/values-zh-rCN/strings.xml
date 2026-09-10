@@ -563,6 +563,7 @@
     <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
     <string name="project_tasks_confirm_message">将在新的持久终端会话中运行。\n\n目标：%1$s\n\n命令：\n%2$s</string>
     <string name="project_tasks_run">运行任务</string>
+    <string name="project_tasks_view_sessions">查看任务会话</string>
     <string name="workspace_diagnostic_action">环境诊断</string>
     <string name="connection_diagnostic_title">连接诊断</string>
     <string name="connection_diagnostic_running">正在检查活动 SSH 连接和远端工具…</string>
