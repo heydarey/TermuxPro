@@ -90,6 +90,7 @@ while IFS= read -r ref; do
     fi
     if is_candidate_release_branch "$branch"; then
         ((candidate_release_branch_count += 1))
+        continue
     fi
     if [[ "$branch" == dev_* || "$branch" == hotfix_* ]]; then
         if is_stale_merged_branch "$branch"; then

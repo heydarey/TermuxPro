@@ -50,6 +50,7 @@ required_patterns=(
     'Pre-release 数：1'
     '本脚本只读审计，不删除远端分支、标签或 Release。'
     '永远排除 master、dev、dev_dailyIteration 和打开 PR 的 head 分支。'
+    '删除远端分支前必须再次确认分支已合入 origin/dev，且无打开 PR、无候选/稳定发布风险。'
     '- dev_oldFeatureMerged_20260901'
     '- hotfix_crashMerged_20260901'
 )
@@ -67,6 +68,10 @@ if grep -Fq -- '- dev_activeFeature_20260909' <<<"$output"; then
 fi
 if grep -Fq -- '- dev_dailyIteration' <<<"$output"; then
     echo "长期研发分支不得进入陈旧清理候选。" >&2
+    exit 1
+fi
+if grep -Fq -- '- dev_release101Rc1_20260909' <<<"$output"; then
+    echo "候选发布分支不得进入陈旧清理候选。" >&2
     exit 1
 fi
 
