@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-10T07:07:38Z
+- UTC：2026-09-10T07:27:53Z
 
 ## 当前目标
 
@@ -16,22 +16,21 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`20496906446c`
-- 最近提交：Merge pull request #303 from heydarey/dev_dailyIteration
-- `origin/dev`：`20496906446c`
+- 当前提交：`077d987181a4`
+- 最近提交：Merge pull request #304 from heydarey/dev_dailyIteration
+- `origin/dev`：`077d987181a4`
 - `origin/master`：`43c7a5794fc8`
 - 版本源：`0.10.0` / `100002`
 
 ### 工作树
 
 ```text
- M app/src/main/java/com/termux/app/TerminalFeedbackController.java
- M app/src/main/java/com/termux/app/TermuxActivity.java
+ M app/src/main/java/com/termux/app/CustomCommandsActivity.java
  M app/src/main/res/values-zh-rCN/strings.xml
  M app/src/main/res/values/strings.xml
- M app/src/test/java/com/termux/app/TerminalFeedbackControllerTest.java
+ M app/src/test/java/com/termux/app/CustomCommandsActivityTest.java
  M docs/PRODUCT_BACKLOG.md
-?? test/reports/terminal-touch-scroll-persistent-hint-20260910.md
+?? test/reports/custom-command-template-list-20260910.md
 ```
 
 ## 额度与资源
@@ -41,10 +40,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-10T07:07:30.380Z",
+    "timestamp": "2026-09-10T07:27:48.206Z",
     "usedPercent": 27,
     "remainingPercent": 73,
-    "resetsAt": 1789435930,
+    "resetsAt": 1789435931,
     "windowMinutes": 10080
   },
   "minimumRemainingPercent": 15,
@@ -57,9 +56,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：2.39
-可用内存：10553 MiB
-工作区可用磁盘：10637 MiB
+CPU：8 核，1 分钟负载：5.29
+可用内存：8991 MiB
+工作区可用磁盘：10599 MiB
 工作区磁盘使用率：95%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -76,7 +75,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-10T06:54:58Z","databaseId":34447395784,"displayTitle":"TermuxPro CI","headSha":"20496906446c9d6ae023f8187012c31b515f7af1","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T06:34:03Z","databaseId":34445778327,"displayTitle":"TermuxPro CI","headSha":"6df270c893e4c123bb0c0fa3a4217820cac850fb","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T06:16:24Z","databaseId":34444479119,"displayTitle":"TermuxPro CI","headSha":"6921c7a90a2c687b548b430917c853965297c837","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-10T07:14:17Z","databaseId":34448960388,"displayTitle":"TermuxPro CI","headSha":"077d987181a412a2c0a9bcf005da770f0126988b","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T06:54:58Z","databaseId":34447395784,"displayTitle":"TermuxPro CI","headSha":"20496906446c9d6ae023f8187012c31b515f7af1","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T06:34:03Z","databaseId":34445778327,"displayTitle":"TermuxPro CI","headSha":"6df270c893e4c123bb0c0fa3a4217820cac850fb","status":"completed"}]
 ```
 
 ### 最近 Release
