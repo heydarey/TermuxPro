@@ -300,6 +300,9 @@
     <string name="workspace_default_name">远程开发</string>
     <string name="workspace_delete_title">删除这个工作区？</string>
     <string name="workspace_delete_message">将删除“%1$s”的连接信息，不会影响 SSH 密钥和远端文件。</string>
+    <string name="workspace_toolbox_show_action">打开工具箱</string>
+    <string name="workspace_toolbox_hide_action">收起工具箱</string>
+    <string name="workspace_toolbox_description">按需打开 Git、文件、任务、tmux、诊断、SSH 密钥和 Web 预览工具</string>
     <string name="workspace_tools_action">工具箱</string>
     <string name="terminal_ai_short">AI</string>
     <string name="terminal_drawer_keyboard_short">键盘</string>

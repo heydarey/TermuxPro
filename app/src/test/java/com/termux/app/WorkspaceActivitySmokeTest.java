@@ -50,6 +50,7 @@ public class WorkspaceActivitySmokeTest {
         int[] hiddenViews = {
             R.id.workspace_remote_card,
             R.id.workspace_ai_actions,
+            R.id.workspace_toolbox_button,
             R.id.workspace_development_tools_card,
             R.id.workspace_preview_card,
             R.id.workspace_local_terminal_button,
@@ -85,6 +86,9 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_manage_button).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_new_button).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button).getVisibility());
+        assertEquals("打开工具箱",
+            ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_selector).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
@@ -99,6 +103,40 @@ public class WorkspaceActivitySmokeTest {
             .getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_connection_policy_hint)
             .getVisibility());
+        activity.finish();
+    }
+
+    @Test
+    public void configuredHomeExpandsLowFrequencyToolsOnlyOnDemand() {
+        Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+        intent.putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
+        WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+            .setup().get();
+
+        ((EditText) activity.findViewById(R.id.workspace_host_input))
+            .setText("hdr@192.168.1.153");
+        activity.findViewById(R.id.workspace_save_button).performClick();
+
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
+
+        activity.findViewById(R.id.workspace_toolbox_button).performClick();
+
+        assertEquals("收起工具箱",
+            ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
+
+        activity.findViewById(R.id.workspace_toolbox_button).performClick();
+
+        assertEquals("打开工具箱",
+            ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(R.id.workspace_local_terminal_button).getVisibility());
         activity.finish();
     }
 

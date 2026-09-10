@@ -444,11 +444,23 @@
                 android:backgroundTint="#25384A" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/workspace_toolbox_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:contentDescription="@string/workspace_toolbox_description"
+            android:text="@string/workspace_toolbox_show_action"
+            android:textAllCaps="false"
+            android:textColor="#D8E4EC"
+            android:backgroundTint="#24394A"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/workspace_development_tools_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/workspace_card_background"
             android:orientation="vertical"
             android:visibility="gone">

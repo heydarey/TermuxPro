@@ -84,6 +84,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
     private boolean mAdvancedEditing;
     private boolean mHasSavedProfiles;
     private boolean mShowBack;
+    private boolean mToolboxExpanded;
     private WorkspaceConnectionStateStore mConnectionStateStore;
     private WorkspaceOwnershipStore mOwnershipStore;
 
@@ -167,6 +168,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_back_button).setOnClickListener(view -> handleWorkspaceBack());
         findViewById(R.id.workspace_advanced_button).setOnClickListener(view -> {
             mAdvancedEditing = !mAdvancedEditing;
+            refreshHomeState();
+        });
+        findViewById(R.id.workspace_toolbox_button).setOnClickListener(view -> {
+            mToolboxExpanded = !mToolboxExpanded;
             refreshHomeState();
         });
         findViewById(R.id.workspace_save_button).setOnClickListener(view -> saveCurrentWorkspace());
@@ -769,6 +774,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
             && currentState.hasVerifiedFact();
         boolean freshVerification = verifiedBefore
             && currentState.isVerificationFresh(System.currentTimeMillis());
+        boolean canShowToolbox = configured && !showEditor;
+        boolean showToolboxContent = canShowToolbox && mToolboxExpanded;
         findViewById(R.id.workspace_connection_feedback).setVisibility(
             configured && !showEditor && !freshVerification ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_connection_diagnostic_primary).setVisibility(
@@ -783,6 +790,17 @@ public final class WorkspaceActivity extends AppCompatActivity {
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_ai_actions).setVisibility(
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_toolbox_button).setVisibility(
+            canShowToolbox ? View.VISIBLE : View.GONE);
+        ((android.widget.Button) findViewById(R.id.workspace_toolbox_button)).setText(
+            mToolboxExpanded ? R.string.workspace_toolbox_hide_action
+                : R.string.workspace_toolbox_show_action);
+        findViewById(R.id.workspace_development_tools_card).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_preview_card).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_local_terminal_button).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
     }
 
     private boolean shouldShowWorkspaceBack(boolean showEditor, boolean configured) {
