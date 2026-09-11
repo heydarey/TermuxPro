@@ -152,6 +152,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     }
 
     private void bindHistory() {
+        TextView scope = findViewById(R.id.ai_cli_center_history_scope);
         TextView summary = findViewById(R.id.ai_cli_center_history_summary);
         TextView nextStep = findViewById(R.id.ai_cli_center_history_next_step);
         TextView repeat = findViewById(R.id.ai_cli_center_repeat_last);
@@ -161,6 +162,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || !workspace.isConfigured()) {
             mLaunchHistory = java.util.Collections.emptyList();
+            scope.setText(R.string.ai_cli_center_history_scope_missing);
             summary.setText(R.string.ai_cli_center_history_missing_workspace);
             nextStep.setText(R.string.ai_cli_center_history_next_missing_workspace);
             repeat.setEnabled(false);
@@ -171,6 +173,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             clear.setEnabled(false);
             return;
         }
+        scope.setText(getString(R.string.ai_cli_center_history_scope,
+            workspace.name, workspace.host, workspace.port, workspace.path));
         mLaunchHistory = mLaunchHistoryStore.readForWorkspace(workspace.id);
         if (mLaunchHistory.isEmpty()) {
             summary.setText(R.string.ai_cli_center_history_empty);
@@ -288,7 +292,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             labels[index] = historyDialogLabel(mLaunchHistory.get(index));
         }
         TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
-            .setTitle(R.string.ai_cli_center_manage_history_title)
+            .setTitle(getString(R.string.ai_cli_center_manage_history_title, workspace.name))
             .setItems(labels, (dialog, which) -> confirmHistoryEntryAction(mLaunchHistory.get(which)))
             .setNegativeButton(android.R.string.cancel, null)
             .create());
