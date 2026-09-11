@@ -11,7 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.termux.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * AI CLI 会话中心。
@@ -199,7 +202,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 modeLabel(entry.mode),
                 entry.host,
                 entry.port,
-                entry.path));
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)));
         }
         int hiddenCount = mLaunchHistory.size() - count;
         if (hiddenCount > 0) {
@@ -280,7 +284,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         if (workspace == null || !workspace.isConfigured()
             || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
             TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
-                .setTitle(R.string.ai_cli_center_manage_history_title)
+                .setTitle(R.string.ai_cli_center_manage_history_empty_title)
                 .setMessage(R.string.ai_cli_center_manage_history_empty)
                 .setPositiveButton(android.R.string.ok, null)
                 .create());
@@ -304,7 +308,16 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             modeLabel(entry.mode),
             entry.host,
             entry.port,
-            entry.path);
+            entry.path,
+            formatLaunchTime(entry.launchedAtMillis));
+    }
+
+    private String formatLaunchTime(long launchedAtMillis) {
+        if (launchedAtMillis <= 0L) {
+            return getString(R.string.ai_cli_center_history_time_unknown);
+        }
+        return new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+            .format(new Date(launchedAtMillis));
     }
 
     private void confirmHistoryEntryAction(AiLaunchHistoryStore.Entry entry) {

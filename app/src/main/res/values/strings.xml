@@ -348,13 +348,14 @@
         <item quantity="one">Latest %1$d launch</item>
         <item quantity="other">Latest %1$d launches</item>
     </plurals>
-    <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_item">%1$s · %2$s\nLaunched: %6$s\n%3$s:%4$d · %5$s</string>
     <plurals name="ai_cli_center_history_more">
         <item quantity="one">%1$d more launch is collapsed and only stored as a local record for this workspace.</item>
         <item quantity="other">%1$d more launches are collapsed and only stored as local records for this workspace.</item>
     </plurals>
     <string name="ai_cli_center_history_mode_new">new session</string>
     <string name="ai_cli_center_history_mode_pick">history picker</string>
+    <string name="ai_cli_center_history_time_unknown">not recorded</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
     <string name="ai_cli_center_repeat_last_target">Repeat: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">Delete latest</string>
@@ -364,6 +365,7 @@
     <string name="ai_cli_center_delete_latest_action">Delete local record</string>
     <string name="ai_cli_center_manage_history">View all records</string>
     <string name="ai_cli_center_manage_history_description">View, repeat, or delete every AI launch record for the current workspace</string>
+    <string name="ai_cli_center_manage_history_empty_title">AI launch records for this workspace</string>
     <string name="ai_cli_center_manage_history_title">AI launch records: %1$s</string>
     <string name="ai_cli_center_manage_history_empty">There are no AI launch records to manage for this workspace.</string>
     <string name="ai_cli_center_history_action_title">Manage this launch record</string>

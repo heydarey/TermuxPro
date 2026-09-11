@@ -227,12 +227,13 @@
     <plurals name="ai_cli_center_history_count">
         <item quantity="other">最近 %1$d 条启动</item>
     </plurals>
-    <string name="ai_cli_center_history_item">%1$s · %2$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_item">%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s</string>
     <plurals name="ai_cli_center_history_more">
         <item quantity="other">还有 %1$d 条已折叠，仅保存在当前工作区本地记录中。</item>
     </plurals>
     <string name="ai_cli_center_history_mode_new">新建会话</string>
     <string name="ai_cli_center_history_mode_pick">历史选择</string>
+    <string name="ai_cli_center_history_time_unknown">未记录</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_repeat_last_target">重复：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
@@ -242,6 +243,7 @@
     <string name="ai_cli_center_delete_latest_action">删除本地记录</string>
     <string name="ai_cli_center_manage_history">查看全部记录</string>
     <string name="ai_cli_center_manage_history_description">查看、重复或删除当前工作区的所有 AI 启动记录</string>
+    <string name="ai_cli_center_manage_history_empty_title">当前工作区 AI 启动记录</string>
     <string name="ai_cli_center_manage_history_title">AI 启动记录：%1$s</string>
     <string name="ai_cli_center_manage_history_empty">当前工作区没有可管理的 AI 启动记录。</string>
     <string name="ai_cli_center_history_action_title">管理这条启动记录</string>
