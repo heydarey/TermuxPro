@@ -272,7 +272,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 modeLabel(entry.mode),
                 entry.host,
                 entry.port,
-                entry.path))
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_delete_latest_action,
                 (dialog, which) -> deleteLatestHistory())
@@ -328,7 +329,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 modeLabel(entry.mode),
                 entry.host,
                 entry.port,
-                entry.path))
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_history_action_repeat,
                 (dialog, which) -> repeatHistoryEntry(entry))
