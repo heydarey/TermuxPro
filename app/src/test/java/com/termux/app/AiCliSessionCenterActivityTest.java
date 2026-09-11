@@ -171,6 +171,7 @@ public class AiCliSessionCenterActivityTest {
 
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("启动时间："));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("最近 2 条启动"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可重复上次 Codex CLI · 历史选择"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("不会删除远端 AI 历史"));
@@ -233,6 +234,33 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
         assertEquals("重复上次", text(activity, R.id.ai_cli_center_repeat_last));
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog empty = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(empty);
+        assertEquals("当前工作区 AI 启动记录", shadowOf(empty).getTitle());
+    }
+
+    @Test
+    public void legacyLaunchHistoryWithoutTimestampShowsUnknownTime() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            AiLaunchHistoryStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString("entries_v1",
+                "[{\"workspaceId\":\"workspace-a\",\"workspaceName\":\"远程开发\","
+                    + "\"host\":\"hdr@192.168.1.153\",\"port\":22,\"path\":\"~/project\","
+                    + "\"tool\":\"CODEX\",\"mode\":\"PICK_HISTORY\"}]")
+            .commit();
+
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("启动时间：未记录"));
     }
 
     @Test
