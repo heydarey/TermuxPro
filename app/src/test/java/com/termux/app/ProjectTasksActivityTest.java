@@ -48,6 +48,8 @@ public final class ProjectTasksActivityTest {
         assertTrue(message.contains("命令："));
         assertTrue(message.contains("pnpm test"));
         assertTrue(message.contains("新的持久终端会话"));
+        assertTrue(message.contains("查看任务会话"));
+        assertTrue(message.contains("不会自动进入其他工作区任务会话"));
     }
 
     @Test
