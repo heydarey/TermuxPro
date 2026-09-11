@@ -337,6 +337,8 @@
     <string name="ai_cli_center_codex_history_description">Choose Codex history. Opens only Codex’s native picker and never resumes automatically.</string>
     <string name="ai_cli_center_history_title">Recent AI launches</string>
     <string name="ai_cli_center_history_hint">Only records AI launches started by TermuxPro in the current workspace. It never reads Claude/Codex private history or terminal output.</string>
+    <string name="ai_cli_center_history_scope">Record scope: %1$s\n%2$s:%3$d · %4$s\nOnly manages local records in this app and never crosses workspaces.</string>
+    <string name="ai_cli_center_history_scope_missing">Record scope: no workspace selected. TermuxPro will not guess a server or read AI history.</string>
     <string name="ai_cli_center_history_missing_workspace">Choose a valid workspace first. Launch history is isolated by workspace.</string>
     <string name="ai_cli_center_history_empty">No AI launches from this workspace yet.</string>
     <string name="ai_cli_center_history_next_missing_workspace">Next: choose a target in Server and project, then start Claude or Codex.</string>
@@ -362,7 +364,7 @@
     <string name="ai_cli_center_delete_latest_action">Delete local record</string>
     <string name="ai_cli_center_manage_history">View all records</string>
     <string name="ai_cli_center_manage_history_description">View, repeat, or delete every AI launch record for the current workspace</string>
-    <string name="ai_cli_center_manage_history_title">AI launch records for this workspace</string>
+    <string name="ai_cli_center_manage_history_title">AI launch records: %1$s</string>
     <string name="ai_cli_center_manage_history_empty">There are no AI launch records to manage for this workspace.</string>
     <string name="ai_cli_center_history_action_title">Manage this launch record</string>
     <string name="ai_cli_center_history_action_message">%1$s · %2$s\n%3$s:%4$d · %5$s\n\nRepeat the same launch entry, or delete only the local TermuxPro record. Claude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>

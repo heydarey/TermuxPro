@@ -217,6 +217,8 @@
     <string name="ai_cli_center_codex_history_description">选择 Codex 历史：只打开 Codex 原生选择器，不自动恢复。</string>
     <string name="ai_cli_center_history_title">最近 AI 启动</string>
     <string name="ai_cli_center_history_hint">只记录当前工作区里由 TermuxPro 发起的 AI 启动；不读取 Claude/Codex 私有历史或终端输出。</string>
+    <string name="ai_cli_center_history_scope">记录范围：%1$s\n%2$s:%3$d · %4$s\n只管理本机本 App 记录，不跨工作区。</string>
+    <string name="ai_cli_center_history_scope_missing">记录范围：未选择工作区。TermuxPro 不会猜测服务器或读取 AI 历史。</string>
     <string name="ai_cli_center_history_missing_workspace">请先选择有效工作区。启动记录按工作区隔离。</string>
     <string name="ai_cli_center_history_empty">当前工作区还没有 AI 启动记录。</string>
     <string name="ai_cli_center_history_next_missing_workspace">下一步：先回到“服务器与项目”选择目标，再启动 Claude 或 Codex。</string>
@@ -240,7 +242,7 @@
     <string name="ai_cli_center_delete_latest_action">删除本地记录</string>
     <string name="ai_cli_center_manage_history">查看全部记录</string>
     <string name="ai_cli_center_manage_history_description">查看、重复或删除当前工作区的所有 AI 启动记录</string>
-    <string name="ai_cli_center_manage_history_title">当前工作区 AI 启动记录</string>
+    <string name="ai_cli_center_manage_history_title">AI 启动记录：%1$s</string>
     <string name="ai_cli_center_manage_history_empty">当前工作区没有可管理的 AI 启动记录。</string>
     <string name="ai_cli_center_history_action_title">管理这条启动记录</string>
     <string name="ai_cli_center_history_action_message">%1$s · %2$s\n%3$s:%4$d · %5$s\n\n可重复启动相同入口，或只删除 TermuxPro 本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>

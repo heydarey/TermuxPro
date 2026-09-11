@@ -54,6 +54,8 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertEquals("最近 AI 启动", text(activity, R.id.ai_cli_center_history_title));
         assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("未选择工作区"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不会猜测服务器"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("先回到“服务器与项目”"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
@@ -95,6 +97,10 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(risk.contains("工作区默认 tmux：safe-ai"));
         assertTrue(risk.contains("AI 启动不会自动进入它"));
         assertTrue(risk.contains("共享 Claude/tmux 会话"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("记录范围：远程开发"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_scope)
+            .contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不跨工作区"));
 
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
@@ -259,7 +265,7 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(list);
-        assertEquals("当前工作区 AI 启动记录", shadowOf(list).getTitle());
+        assertEquals("AI 启动记录：远程开发", shadowOf(list).getTitle());
         assertEquals(4, list.getListView().getAdapter().getCount());
         assertTrue(list.getListView().getAdapter().getItem(3).toString()
             .contains("Claude Code · 新建会话"));
