@@ -315,6 +315,29 @@ public class AiCliSessionCenterActivityTest {
             action.getButton(AlertDialog.BUTTON_NEUTRAL).getText().toString());
         action.getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
         shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(deleteConfirm);
+        assertEquals("删除这条 AI 启动记录？", shadowOf(deleteConfirm).getTitle());
+        String deleteMessage = ((TextView) deleteConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(deleteMessage.contains("Claude Code · 新建会话"));
+        assertTrue(deleteMessage.contains("启动时间："));
+        assertTrue(deleteMessage.contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(deleteMessage.contains("不会删除 Claude/Codex 远端历史"));
+        deleteConfirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还有 1 条已折叠"));
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        list = ShadowAlertDialog.getLatestAlertDialog();
+        list.getListView().performItemClick(null, 3,
+            list.getListView().getAdapter().getItemId(3));
+        action = ShadowAlertDialog.getLatestAlertDialog();
+        action.getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        deleteConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
 
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
         assertTrue(afterDelete.contains("最近 3 条启动"));
