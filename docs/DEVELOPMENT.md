@@ -12,19 +12,21 @@
 git clone git@github.com:dr1234-div/TermuxPro.git
 cd TermuxPro
 git switch dev
-export ANDROID_SDK_ROOT=/path/to/android-sdk
-./scripts/bootstrap-dev-env.sh
+./scripts/ensure-android-sdk.sh
 ./scripts/doctor.sh
 ```
 
-`bootstrap-dev-env.sh` 使用 SDK 自带的 `sdkmanager` 补齐固定版本组件并生成未跟踪的
-`local.properties`。它不会安装系统级 JDK，也不会写入 shell 配置。若尚无 Android SDK Command-line
-Tools，请先通过 Android Studio SDK Manager 安装。首次依赖解析需要联网；之后可向 Gradle 传
-`--offline`。首次安装 SDK 组件时需要由开发者本人阅读并接受 Android SDK 许可证：
+`ensure-android-sdk.sh` 默认把 Android command-line tools 和固定版本 SDK 组件安装到项目级
+`.tooling/android-sdk`，并生成未跟踪的 `local.properties`。它不会安装系统级 JDK，也不会写入 shell
+配置；如需使用已有 SDK，可设置 `ANDROID_SDK_ROOT` 或 `ANDROID_HOME` 后再执行。首次依赖解析需要联网；
+之后可向 Gradle 传 `--offline`。首次安装 SDK 组件时需要由开发者本人阅读并接受 Android SDK 许可证：
 
 ```bash
-sdkmanager --licenses
+TERMUXPRO_ANDROID_SDK_ACCEPT_LICENSES=1 ./scripts/ensure-android-sdk.sh
 ```
+
+共享服务器默认不安装 emulator 或系统镜像；只有 KVM 与资源守卫均通过且确实需要本地截图验收时，才使用
+`./scripts/ensure-android-sdk.sh --with-emulator`。
 
 无法稳定访问 Google Maven 的中国网络环境可显式启用腾讯 Maven 代理优先级：
 
@@ -78,6 +80,10 @@ source scripts/resolve-jdk17.sh
 
 Debug 构建和测试不依赖 Release 私钥。正式构建需要按 [RELEASE_SIGNING.md](RELEASE_SIGNING.md)
 准备本机签名材料。禁止把 `local.properties`、SDK、Gradle 缓存、SSH 配置、AI Token、私钥或密码提交。
+
+当资源守卫提示磁盘不足时，先运行 `./scripts/cleanup-generated-caches.sh` 查看可安全清理的生成缓存；
+确认后再加 `--apply`。若仍不足，可额外加 `--include-user-caches` 清理当前用户 npm/Gradle 缓存。清理
+Android SDK 后可重新运行 `./scripts/ensure-android-sdk.sh` 恢复本地构建能力。
 
 ## Git 远程
 

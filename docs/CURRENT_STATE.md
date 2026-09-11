@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-11T04:36:54Z
+- UTC：2026-09-11T05:03:22Z
 
 ## 当前目标
 
@@ -16,21 +16,28 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`106552c2789c`
-- 最近提交：Merge pull request #313 from heydarey/dev_dailyIteration
-- `origin/dev`：`106552c2789c`
+- 当前提交：`8ba8836f540e`
+- 最近提交：Merge pull request #314 from heydarey/dev_dailyIteration
+- `origin/dev`：`8ba8836f540e`
 - `origin/master`：`43c7a5794fc8`
 - 版本源：`0.10.0` / `100002`
 
 ### 工作树
 
 ```text
+ M app/src/main/java/com/termux/app/AiCliSessionCenterActivity.java
+ M app/src/main/res/layout/activity_ai_cli_session_center.xml
+ M app/src/main/res/values-zh-rCN/strings.xml
+ M app/src/main/res/values/strings.xml
+ M app/src/test/java/com/termux/app/AiCliSessionCenterActivityTest.java
+ M docs/DEVELOPMENT.md
  M docs/PRODUCT_BACKLOG.md
+ M scripts/bootstrap-dev-env.sh
  M scripts/pre-push-smoke.sh
- M scripts/resource-guard.sh
-?? scripts/cleanup-generated-caches.sh
-?? test/generated-cache-cleanup-test.sh
-?? test/reports/resource-cleanup-guard-20260911.md
+?? scripts/ensure-android-sdk.sh
+?? test/android-sdk-bootstrap-test.sh
+?? test/reports/ai-launch-history-management-20260911.md
+?? test/reports/android-sdk-bootstrap-20260911.md
 ```
 
 ## 额度与资源
@@ -40,7 +47,7 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-11T04:36:47.174Z",
+    "timestamp": "2026-09-11T05:03:17.757Z",
     "usedPercent": 36,
     "remainingPercent": 64,
     "resetsAt": 1789435930,
@@ -56,9 +63,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：2.61
-可用内存：13528 MiB
-工作区可用磁盘：9774 MiB
+CPU：8 核，1 分钟负载：0.82
+可用内存：13526 MiB
+工作区可用磁盘：9801 MiB
 工作区磁盘使用率：95%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -75,7 +82,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-10T10:22:05Z","databaseId":34465682389,"displayTitle":"TermuxPro CI","headSha":"106552c2789cd9847e8dee8a971a0bbd0cc8bf20","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T10:02:19Z","databaseId":34463919055,"displayTitle":"TermuxPro CI","headSha":"6a415a83ed80236c71ec95365a233b18b58ac453","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T09:43:03Z","databaseId":34462174205,"displayTitle":"TermuxPro CI","headSha":"a3773ef1c2ca612a0a647b7e2bd7cc381490cda0","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-11T04:43:40Z","databaseId":34563277154,"displayTitle":"TermuxPro CI","headSha":"8ba8836f540ee4ddb12e88d9bd4bfa18b1a3b025","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T10:22:05Z","databaseId":34465682389,"displayTitle":"TermuxPro CI","headSha":"106552c2789cd9847e8dee8a971a0bbd0cc8bf20","status":"completed"},{"conclusion":"success","createdAt":"2026-09-10T10:02:19Z","databaseId":34463919055,"displayTitle":"TermuxPro CI","headSha":"6a415a83ed80236c71ec95365a233b18b58ac453","status":"completed"}]
 ```
 
 ### 最近 Release
