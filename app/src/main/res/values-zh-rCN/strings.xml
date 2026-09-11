@@ -260,7 +260,7 @@
     <string name="ai_cli_center_open_diagnostic">检查 AI 远端环境</string>
     <string name="ai_cli_center_open_tmux">选择 / 管理 tmux 会话</string>
     <string name="ai_cli_center_open_git">查看 Git 改动</string>
-    <string name="ai_cli_center_open_project_tasks">运行项目任务</string>
+    <string name="ai_cli_center_open_project_tasks">项目任务 / 测试</string>
     <string name="workspace_open_local_terminal">打开本地终端</string>
     <string name="workspace_security_tip">首次连接需确认服务器指纹并输入密码或配置 SSH 密钥；TermuxPro 不会自动进入未指定的 tmux 或 AI 历史会话。</string>
     <string name="workspace_error_host">请输入有效的 SSH 别名、主机、“用户名@主机”、“用户名@主机:端口”或“ssh -p 端口 用户名@主机”。</string>
@@ -405,7 +405,7 @@
     <string name="git_workbench_primary_create_branch_description">打开新建本地分支确认，不推送、不覆盖已有分支。</string>
     <string name="git_workbench_primary_commits">推荐：查看提交记录</string>
     <string name="git_workbench_primary_commits_description">查看最近提交详情，只读，不切换分支、不提交、不推送。</string>
-    <string name="git_workbench_project_tasks">运行项目任务 / 测试</string>
+    <string name="git_workbench_project_tasks">项目任务 / 测试</string>
     <string name="git_workbench_project_tasks_description">打开当前 Git 目标的项目任务和测试页；先展示命令并确认，不会直接执行。</string>
     <string name="git_workbench_project_tasks_target_mismatch">当前 Git 目标与已选工作区不一致。请从“服务器与项目”重新进入 Git 工作台，避免在错误服务器或目录运行任务。</string>
     <string name="git_workbench_toolbox_title">Git 工具箱</string>
@@ -562,9 +562,9 @@
     <string name="remote_file_failed_format">远端文件响应格式无效。</string>
     <string name="remote_file_binary">二进制文件不会加载到文本预览中。</string>
     <string name="remote_file_truncated">预览已在 1 MB 处停止。</string>
-    <string name="workspace_project_tasks_action">项目任务</string>
-    <string name="project_tasks_title">项目任务</string>
-    <string name="project_tasks_description">识别阶段只读取项目描述信息；启动任务前会展示完整命令，由你确认后执行。</string>
+    <string name="workspace_project_tasks_action">项目任务 / 测试</string>
+    <string name="project_tasks_title">项目任务 / 测试</string>
+    <string name="project_tasks_description">识别远端项目的测试、构建和开发任务；启动前会展示目标与完整命令，由你确认后执行。</string>
     <string name="project_tasks_target">执行目标 · %1$s:%2$d · %3$s</string>
     <string name="project_tasks_target_missing">未填写</string>
     <string name="project_tasks_detecting">正在识别项目类型…</string>

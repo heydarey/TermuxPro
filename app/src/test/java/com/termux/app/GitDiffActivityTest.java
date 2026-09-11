@@ -395,7 +395,7 @@ public final class GitDiffActivityTest {
             .setup().get();
 
         Button tasks = activity.findViewById(R.id.git_overview_project_tasks_button);
-        assertEquals("运行项目任务 / 测试", tasks.getText().toString());
+        assertEquals("项目任务 / 测试", tasks.getText().toString());
         assertTrue(tasks.getContentDescription().toString().contains("先展示命令并确认"));
         tasks.performClick();
 

@@ -46,7 +46,7 @@ public class TerminalProjectToolsMenuTest {
         assertEquals(TerminalProjectToolsMenu.TOOL_REMOTE_FILES, menu.getItem(11).getItemId());
         assertEquals("远端文件", menu.getItem(11).getTitle().toString());
         assertEquals(TerminalProjectToolsMenu.TOOL_PROJECT_CHECK, menu.getItem(12).getItemId());
-        assertEquals("项目任务", menu.getItem(12).getTitle().toString());
+        assertEquals("项目任务 / 测试", menu.getItem(12).getTitle().toString());
         assertEquals(TerminalProjectToolsMenu.TOOL_START_WEB_PREVIEW,
             menu.getItem(13).getItemId());
         assertEquals("启动 Web 隧道", menu.getItem(13).getTitle().toString());
