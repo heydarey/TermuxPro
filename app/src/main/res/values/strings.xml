@@ -527,6 +527,9 @@
     <string name="git_workbench_primary_create_branch_description">Open local branch creation. Nothing is pushed and existing branches are not overwritten.</string>
     <string name="git_workbench_primary_commits">Recommended: view commits</string>
     <string name="git_workbench_primary_commits_description">View recent commit details read-only. It never switches branches, commits, or pushes.</string>
+    <string name="git_workbench_project_tasks">Run project tasks / tests</string>
+    <string name="git_workbench_project_tasks_description">Open project tasks and tests for the current Git target. Commands are shown for confirmation before anything runs.</string>
+    <string name="git_workbench_project_tasks_target_mismatch">The current Git target does not match the selected workspace. Reopen Git workbench from Servers &amp; projects to avoid running tasks on the wrong server or directory.</string>
     <string name="git_workbench_toolbox_title">Git toolbox</string>
     <string name="git_workbench_toolbox_description">Grouped by branches, sync, changes, and history. Every write action asks for confirmation and never force pushes, merges, rebases, or discards files automatically.</string>
     <string name="git_workbench_branch_tools">Branch management</string>
