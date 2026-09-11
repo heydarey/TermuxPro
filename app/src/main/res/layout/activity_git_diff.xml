@@ -195,6 +195,17 @@
                     android:minHeight="48dp"
                     android:textColor="#06231B" />
 
+                <Button
+                    android:id="@+id/git_overview_project_tasks_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#24394A"
+                    android:contentDescription="@string/git_workbench_project_tasks_description"
+                    android:minHeight="48dp"
+                    android:text="@string/git_workbench_project_tasks"
+                    android:textColor="#F5F8FA" />
+
                 <TextView
                     android:id="@+id/git_overview_recent_commits_title"
                     android:layout_width="match_parent"

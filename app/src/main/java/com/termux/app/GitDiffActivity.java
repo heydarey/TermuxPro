@@ -39,6 +39,7 @@ public final class GitDiffActivity extends AppCompatActivity {
     private static final String EXTRA_HOST = "host";
     private static final String EXTRA_PORT = "port";
     private static final String EXTRA_PATH = "path";
+    private static final String EXTRA_WORKSPACE_ID = "workspace_id";
     static final String EXTRA_START_IN_DIFF = "start_in_diff";
     static final String EXTRA_UI_TEST_OVERVIEW = "ui_test_overview";
     private static final int MAX_OUTPUT_BYTES = 1_500_000;
@@ -64,6 +65,12 @@ public final class GitDiffActivity extends AppCompatActivity {
             .putExtra(EXTRA_HOST, host)
             .putExtra(EXTRA_PORT, port)
             .putExtra(EXTRA_PATH, path);
+    }
+
+    @NonNull
+    static Intent newIntentForWorkspace(@NonNull Context context, @NonNull WorkspaceTarget target) {
+        return newIntent(context, target.host, target.port, target.path)
+            .putExtra(EXTRA_WORKSPACE_ID, target.id);
     }
 
     @Override
@@ -98,6 +105,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         findViewById(R.id.git_overview_commit_button).setOnClickListener(
             view -> showCommitDialog());
         findViewById(R.id.git_overview_commits_button).setOnClickListener(view -> showCommits());
+        findViewById(R.id.git_overview_project_tasks_button).setOnClickListener(
+            view -> openProjectTasks());
         mReturnWorkspace.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -175,6 +184,46 @@ public final class GitDiffActivity extends AppCompatActivity {
             return null;
         }
         return new ConnectionTarget(host, port, path);
+    }
+
+    private void openProjectTasks() {
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
+        String workspaceId = getIntent().getStringExtra(EXTRA_WORKSPACE_ID);
+        if (workspaceId != null && !workspaceId.trim().isEmpty()) {
+            try {
+                Intent intent = ProjectTasksNavigation.newIntentForWorkspace(this,
+                    new WorkspaceTarget(workspaceId, workspaceId, target.host, target.port, target.path));
+                if (intent != null) {
+                    startActivity(intent);
+                    return;
+                }
+            } catch (IllegalArgumentException ignored) {
+                // 继续走 active workspace 校验兜底，避免因旧数据让用户误进错误目标。
+            }
+        }
+
+        WorkspaceTarget active = WorkspaceTargetStore.readActive(this);
+        if (active == null || !active.isConfigured()) {
+            showStatus(getString(R.string.terminal_project_tasks_invalid_workspace), true);
+            return;
+        }
+        if (!sameTarget(active, target)) {
+            showStatus(getString(R.string.git_workbench_project_tasks_target_mismatch), true);
+            return;
+        }
+        Intent fallback = ProjectTasksNavigation.newIntentForWorkspace(this, active);
+        if (fallback == null) {
+            showStatus(getString(R.string.terminal_project_tasks_invalid_workspace), true);
+            return;
+        }
+        startActivity(fallback);
+    }
+
+    private static boolean sameTarget(@NonNull WorkspaceTarget workspace,
+                                      @NonNull ConnectionTarget target) {
+        return workspace.port == target.port && workspace.host.equals(target.host)
+            && workspace.path.equals(target.path);
     }
 
     @NonNull

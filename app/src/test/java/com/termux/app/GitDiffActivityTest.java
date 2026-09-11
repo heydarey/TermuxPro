@@ -2,10 +2,12 @@ package com.termux.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.view.View;
@@ -373,6 +375,55 @@ public final class GitDiffActivityTest {
         assertEquals("提交记录", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
             .toString());
         ShadowAlertDialog.getLatestAlertDialog().dismiss();
+    }
+
+    @Test
+    public void overviewOpensProjectTasksForSameWorkspaceAfterGitReview() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/repo\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        WorkspaceTarget target = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/repo");
+        Intent intent = GitDiffActivity.newIntentForWorkspace(RuntimeEnvironment.getApplication(),
+                target)
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW,
+                "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        Button tasks = activity.findViewById(R.id.git_overview_project_tasks_button);
+        assertEquals("运行项目任务 / 测试", tasks.getText().toString());
+        assertTrue(tasks.getContentDescription().toString().contains("先展示命令并确认"));
+        tasks.performClick();
+
+        Intent next = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(next);
+        assertEquals(ProjectTasksActivity.class.getName(), next.getComponent().getClassName());
+    }
+
+    @Test
+    public void overviewBlocksProjectTasksWhenLegacyGitTargetDiffersFromActiveWorkspace() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-b\",\"name\":\"其他项目\",\"host\":\"hdr@192.168.1.154\",\"port\":\"22\",\"path\":\"~/other\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-b")
+            .commit();
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW,
+                "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        activity.findViewById(R.id.git_overview_project_tasks_button).performClick();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        assertTrue(((TextView) activity.findViewById(R.id.git_diff_status_message)).getText()
+            .toString().contains("当前 Git 目标与已选工作区不一致"));
     }
 
     @Test
