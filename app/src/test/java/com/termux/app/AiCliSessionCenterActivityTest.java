@@ -187,6 +187,7 @@ public class AiCliSessionCenterActivityTest {
         String deleteMessage = ((TextView) deleteConfirm.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(deleteMessage.contains("Codex CLI · 历史选择"));
+        assertTrue(deleteMessage.contains("启动时间："));
         assertTrue(deleteMessage.contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(deleteMessage.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("删除本地记录",
@@ -306,6 +307,7 @@ public class AiCliSessionCenterActivityTest {
         String message = ((TextView) action.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("启动时间："));
         assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("重复启动",
             action.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());

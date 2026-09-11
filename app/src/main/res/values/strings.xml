@@ -361,7 +361,7 @@
     <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_delete_latest_target">Delete latest: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">Delete this latest AI launch record?</string>
-    <string name="ai_cli_center_delete_latest_message">This deletes the local TermuxPro record: %1$s · %2$s\n%3$s:%4$d · %5$s\n\nClaude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
+    <string name="ai_cli_center_delete_latest_message">This deletes the local TermuxPro record: %1$s · %2$s\nLaunched: %6$s\n%3$s:%4$d · %5$s\n\nClaude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
     <string name="ai_cli_center_delete_latest_action">Delete local record</string>
     <string name="ai_cli_center_manage_history">View all records</string>
     <string name="ai_cli_center_manage_history_description">View, repeat, or delete every AI launch record for the current workspace</string>
@@ -369,7 +369,7 @@
     <string name="ai_cli_center_manage_history_title">AI launch records: %1$s</string>
     <string name="ai_cli_center_manage_history_empty">There are no AI launch records to manage for this workspace.</string>
     <string name="ai_cli_center_history_action_title">Manage this launch record</string>
-    <string name="ai_cli_center_history_action_message">%1$s · %2$s\n%3$s:%4$d · %5$s\n\nRepeat the same launch entry, or delete only the local TermuxPro record. Claude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
+    <string name="ai_cli_center_history_action_message">%1$s · %2$s\nLaunched: %6$s\n%3$s:%4$d · %5$s\n\nRepeat the same launch entry, or delete only the local TermuxPro record. Claude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
     <string name="ai_cli_center_history_action_repeat">Repeat launch</string>
     <string name="ai_cli_center_clear_history">Clear records</string>
     <string name="ai_cli_center_clear_history_title">Clear AI launch records for this workspace?</string>
