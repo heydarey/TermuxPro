@@ -134,6 +134,7 @@ static_checks=(
     "./test/github-check-suites-test.sh"
     "./test/context-checkpoint-test.sh"
     "./test/generated-cache-cleanup-test.sh"
+    "./test/android-sdk-bootstrap-test.sh"
 )
 
 for check in "${static_checks[@]}"; do

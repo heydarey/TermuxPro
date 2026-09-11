@@ -230,6 +230,73 @@ public class AiCliSessionCenterActivityTest {
     }
 
     @Test
+    public void managesEveryLocalAiLaunchRecordWithoutReadingPrivateHistory() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        WorkspaceTarget workspace = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/project");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        assertEquals("查看全部记录", text(activity, R.id.ai_cli_center_manage_history));
+        assertTrue(activity.findViewById(R.id.ai_cli_center_manage_history).getContentDescription()
+            .toString().contains("重复或删除"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还有 1 条已折叠"));
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
+        assertEquals("当前工作区 AI 启动记录", shadowOf(list).getTitle());
+        assertEquals(4, list.getListView().getAdapter().getCount());
+        assertTrue(list.getListView().getAdapter().getItem(3).toString()
+            .contains("Claude Code · 新建会话"));
+
+        list.getListView().performItemClick(null, 3,
+            list.getListView().getAdapter().getItemId(3));
+        AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(action);
+        assertEquals("管理这条启动记录", shadowOf(action).getTitle());
+        String message = ((TextView) action.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
+        assertEquals("重复启动",
+            action.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        assertEquals("删除本地记录",
+            action.getButton(AlertDialog.BUTTON_NEUTRAL).getText().toString());
+        action.getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
+        assertTrue(afterDelete.contains("最近 3 条启动"));
+        assertTrue(!afterDelete.contains("还有 1 条已折叠"));
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        list = ShadowAlertDialog.getLatestAlertDialog();
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        action = ShadowAlertDialog.getLatestAlertDialog();
+        action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
+        assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
+            .contains("exec codex resume"));
+    }
+
+    @Test
     public void historySummaryShowsCollapsedLocalCountWhenMoreThanThreeLaunchesExist() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
