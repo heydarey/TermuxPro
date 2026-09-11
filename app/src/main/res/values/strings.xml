@@ -696,7 +696,7 @@
     <string name="project_tasks_empty">No supported tasks were found.</string>
     <string name="project_tasks_confirm_title">Run %1$s?</string>
     <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
-    <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s</string>
+    <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s\n\nAfter it starts, return here and tap “View task sessions” to continue reading logs or open tmux management. TermuxPro will not auto-enter task sessions from other workspaces.</string>
     <string name="project_tasks_run">Run task</string>
     <string name="project_tasks_view_sessions">View task sessions</string>
     <string name="project_tasks_sessions_loading">Checking task sessions for this workspace…</string>
