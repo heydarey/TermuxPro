@@ -8,6 +8,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -28,6 +29,22 @@ import java.lang.reflect.Method;
 public final class ProjectTasksActivityTest {
     private static final String OWNER = "11111111-2222-3333-4444-555555555555";
 
+
+    @Test
+    public void pageCopyFramesTasksAsProjectTasksAndTests() {
+        ProjectTasksActivity activity = Robolectric.buildActivity(ProjectTasksActivity.class,
+            ProjectTasksActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/project", OWNER))
+            .setup().get();
+
+        assertEquals("项目任务 / 测试",
+            ((TextView) activity.findViewById(R.id.project_tasks_title)).getText().toString());
+        assertTrue(((TextView) activity.findViewById(R.id.project_tasks_description)).getText()
+            .toString().contains("测试、构建和开发任务"));
+        assertEquals("查看任务会话",
+            ((Button) activity.findViewById(R.id.project_tasks_sessions_button)).getText()
+                .toString());
+    }
 
     @Test
     public void confirmationNamesRemoteTargetAndCommand() throws Exception {
