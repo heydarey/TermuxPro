@@ -286,11 +286,39 @@ public class AiCliSessionCenterActivityTest {
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         list = ShadowAlertDialog.getLatestAlertDialog();
+        assertEquals(3, list.getListView().getAdapter().getCount());
+    }
+
+    @Test
+    public void repeatsSelectedAiLaunchRecordFromManageDialog() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        WorkspaceTarget workspace = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/project");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(workspace, AiCliLaunchCommand.Tool.CODEX,
+            AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
         list.getListView().performItemClick(null, 0,
             list.getListView().getAdapter().getItemId(0));
-        action = ShadowAlertDialog.getLatestAlertDialog();
+        AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(action);
         action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
         Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(repeated);
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("exec codex resume"));
