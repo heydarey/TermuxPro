@@ -303,7 +303,7 @@ public class AiCliSessionCenterActivityTest {
             list.getListView().getAdapter().getItemId(3));
         AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(action);
-        assertEquals("管理这条启动记录", shadowOf(action).getTitle());
+        assertEquals("重复或删除启动记录", shadowOf(action).getTitle());
         String message = ((TextView) action.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));

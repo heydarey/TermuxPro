@@ -247,7 +247,7 @@
     <string name="ai_cli_center_manage_history_empty_title">当前工作区 AI 启动记录</string>
     <string name="ai_cli_center_manage_history_title">AI 启动记录：%1$s</string>
     <string name="ai_cli_center_manage_history_empty">当前工作区没有可管理的 AI 启动记录。</string>
-    <string name="ai_cli_center_history_action_title">管理这条启动记录</string>
+    <string name="ai_cli_center_history_action_title">重复或删除启动记录</string>
     <string name="ai_cli_center_history_action_message">%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s\n\n可重复启动相同入口，或只删除 TermuxPro 本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_history_action_repeat">重复启动</string>
     <string name="ai_cli_center_clear_history">清空记录</string>
