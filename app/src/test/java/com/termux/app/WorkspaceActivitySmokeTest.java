@@ -655,7 +655,7 @@ public class WorkspaceActivitySmokeTest {
         assertNotNull(newSession);
         assertNotNull(history);
         assertEquals("新建会话（安全默认）\nclaude", newSession.getText().toString());
-        assertEquals("选择历史会话（不自动恢复）\nclaude --resume", history.getText().toString());
+        assertEquals("打开历史选择器（不自动恢复）\nclaude --resume", history.getText().toString());
         assertTrue(context.getText().toString().contains("Claude Code 常见于共享远程账号"));
         assertEquals(activity.getColor(R.color.tp_primary),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());

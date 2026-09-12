@@ -325,9 +325,9 @@ public class CustomCommandsActivityTest {
         ListView listView = templateDialog.getListView();
         assertTrue(listView.getAdapter().getCount() >= 8);
         assertEquals("Codex：新建独立会话", listView.getAdapter().getItem(0).toString());
-        assertEquals("Codex：选择历史会话", listView.getAdapter().getItem(1).toString());
+        assertEquals("Codex：打开历史选择器", listView.getAdapter().getItem(1).toString());
         assertEquals("Claude：新建独立会话", listView.getAdapter().getItem(2).toString());
-        assertEquals("Claude：选择历史会话", listView.getAdapter().getItem(3).toString());
+        assertEquals("Claude：打开历史选择器", listView.getAdapter().getItem(3).toString());
         assertFalse(listView.getAdapter().getItem(0).toString().contains("\n"));
         assertFalse(listView.getAdapter().getItem(3).toString().contains("claude --resume"));
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())

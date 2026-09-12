@@ -30,8 +30,12 @@ require_contains "$dialog" "label.setMaxLines(3)" \
     "AI 会话弹窗选项支持说明文案后必须允许最多三行，避免 200% 字体截断。"
 require_contains "$dialog" "dialog_ai_session_choice" \
     "AI 会话启动选项必须作为自定义操作区置于详细说明之前，避免大字体下只剩取消按钮。"
-require_contains "$zh" "选择历史会话（不自动恢复）" \
+require_contains "$zh" "打开历史选择器（不自动恢复）" \
     "AI 历史入口必须在可点击操作本身明确不会自动恢复。"
+require_contains "$zh" "Claude 历史选择器\\n不自动恢复" \
+    "AI 会话中心 Claude 历史按钮必须在可点击文本中说明不自动恢复。"
+require_contains "$zh" "Codex 历史选择器\\n不自动恢复" \
+    "AI 会话中心 Codex 历史按钮必须在可点击文本中说明不自动恢复。"
 require_contains "$choice_layout" "@+id/ai_session_new_button" \
     "AI 会话弹窗必须提供可见的新建会话操作。"
 require_contains "$choice_layout" "@+id/ai_session_history_button" \
