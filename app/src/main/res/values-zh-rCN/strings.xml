@@ -287,8 +287,8 @@
     <string name="workspace_selector_unconfigured">%1$s\n未配置服务器</string>
     <string name="workspace_selector_target">%1$s\n%2$s:%3$s · %4$s · %5$s</string>
     <string name="workspace_new_action">新建工作区</string>
-    <string name="workspace_manage_action">连接操作</string>
-    <string name="workspace_manage_description">复制或删除当前 SSH 工作区；不会影响远端文件。</string>
+    <string name="workspace_manage_action">复制/删除连接</string>
+    <string name="workspace_manage_description">管理当前 SSH 连接的本地配置；不会影响远端文件。</string>
     <string name="workspace_edit_action">编辑连接</string>
     <string name="workspace_advanced_action">tmux 连接方式</string>
     <string name="workspace_advanced_hide_action">收起 tmux 连接方式</string>
@@ -316,8 +316,8 @@
     <string name="workspace_default_name">远程开发</string>
     <string name="workspace_delete_title">删除这个工作区？</string>
     <string name="workspace_delete_message">将删除“%1$s”的连接信息，不会影响 SSH 密钥和远端文件。</string>
-    <string name="workspace_toolbox_show_action">打开工具箱</string>
-    <string name="workspace_toolbox_hide_action">收起工具箱</string>
+    <string name="workspace_toolbox_show_action">打开开发工具箱</string>
+    <string name="workspace_toolbox_hide_action">收起开发工具箱</string>
     <string name="workspace_toolbox_description">按需打开快捷指令、Git、文件、任务、tmux、诊断、SSH 密钥和 Web 预览工具</string>
     <string name="workspace_tools_action">工具箱</string>
     <string name="terminal_ai_short">AI</string>
@@ -634,8 +634,8 @@
     <string name="ssh_keys_clipboard_label">SSH 公钥</string>
     <string name="ssh_keys_copied">公钥已复制</string>
     <string name="workspace_task_sessions_action">tmux 管理</string>
-    <string name="workspace_development_tools_title">开发工具</string>
-    <string name="workspace_development_tools_description">集中完成代码审查、文件查看、任务运行和远端环境管理。</string>
+    <string name="workspace_development_tools_title">开发工具箱</string>
+    <string name="workspace_development_tools_description">只在需要时打开 Git、tmux、文件、项目任务、快捷指令、诊断和 Web 预览。</string>
     <string name="terminal_search_action">搜索终端输出</string>
     <string name="terminal_search_title">搜索终端输出</string>
     <string name="terminal_search_hint">错误文本、文件名、命令……</string>

@@ -409,8 +409,8 @@
     <string name="workspace_selector_unconfigured">%1$s\nServer not configured</string>
     <string name="workspace_selector_target">%1$s\n%2$s:%3$s · %4$s · %5$s</string>
     <string name="workspace_new_action">New workspace</string>
-    <string name="workspace_manage_action">Connection actions</string>
-    <string name="workspace_manage_description">Copy or delete this SSH workspace. Remote files are unchanged.</string>
+    <string name="workspace_manage_action">Copy/delete connection</string>
+    <string name="workspace_manage_description">Manage the local config for this SSH connection. Remote files are unchanged.</string>
     <string name="workspace_edit_action">Edit connection</string>
     <string name="workspace_advanced_action">tmux connection mode</string>
     <string name="workspace_advanced_hide_action">Hide tmux connection mode</string>
@@ -438,8 +438,8 @@
     <string name="workspace_default_name">Remote development</string>
     <string name="workspace_delete_title">Delete this workspace?</string>
     <string name="workspace_delete_message">Connection metadata for “%1$s” will be removed. SSH keys and remote files are not affected.</string>
-    <string name="workspace_toolbox_show_action">Open toolbox</string>
-    <string name="workspace_toolbox_hide_action">Hide toolbox</string>
+    <string name="workspace_toolbox_show_action">Open dev toolbox</string>
+    <string name="workspace_toolbox_hide_action">Hide dev toolbox</string>
     <string name="workspace_toolbox_description">Open custom commands, Git, files, tasks, tmux, diagnostics, SSH keys, and Web preview tools when needed</string>
     <string name="workspace_tools_action">Toolbox</string>
     <string name="terminal_ai_short">AI</string>
@@ -759,8 +759,8 @@
     <string name="ssh_keys_clipboard_label">SSH public key</string>
     <string name="ssh_keys_copied">Public key copied</string>
     <string name="workspace_task_sessions_action">tmux manager</string>
-    <string name="workspace_development_tools_title">Development tools</string>
-    <string name="workspace_development_tools_description">Review code, inspect files, run tasks, and manage the remote environment.</string>
+    <string name="workspace_development_tools_title">Development toolbox</string>
+    <string name="workspace_development_tools_description">Open Git, tmux, files, project tasks, custom commands, diagnostics, and Web preview only when needed.</string>
     <string name="terminal_search_action">Search output</string>
     <string name="terminal_search_title">Search terminal output</string>
     <string name="terminal_search_hint">Error text, filename, command…</string>
