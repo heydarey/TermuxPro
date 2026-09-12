@@ -105,6 +105,7 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
 
+        assertEquals("快捷指令与模板", text(activity, R.id.ai_cli_center_open_templates));
         activity.findViewById(R.id.ai_cli_center_open_templates).performClick();
         assertNextActivity(activity, CustomCommandsActivity.class);
 

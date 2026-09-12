@@ -256,7 +256,7 @@
     <string name="ai_cli_center_clear_history_action">清空本地记录</string>
     <string name="ai_cli_center_tmux_warning">共享账号或多人 tmux 环境下，请先在 tmux 会话中心确认目标会话归属。未标记或其他归属会话只应显式进入，不应被自动恢复或管理。</string>
     <string name="ai_cli_center_open_workspace">服务器与项目配置</string>
-    <string name="ai_cli_center_open_templates">管理快捷指令模板</string>
+    <string name="ai_cli_center_open_templates">快捷指令与模板</string>
     <string name="ai_cli_center_open_diagnostic">检查 AI 远端环境</string>
     <string name="ai_cli_center_open_tmux">选择 / 管理 tmux 会话</string>
     <string name="ai_cli_center_open_git">查看 Git 改动</string>

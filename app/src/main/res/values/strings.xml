@@ -378,7 +378,7 @@
     <string name="ai_cli_center_clear_history_action">Clear local records</string>
     <string name="ai_cli_center_tmux_warning">On shared accounts or multi-user tmux environments, confirm ownership in the tmux session center first. Unmarked or other-owned sessions should only be attached explicitly, never auto-resumed or managed.</string>
     <string name="ai_cli_center_open_workspace">Server and project settings</string>
-    <string name="ai_cli_center_open_templates">Manage quick command templates</string>
+    <string name="ai_cli_center_open_templates">Quick commands and templates</string>
     <string name="ai_cli_center_open_diagnostic">Check AI remote environment</string>
     <string name="ai_cli_center_open_tmux">Choose / manage tmux session</string>
     <string name="ai_cli_center_open_git">Review Git changes</string>
