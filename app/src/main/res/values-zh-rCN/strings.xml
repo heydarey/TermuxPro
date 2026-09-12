@@ -748,6 +748,15 @@
     <string name="custom_commands_export_empty">当前工作区还没有可备份的快捷指令。</string>
     <string name="custom_commands_export_failed">快捷指令备份生成失败，请稍后重试。</string>
     <string name="custom_commands_export_copied">已复制 %1$d 条快捷指令 JSON。可保存到安全位置或迁移到其他设备；不会执行远端命令。</string>
+    <string name="custom_commands_import">从剪贴板导入 JSON</string>
+    <string name="custom_commands_import_description">从剪贴板读取 TermuxPro 快捷指令备份；确认前不会保存，也不会执行远端命令。</string>
+    <string name="custom_commands_import_empty_clipboard">剪贴板中没有可导入的快捷指令 JSON。</string>
+    <string name="custom_commands_import_invalid">剪贴板内容不是有效的 TermuxPro 快捷指令备份，或包含无效/疑似敏感命令。</string>
+    <string name="custom_commands_import_unknown_workspace">未知工作区</string>
+    <string name="custom_commands_import_preview_title">确认导入快捷指令</string>
+    <string name="custom_commands_import_preview_message">将从“%2$s”备份导入 %1$d 条快捷指令到当前工作区“%3$s”。\n\n重名会自动加“导入”后缀；导入只保存本地配置，不会执行远端命令。</string>
+    <string name="custom_commands_import_confirm">导入</string>
+    <string name="custom_commands_imported">已导入 %1$d 条快捷指令。运行前仍需查看目标和命令。</string>
     <string name="custom_commands_search_label">筛选当前工作区指令</string>
     <string name="custom_commands_search_hint">名称、场景、命令或目录</string>
     <string name="custom_commands_clear_search">清除</string>
