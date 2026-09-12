@@ -168,7 +168,9 @@
     <string name="workspace_connection_diagnostic_action">检查已有连接与远端环境</string>
     <string name="workspace_ai_quick_title">AI CLI 快速启动</string>
     <string name="workspace_start_claude">Claude Code</string>
+    <string name="workspace_start_claude_description">打开 Claude Code 启动确认；新建会话是安全默认，历史会话需手动选择，不自动进入 tmux。</string>
     <string name="workspace_start_codex">Codex CLI</string>
+    <string name="workspace_start_codex_description">打开 Codex CLI 启动确认；新建会话是安全默认，历史会话需手动选择，不自动进入 tmux。</string>
     <string name="ai_session_launch_title">启动 %1$s</string>
     <string name="ai_session_claude_guidance">Claude Code 常见于共享远程账号。默认新建最安全；如果要恢复历史，请只从 Claude 原生选择器里手动选择目标会话。</string>
     <string name="ai_session_codex_guidance">Codex CLI 通常按用户隔离，但仍不自动进入最近会话。确认当前项目正确后再选择新建或历史。</string>
