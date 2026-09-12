@@ -867,6 +867,10 @@
     <string name="custom_commands_target_label">Execution target</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">Save frequent commands for this workspace; always verify the target before running.</string>
+    <string name="custom_commands_backup">Backup and migrate</string>
+    <string name="custom_commands_backup_description">Open custom command backup and import actions; no remote command is run directly.</string>
+    <string name="custom_commands_backup_title">Backup and migrate</string>
+    <string name="custom_commands_backup_message">This workspace has %1$d custom commands. Backup and import only handle local settings and do not run remote commands.</string>
     <string name="custom_commands_export">Copy backup JSON</string>
     <string name="custom_commands_export_description">Copy this workspace’s custom command JSON; reads local settings only and does not run remote commands.</string>
     <string name="custom_commands_export_clip_label">TermuxPro custom commands backup</string>

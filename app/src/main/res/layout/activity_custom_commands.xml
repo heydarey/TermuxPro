@@ -92,27 +92,14 @@
             android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/custom_commands_export"
+            android:id="@+id/custom_commands_backup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:backgroundTint="#24394A"
-            android:contentDescription="@string/custom_commands_export_description"
+            android:contentDescription="@string/custom_commands_backup_description"
             android:minHeight="48dp"
-            android:text="@string/custom_commands_export"
-            android:textAllCaps="false"
-            android:textColor="#D8E4EC"
-            android:visibility="gone" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/custom_commands_import"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#102333"
-            android:contentDescription="@string/custom_commands_import_description"
-            android:minHeight="48dp"
-            android:text="@string/custom_commands_import"
+            android:text="@string/custom_commands_backup"
             android:textAllCaps="false"
             android:textColor="#D8E4EC"
             android:visibility="gone" />
