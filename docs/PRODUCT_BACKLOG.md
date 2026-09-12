@@ -320,6 +320,9 @@ shell、基础会话、基础快捷键或基础文件能力，不进入产品主
   当成头像、抽象工作台或普通图标。本轮主动发现短标签背后的说明仍不完整：`会话`未说明只管理本地
   终端标签、不连接新远端，`工具箱·历史/TUI`未在无障碍语义中解释当前手指滑动含义；已补中英文
   contentDescription 与布局/菜单断言，证据见 `test/reports/terminal-header-accessible-entry-20260911.md`。
+  当前继续补齐 `AI` 短标签的无障碍语义：可见文本仍保持“AI”以保护窄屏顶栏，但 contentDescription
+  明确会打开当前工作区 Claude/Codex 会话中心并选择新建或历史入口，证据见
+  `test/reports/terminal-ai-entry-accessibility-20260912.md`。
   真实体验继续暴露“切到 TUI 后无法回看上方输出”的风险，本轮将工具箱里的 TUI 滚动改为当前终端临时模式，
   不再持久污染后续终端；设置页仍保留高级持久偏好，证据见
   `test/reports/terminal-touch-scroll-session-only-20260911.md`。
