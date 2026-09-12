@@ -75,6 +75,9 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         TextView hint = findViewById(R.id.ai_cli_center_start_hint);
         hint.setText(R.string.ai_cli_center_start_hint_compact);
         hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
+        // 200% 字体下“开始 AI 工作”卡片已经有风险摘要、推荐/谨慎标签和四个核心按钮。
+        // 隐藏重复说明，确保四个启动入口仍在首屏可见；完整语义保留给辅助技术。
+        hint.setVisibility(View.GONE);
     }
 
     private void bindTarget() {
