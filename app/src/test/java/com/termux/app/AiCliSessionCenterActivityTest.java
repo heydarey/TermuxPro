@@ -57,8 +57,9 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("AI 完成后", text(activity, R.id.ai_cli_center_next_title));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("优先查看 Git 改动"));
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
-        assertEquals("最近 AI 启动", text(activity, R.id.ai_cli_center_history_title));
-        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
+        assertEquals("TermuxPro 本地启动记录", text(activity, R.id.ai_cli_center_history_title));
+        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不是 Claude/Codex 历史库"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取私有历史"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("未选择工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不会猜测服务器"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
@@ -233,13 +234,13 @@ public class AiCliSessionCenterActivityTest {
 
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Codex CLI"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("启动时间："));
-        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("最近 2 条启动"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可重复上次 Codex CLI · 历史选择"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地记录时间："));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地最近 2 条入口记录"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可再次打开上次 Codex CLI · 历史选择 入口"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("不会删除远端 AI 历史"));
-        assertEquals("重复：Codex CLI · 历史选择",
+        assertEquals("再次打开：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_repeat_last));
-        assertEquals("删除最近：Codex CLI · 历史选择",
+        assertEquals("删除本地记录：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_delete_latest));
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
@@ -264,10 +265,10 @@ public class AiCliSessionCenterActivityTest {
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
         assertTrue(afterDelete.contains("Claude Code"));
         assertTrue(!afterDelete.contains("Codex CLI"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可重复上次 Claude Code · 新建会话"));
-        assertEquals("重复：Claude Code · 新建会话",
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可再次打开上次 Claude Code · 新建会话 入口"));
+        assertEquals("再次打开：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_repeat_last));
-        assertEquals("删除最近：Claude Code · 新建会话",
+        assertEquals("删除本地记录：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_delete_latest));
 
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
@@ -279,7 +280,7 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
         AlertDialog confirm = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(confirm);
-        assertEquals("清空当前工作区的 AI 启动记录？", shadowOf(confirm).getTitle());
+        assertEquals("清空当前工作区的本地启动记录？", shadowOf(confirm).getTitle());
         String message = ((TextView) confirm.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("远程开发"));
@@ -323,7 +324,7 @@ public class AiCliSessionCenterActivityTest {
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
-        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("启动时间：未记录"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地记录时间：未记录"));
     }
 
     @Test
@@ -356,7 +357,7 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(list);
-        assertEquals("AI 启动记录：远程开发", shadowOf(list).getTitle());
+        assertEquals("TermuxPro 本地启动记录：远程开发", shadowOf(list).getTitle());
         assertEquals(4, list.getListView().getAdapter().getCount());
         assertTrue(list.getListView().getAdapter().getItem(3).toString()
             .contains("Claude Code · 新建会话"));
@@ -365,13 +366,13 @@ public class AiCliSessionCenterActivityTest {
             list.getListView().getAdapter().getItemId(3));
         AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(action);
-        assertEquals("重复或删除启动记录", shadowOf(action).getTitle());
+        assertEquals("再次打开或删除本地记录", shadowOf(action).getTitle());
         String message = ((TextView) action.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));
         assertTrue(message.contains("启动时间："));
         assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
-        assertEquals("重复启动",
+        assertEquals("再次打开入口",
             action.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         assertEquals("删除本地记录",
             action.getButton(AlertDialog.BUTTON_NEUTRAL).getText().toString());
@@ -402,7 +403,7 @@ public class AiCliSessionCenterActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
 
         String afterDelete = text(activity, R.id.ai_cli_center_history_summary);
-        assertTrue(afterDelete.contains("最近 3 条启动"));
+        assertTrue(afterDelete.contains("本地最近 3 条入口记录"));
         assertTrue(!afterDelete.contains("还有 1 条已折叠"));
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
@@ -479,10 +480,10 @@ public class AiCliSessionCenterActivityTest {
             AiCliSessionCenterActivity.class).setup().get();
 
         String summary = text(activity, R.id.ai_cli_center_history_summary);
-        assertTrue(summary.contains("最近 3 条启动"));
+        assertTrue(summary.contains("本地最近 3 条入口记录"));
         assertTrue(summary.contains("还有 1 条已折叠"));
         assertTrue(summary.contains("仅保存在当前工作区本地记录中"));
-        assertEquals("重复：Codex CLI · 历史选择",
+        assertEquals("再次打开：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_repeat_last));
     }
 

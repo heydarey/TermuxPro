@@ -36,6 +36,12 @@ require_contains "$zh" "Claude 历史选择器\\n不自动恢复" \
     "AI 会话中心 Claude 历史按钮必须在可点击文本中说明不自动恢复。"
 require_contains "$zh" "Codex 历史选择器\\n不自动恢复" \
     "AI 会话中心 Codex 历史按钮必须在可点击文本中说明不自动恢复。"
+require_contains "$zh" "TermuxPro 本地启动记录" \
+    "AI 会话中心记录区必须明确这是 TermuxPro 本地记录，不能暗示读取远端 AI 历史库。"
+require_contains "$zh" "这里不是 Claude/Codex 历史库" \
+    "AI 会话中心记录区必须直接说明不是 Claude/Codex 私有历史。"
+require_contains "$zh" '再次打开：%1$s · %2$s' \
+    "重复本地记录按钮必须表达再次打开入口，不能暗示恢复远端历史。"
 require_contains "$choice_layout" "@+id/ai_session_new_button" \
     "AI 会话弹窗必须提供可见的新建会话操作。"
 require_contains "$choice_layout" "@+id/ai_session_history_button" \

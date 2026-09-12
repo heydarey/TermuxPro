@@ -219,19 +219,19 @@
     <string name="ai_cli_center_claude_history_description">打开 Claude 历史选择器：只进入 Claude 原生选择流程，不自动恢复。共享账号请确认会话归属。</string>
     <string name="ai_cli_center_codex_new_description">新建 Codex 会话，安全默认：仅建立 SSH，不自动恢复历史，也不自动进入 tmux。</string>
     <string name="ai_cli_center_codex_history_description">打开 Codex 历史选择器：只进入 Codex 原生选择流程，不自动恢复。</string>
-    <string name="ai_cli_center_history_title">最近 AI 启动</string>
-    <string name="ai_cli_center_history_hint">只记录当前工作区里由 TermuxPro 发起的 AI 启动；不读取 Claude/Codex 私有历史或终端输出。</string>
+    <string name="ai_cli_center_history_title">TermuxPro 本地启动记录</string>
+    <string name="ai_cli_center_history_hint">这里不是 Claude/Codex 历史库，只记录本机本 App 发起过哪些启动入口；不读取私有历史或终端输出。</string>
     <string name="ai_cli_center_history_scope">记录范围：%1$s\n%2$s:%3$d · %4$s\n只管理本机本 App 记录，不跨工作区。</string>
     <string name="ai_cli_center_history_scope_missing">记录范围：未选择工作区。TermuxPro 不会猜测服务器或读取 AI 历史。</string>
     <string name="ai_cli_center_history_missing_workspace">请先选择有效工作区。启动记录按工作区隔离。</string>
     <string name="ai_cli_center_history_empty">当前工作区还没有 AI 启动记录。</string>
     <string name="ai_cli_center_history_next_missing_workspace">下一步：先回到“服务器与项目”选择目标，再启动 Claude 或 Codex。</string>
     <string name="ai_cli_center_history_next_empty">下一步：如果要开始新任务，点“新建”；如果要继续已有上下文，点对应工具的“历史选择器”，由 CLI 原生选择器确认。</string>
-    <string name="ai_cli_center_history_next_ready">下一步：可重复上次 %1$s · %2$s；如果是误触，只删除 TermuxPro 这条本地记录，不会删除远端 AI 历史。</string>
+    <string name="ai_cli_center_history_next_ready">下一步：可再次打开上次 %1$s · %2$s 入口；如果是误触，只删除本地记录，不会删除远端 AI 历史。</string>
     <plurals name="ai_cli_center_history_count">
-        <item quantity="other">最近 %1$d 条启动</item>
+        <item quantity="other">本地最近 %1$d 条入口记录</item>
     </plurals>
-    <string name="ai_cli_center_history_item">%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_item">%1$s · %2$s 入口\n本地记录时间：%6$s\n%3$s:%4$d · %5$s</string>
     <plurals name="ai_cli_center_history_more">
         <item quantity="other">还有 %1$d 条已折叠，仅保存在当前工作区本地记录中。</item>
     </plurals>
@@ -243,9 +243,9 @@
     <string name="ai_cli_center_history_repeat_launch_message">将重复这条 TermuxPro 本地启动记录：%1$s · 历史选择\n原启动时间：%6$s\n%3$s:%4$d · %5$s\n\n执行命令：%2$s\n\nTermuxPro 只打开 CLI 原生选择器，不会自动选择历史，也不会自动进入 tmux。共享账号下请确认会话归属后再继续。</string>
     <string name="ai_cli_center_history_launch_action">打开历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
-    <string name="ai_cli_center_repeat_last_target">重复：%1$s · %2$s</string>
+    <string name="ai_cli_center_repeat_last_target">再次打开：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
-    <string name="ai_cli_center_delete_latest_target">删除最近：%1$s · %2$s</string>
+    <string name="ai_cli_center_delete_latest_target">删除本地记录：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条 AI 启动记录？</string>
     <string name="ai_cli_center_delete_entry_title">删除这条 AI 启动记录？</string>
     <string name="ai_cli_center_delete_latest_message">将删除 TermuxPro 本地记录：%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s\n\n不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
@@ -253,13 +253,13 @@
     <string name="ai_cli_center_manage_history">查看全部记录</string>
     <string name="ai_cli_center_manage_history_description">查看、重复或删除当前工作区的所有 AI 启动记录</string>
     <string name="ai_cli_center_manage_history_empty_title">当前工作区 AI 启动记录</string>
-    <string name="ai_cli_center_manage_history_title">AI 启动记录：%1$s</string>
+    <string name="ai_cli_center_manage_history_title">TermuxPro 本地启动记录：%1$s</string>
     <string name="ai_cli_center_manage_history_empty">当前工作区没有可管理的 AI 启动记录。</string>
-    <string name="ai_cli_center_history_action_title">重复或删除启动记录</string>
-    <string name="ai_cli_center_history_action_message">%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s\n\n可重复启动相同入口，或只删除 TermuxPro 本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
-    <string name="ai_cli_center_history_action_repeat">重复启动</string>
+    <string name="ai_cli_center_history_action_title">再次打开或删除本地记录</string>
+    <string name="ai_cli_center_history_action_message">%1$s · %2$s\n启动时间：%6$s\n%3$s:%4$d · %5$s\n\n可再次打开相同入口，或只删除 TermuxPro 本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
+    <string name="ai_cli_center_history_action_repeat">再次打开入口</string>
     <string name="ai_cli_center_clear_history">清空记录</string>
-    <string name="ai_cli_center_clear_history_title">清空当前工作区的 AI 启动记录？</string>
+    <string name="ai_cli_center_clear_history_title">清空当前工作区的本地启动记录？</string>
     <string name="ai_cli_center_clear_history_message">将删除“%1$s”中由 TermuxPro 记录的 %2$d 条本地启动记录。\n\n不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_clear_history_action">清空本地记录</string>
     <string name="ai_cli_center_tmux_warning">共享账号或多人 tmux 环境下，请先在 tmux 会话中心确认目标会话归属。未标记或其他归属会话只应显式进入，不应被自动恢复或管理。</string>
