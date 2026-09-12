@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import androidx.core.view.MenuItemCompat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -47,6 +49,8 @@ public class TerminalProjectToolsMenuTest {
         assertEquals("远端文件", menu.getItem(11).getTitle().toString());
         assertEquals(TerminalProjectToolsMenu.TOOL_PROJECT_CHECK, menu.getItem(12).getItemId());
         assertEquals("项目任务 / 测试", menu.getItem(12).getTitle().toString());
+        assertEquals("打开当前工作区的项目任务和测试页；先展示远端目标与命令，由你确认后执行，不会直接输入当前终端。",
+            String.valueOf(MenuItemCompat.getContentDescription(menu.getItem(12))));
         assertEquals(TerminalProjectToolsMenu.TOOL_START_WEB_PREVIEW,
             menu.getItem(13).getItemId());
         assertEquals("启动 Web 隧道", menu.getItem(13).getTitle().toString());

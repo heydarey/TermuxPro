@@ -686,6 +686,7 @@
     <string name="remote_file_binary">Binary files are not loaded into the text preview.</string>
     <string name="remote_file_truncated">Preview stopped at 1 MB.</string>
     <string name="workspace_project_tasks_action">Project tasks / tests</string>
+    <string name="workspace_project_tasks_description">Open project tasks and tests for the current workspace; show the remote target and command for confirmation before running, without typing into the current terminal.</string>
     <string name="project_tasks_title">Project tasks / tests</string>
     <string name="project_tasks_description">Detect test, build, and development tasks for the remote project. Target and command are shown for confirmation before anything runs.</string>
     <string name="project_tasks_target">Execution target · %1$s:%2$d · %3$s</string>
