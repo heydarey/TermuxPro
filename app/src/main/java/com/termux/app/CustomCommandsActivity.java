@@ -58,8 +58,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private View mClearSearch;
     private View mSearchContainer;
     private View mSearchLabel;
-    private View mExport;
-    private View mImport;
+    private View mBackup;
     private String mSearchQuery = "";
 
     @Override
@@ -80,14 +79,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mClearSearch = findViewById(R.id.custom_commands_clear_search);
         mSearchContainer = (View) mSearchInput.getParent();
         mSearchLabel = findViewById(R.id.custom_commands_search_label);
-        mExport = findViewById(R.id.custom_commands_export);
-        mImport = findViewById(R.id.custom_commands_import);
+        mBackup = findViewById(R.id.custom_commands_backup);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
         findViewById(R.id.custom_commands_templates).setOnClickListener(view -> showTemplates());
-        mExport.setOnClickListener(view -> exportCommands());
-        mImport.setOnClickListener(view -> importCommandsFromClipboard());
+        mBackup.setOnClickListener(view -> showBackupActions());
         mClearSearch.setOnClickListener(view -> mSearchInput.setText(""));
         mSearchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence value, int start, int count, int after) {}
@@ -114,8 +111,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchInput.setEnabled(false);
             mSearchContainer.setVisibility(View.GONE);
             mSearchLabel.setVisibility(View.GONE);
-            mExport.setEnabled(false);
-            mImport.setEnabled(false);
+            mBackup.setEnabled(false);
             return;
         }
         name.setText(mTarget.name);
@@ -147,15 +143,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchSummary.setVisibility(View.GONE);
             mSearchEmpty.setVisibility(View.GONE);
             mClearSearch.setVisibility(View.GONE);
-            mExport.setVisibility(View.GONE);
-            mImport.setVisibility(View.GONE);
+            mBackup.setVisibility(View.GONE);
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
-        mExport.setVisibility(commands.isEmpty() ? View.GONE : View.VISIBLE);
-        mExport.setEnabled(!commands.isEmpty());
-        mImport.setVisibility(View.VISIBLE);
-        mImport.setEnabled(true);
+        mBackup.setVisibility(View.VISIBLE);
+        mBackup.setEnabled(true);
         boolean canSearch = commands.size() >= 4;
         mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
         mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
@@ -320,6 +313,29 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             }
         });
         popup.show();
+    }
+
+    private void showBackupActions() {
+        List<CustomCommand> commands = mStore.list(mTarget.id);
+        String[] labels = commands.isEmpty()
+            ? new String[] { getString(R.string.custom_commands_import) }
+            : new String[] {
+                getString(R.string.custom_commands_export),
+                getString(R.string.custom_commands_import)
+            };
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(R.string.custom_commands_backup_title)
+            .setMessage(getString(R.string.custom_commands_backup_message, commands.size()))
+            .setItems(labels, (selectionDialog, which) -> {
+                if (!commands.isEmpty() && which == 0) {
+                    exportCommands();
+                } else {
+                    importCommandsFromClipboard();
+                }
+            })
+            .setNegativeButton(android.R.string.cancel, null)
+            .create();
+        TermuxProDialogStyle.show(this, dialog);
     }
 
     private void exportCommands() {

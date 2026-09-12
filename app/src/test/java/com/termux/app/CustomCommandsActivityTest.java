@@ -67,10 +67,8 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_action_feedback).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
-        assertEquals(View.GONE, activity.findViewById(
-            R.id.custom_commands_export).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
-            R.id.custom_commands_import).getVisibility());
+            R.id.custom_commands_backup).getVisibility());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
@@ -105,9 +103,7 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
-            R.id.custom_commands_export).getVisibility());
-        assertEquals(View.VISIBLE, activity.findViewById(
-            R.id.custom_commands_import).getVisibility());
+            R.id.custom_commands_backup).getVisibility());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertEquals(View.VISIBLE, feedback.getVisibility());
         assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
@@ -127,11 +123,20 @@ public class CustomCommandsActivityTest {
         CustomCommandsActivity activity = Robolectric.buildActivity(
             CustomCommandsActivity.class).setup().get();
 
-        View export = activity.findViewById(R.id.custom_commands_export);
-        assertEquals(View.VISIBLE, export.getVisibility());
-        assertEquals(activity.getString(R.string.custom_commands_export_description),
-            export.getContentDescription().toString());
-        export.performClick();
+        View backupButton = activity.findViewById(R.id.custom_commands_backup);
+        assertEquals(View.VISIBLE, backupButton.getVisibility());
+        assertEquals(activity.getString(R.string.custom_commands_backup_description),
+            backupButton.getContentDescription().toString());
+        backupButton.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog actionDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertEquals(activity.getString(R.string.custom_commands_backup_title),
+            shadowOf(actionDialog).getTitle());
+        ListView actionList = actionDialog.getListView();
+        assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
         shadowOf(Looper.getMainLooper()).idle();
 
         ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
@@ -179,7 +184,13 @@ public class CustomCommandsActivityTest {
         CustomCommandsActivity activity = Robolectric.buildActivity(
             CustomCommandsActivity.class).setup().get();
 
-        activity.findViewById(R.id.custom_commands_import).performClick();
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(1, null, actionList), 1,
+            actionList.getAdapter().getItemId(1));
         shadowOf(Looper.getMainLooper()).idle();
         AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(preview);
@@ -218,7 +229,13 @@ public class CustomCommandsActivityTest {
         CustomCommandsActivity activity = Robolectric.buildActivity(
             CustomCommandsActivity.class).setup().get();
 
-        activity.findViewById(R.id.custom_commands_import).performClick();
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        assertEquals(1, actionList.getAdapter().getCount());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(0).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
         shadowOf(Looper.getMainLooper()).idle();
 
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
@@ -447,8 +464,6 @@ public class CustomCommandsActivityTest {
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_action_feedback).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
-            R.id.custom_commands_export).getVisibility());
-        assertEquals(View.GONE, activity.findViewById(
-            R.id.custom_commands_import).getVisibility());
+            R.id.custom_commands_backup).getVisibility());
     }
 }
