@@ -133,6 +133,7 @@ static_checks=(
     "./test/github-cli-wrapper-test.sh"
     "./test/github-check-suites-test.sh"
     "./test/context-checkpoint-test.sh"
+    "./test/goal-lifecycle-policy-test.sh"
     "./test/generated-cache-cleanup-test.sh"
     "./test/android-sdk-bootstrap-test.sh"
 )
