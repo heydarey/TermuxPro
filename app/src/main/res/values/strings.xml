@@ -389,6 +389,7 @@
     <string name="workspace_error_port">SSH port must be between 1 and 65535.</string>
     <string name="workspace_error_path">Enter a remote project path.</string>
     <string name="workspace_open_sessions">Open terminal sessions</string>
+    <string name="workspace_open_sessions_description">Open the left terminal session list. This only switches or manages local terminal tabs and does not connect to another remote server.</string>
     <string name="workspace_sessions_short">Sessions</string>
     <string name="workspace_open_workbench">Remote setup</string>
     <string name="workspace_open_workbench_description">Return to remote workspace setup for servers, project paths, and connection policy</string>
@@ -448,6 +449,8 @@
     <string name="terminal_drawer_new_session_short">New</string>
     <string name="workspace_tools_scrollback_action">Tools · History</string>
     <string name="workspace_tools_tui_scroll_action">Tools · TUI</string>
+    <string name="workspace_tools_scrollback_description">Open terminal tools. Finger swipes currently scroll terminal history.</string>
+    <string name="workspace_tools_tui_scroll_description">Open terminal tools. Finger swipes currently control AI or TUI panels first.</string>
     <string name="workspace_git_status_action">Git workbench</string>
     <string name="workspace_git_status_description">Open the Git workbench for the current workspace to review branches, changes, commits, and sync state.</string>
     <string name="workspace_git_diff_action">Review Git diff</string>

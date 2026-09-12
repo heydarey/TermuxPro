@@ -123,6 +123,10 @@ public class TerminalProjectToolsMenuTest {
             TerminalProjectToolsMenu.toolsButtonLabel(false));
         assertEquals(com.termux.R.string.workspace_tools_tui_scroll_action,
             TerminalProjectToolsMenu.toolsButtonLabel(true));
+        assertEquals(com.termux.R.string.workspace_tools_scrollback_description,
+            TerminalProjectToolsMenu.toolsButtonDescription(false));
+        assertEquals(com.termux.R.string.workspace_tools_tui_scroll_description,
+            TerminalProjectToolsMenu.toolsButtonDescription(true));
     }
 
     private static void assertDescription(Menu menu, int index, String expected) {
