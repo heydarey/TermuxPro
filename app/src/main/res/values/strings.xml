@@ -849,7 +849,7 @@
     <string name="custom_commands_template_frontend_check">Frontend: install and check</string>
     <string name="custom_commands_run">Review and run</string>
     <string name="custom_commands_run_now">Run</string>
-    <string name="custom_commands_manage">Manage</string>
+    <string name="custom_commands_manage">Edit/more</string>
     <string name="custom_commands_enabled_state">Enabled</string>
     <string name="custom_commands_disabled_state">Disabled</string>
     <string name="custom_commands_summary">%1$s · %2$s</string>
@@ -875,7 +875,7 @@
     <string name="custom_commands_preview_title">Run “%1$s”?</string>
     <string name="custom_commands_preview_message">Server: %1$s:%2$d\nDirectory: %3$s\n\nCommand:\n%4$s</string>
     <string name="custom_commands_execute">Run</string>
-    <string name="custom_commands_disabled_message">This command is disabled. Enable it from the manage menu first.</string>
+    <string name="custom_commands_disabled_message">This command is disabled. Enable it from the Edit/more menu first.</string>
     <string name="custom_commands_edit">Edit</string>
     <string name="custom_commands_copy">Duplicate as new command</string>
     <string name="custom_commands_move_up">Move up</string>
