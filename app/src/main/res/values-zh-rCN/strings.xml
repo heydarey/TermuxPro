@@ -236,6 +236,7 @@
     <string name="ai_cli_center_history_time_unknown">未记录</string>
     <string name="ai_cli_center_history_launch_title">打开 %1$s 历史选择？</string>
     <string name="ai_cli_center_history_launch_message">将新开 SSH 终端连接到：\n%3$s:%4$d · %5$s\n\n执行命令：%2$s\n\nTermuxPro 只打开 CLI 原生选择器，不会自动选择历史，也不会自动进入 tmux。共享账号下请确认会话归属后再继续。</string>
+    <string name="ai_cli_center_history_repeat_launch_message">将重复这条 TermuxPro 本地启动记录：%1$s · 历史选择\n原启动时间：%6$s\n%3$s:%4$d · %5$s\n\n执行命令：%2$s\n\nTermuxPro 只打开 CLI 原生选择器，不会自动选择历史，也不会自动进入 tmux。共享账号下请确认会话归属后再继续。</string>
     <string name="ai_cli_center_history_launch_action">打开历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_repeat_last_target">重复：%1$s · %2$s</string>
