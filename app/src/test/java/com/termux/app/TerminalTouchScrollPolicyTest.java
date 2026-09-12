@@ -10,6 +10,7 @@ import com.termux.view.TerminalView;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -84,5 +85,18 @@ public class TerminalTouchScrollPolicyTest {
         assertFalse(TerminalView.shouldForceScrollbackForScrollEvent(null));
         assertFalse(TerminalView.shouldForceScrollbackForScrollEvent(null,
             TerminalView.TOUCH_SCROLL_MODE_TUI, true));
+    }
+
+    @Test
+    public void terminalViewDefaultsBackToScrollbackUnlessExplicitlyChanged() {
+        TerminalView terminalView = new TerminalView(RuntimeEnvironment.getApplication(), null);
+
+        assertTrue(TerminalView.TOUCH_SCROLL_MODE_SCROLLBACK.equals(terminalView.getTouchScrollMode()));
+
+        terminalView.setTouchScrollMode(TerminalView.TOUCH_SCROLL_MODE_TUI);
+        assertTrue(TerminalView.TOUCH_SCROLL_MODE_TUI.equals(terminalView.getTouchScrollMode()));
+
+        terminalView.setTouchScrollMode("legacy");
+        assertTrue(TerminalView.TOUCH_SCROLL_MODE_SCROLLBACK.equals(terminalView.getTouchScrollMode()));
     }
 }

@@ -610,6 +610,10 @@ public final class TerminalView extends View {
         }
     }
 
+    public String getTouchScrollMode() {
+        return mTouchScrollMode;
+    }
+
     /**
      * Perform a scroll, either from dragging the screen or by scrolling a mouse wheel.
      *
