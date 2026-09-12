@@ -91,6 +91,19 @@
             android:textColor="#B8C8D4"
             android:textSize="14sp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/custom_commands_export"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#24394A"
+            android:contentDescription="@string/custom_commands_export_description"
+            android:minHeight="48dp"
+            android:text="@string/custom_commands_export"
+            android:textAllCaps="false"
+            android:textColor="#D8E4EC"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/custom_commands_template_hint"
             android:layout_width="match_parent"

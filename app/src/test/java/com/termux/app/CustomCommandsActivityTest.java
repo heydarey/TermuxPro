@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.view.View;
@@ -25,6 +27,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +65,8 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_action_feedback).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_export).getVisibility());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
@@ -93,11 +100,57 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_export).getVisibility());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertEquals(View.VISIBLE, feedback.getVisibility());
         assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
         assertTrue(feedback.getText().toString().contains("查看并运行"));
         assertEquals(feedback.getText().toString(), feedback.getContentDescription().toString());
+    }
+
+    @Test
+    public void exportsCurrentWorkspaceCommandsToClipboardWithoutExecuting() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("codex-resume", "Codex 历史",
+            "codex resume", "apps/mobile", "AI", true,
+            CustomCommand.Confirmation.ALWAYS));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        View export = activity.findViewById(R.id.custom_commands_export);
+        assertEquals(View.VISIBLE, export.getVisibility());
+        assertEquals(activity.getString(R.string.custom_commands_export_description),
+            export.getContentDescription().toString());
+        export.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        assertNotNull(clipboard);
+        assertNotNull(clipboard.getPrimaryClip());
+        String text = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity).toString();
+        JSONObject backup = new JSONObject(text);
+        assertEquals("termuxpro.customCommands.v1", backup.getString("schema"));
+        assertEquals("workspace-a", backup.getString("workspaceId"));
+        assertEquals("移动端", backup.getString("workspaceName"));
+        assertEquals("hdr@192.168.1.153", backup.getJSONObject("workspace").getString("host"));
+        assertEquals(22, backup.getJSONObject("workspace").getInt("port"));
+        assertEquals("~/project", backup.getJSONObject("workspace").getString("path"));
+        JSONArray commands = backup.getJSONArray("commands");
+        assertEquals(2, commands.length());
+        assertEquals("Git 状态", commands.getJSONObject(0).getString("name"));
+        assertEquals("git status --short", commands.getJSONObject(0).getString("command"));
+        assertEquals("DANGEROUS_ONLY", commands.getJSONObject(0).getString("confirmation"));
+        assertEquals("Codex 历史", commands.getJSONObject(1).getString("name"));
+        assertEquals("apps/mobile", commands.getJSONObject(1).getString("workingDirectory"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("已复制 2 条快捷指令 JSON"));
+        assertTrue(feedback.getText().toString().contains("不会执行远端命令"));
     }
 
     @Test
@@ -308,5 +361,7 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_action_feedback).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_export).getVisibility());
     }
 }

@@ -867,6 +867,12 @@
     <string name="custom_commands_target_label">Execution target</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">Save frequent commands for this workspace; always verify the target before running.</string>
+    <string name="custom_commands_export">Copy backup JSON</string>
+    <string name="custom_commands_export_description">Copy this workspace’s custom command JSON; reads local settings only and does not run remote commands.</string>
+    <string name="custom_commands_export_clip_label">TermuxPro custom commands backup</string>
+    <string name="custom_commands_export_empty">This workspace does not have custom commands to back up yet.</string>
+    <string name="custom_commands_export_failed">Failed to generate the custom command backup. Please try again.</string>
+    <string name="custom_commands_export_copied">Copied %1$d custom commands as JSON. Save it somewhere safe or migrate it to another device; no remote command was run.</string>
     <string name="custom_commands_search_label">Filter this workspace’s shortcuts</string>
     <string name="custom_commands_search_hint">Name, scenario, command, or directory</string>
     <string name="custom_commands_clear_search">Clear</string>

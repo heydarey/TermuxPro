@@ -1,6 +1,8 @@
 package com.termux.app;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,6 +30,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /** 按工作区管理、预览并执行用户快捷指令。 */
 public final class CustomCommandsActivity extends AppCompatActivity {
     private static final int ACTION_EDIT = 1;
@@ -50,6 +56,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private View mClearSearch;
     private View mSearchContainer;
     private View mSearchLabel;
+    private View mExport;
     private String mSearchQuery = "";
 
     @Override
@@ -70,10 +77,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mClearSearch = findViewById(R.id.custom_commands_clear_search);
         mSearchContainer = (View) mSearchInput.getParent();
         mSearchLabel = findViewById(R.id.custom_commands_search_label);
+        mExport = findViewById(R.id.custom_commands_export);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
         findViewById(R.id.custom_commands_templates).setOnClickListener(view -> showTemplates());
+        mExport.setOnClickListener(view -> exportCommands());
         mClearSearch.setOnClickListener(view -> mSearchInput.setText(""));
         mSearchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence value, int start, int count, int after) {}
@@ -100,6 +109,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchInput.setEnabled(false);
             mSearchContainer.setVisibility(View.GONE);
             mSearchLabel.setVisibility(View.GONE);
+            mExport.setEnabled(false);
             return;
         }
         name.setText(mTarget.name);
@@ -131,9 +141,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchSummary.setVisibility(View.GONE);
             mSearchEmpty.setVisibility(View.GONE);
             mClearSearch.setVisibility(View.GONE);
+            mExport.setVisibility(View.GONE);
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
+        mExport.setVisibility(commands.isEmpty() ? View.GONE : View.VISIBLE);
+        mExport.setEnabled(!commands.isEmpty());
         boolean canSearch = commands.size() >= 4;
         mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
         mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
@@ -298,6 +311,57 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             }
         });
         popup.show();
+    }
+
+    private void exportCommands() {
+        if (mTarget == null || !mTarget.isConfigured()) {
+            showActionFeedback(R.string.custom_commands_invalid_workspace);
+            return;
+        }
+        List<CustomCommand> commands = mStore.list(mTarget.id);
+        if (commands.isEmpty()) {
+            showActionFeedback(R.string.custom_commands_export_empty);
+            return;
+        }
+        try {
+            String backup = buildExportJson(mTarget, commands).toString(2);
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(ClipData.newPlainText(
+                    getString(R.string.custom_commands_export_clip_label), backup));
+            }
+            showActionFeedback(R.string.custom_commands_export_copied, commands.size());
+        } catch (JSONException error) {
+            showActionFeedback(R.string.custom_commands_export_failed);
+        }
+    }
+
+    @NonNull
+    static JSONObject buildExportJson(@NonNull WorkspaceTarget target,
+                                      @NonNull List<CustomCommand> commands)
+            throws JSONException {
+        JSONObject root = new JSONObject();
+        root.put("schema", "termuxpro.customCommands.v1");
+        root.put("workspaceId", target.id);
+        root.put("workspaceName", target.name);
+        JSONObject workspace = new JSONObject();
+        workspace.put("host", target.host);
+        workspace.put("port", target.port);
+        workspace.put("path", target.path);
+        root.put("workspace", workspace);
+        JSONArray values = new JSONArray();
+        for (CustomCommand command : commands) {
+            JSONObject item = new JSONObject();
+            item.put("name", command.name);
+            item.put("command", command.command);
+            item.put("workingDirectory", command.workingDirectory);
+            item.put("group", command.group);
+            item.put("enabled", command.enabled);
+            item.put("confirmation", command.confirmation.name());
+            values.put(item);
+        }
+        root.put("commands", values);
+        return root;
     }
 
     private void showEditor(@Nullable CustomCommand existing) {
