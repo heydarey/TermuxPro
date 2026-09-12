@@ -461,6 +461,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     }
 
     private void importCommands(List<CustomCommand> commands) {
+        boolean hadActiveSearch = !TextUtils.isEmpty(mSearchQuery);
         Set<String> names = new HashSet<>();
         for (CustomCommand command : mStore.list(mTarget.id)) {
             names.add(command.name);
@@ -475,8 +476,13 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mStore.save(mTarget.id, value);
             imported++;
         }
-        renderCommands();
-        showActionFeedback(R.string.custom_commands_imported, imported);
+        if (hadActiveSearch) {
+            mSearchInput.setText("");
+        } else {
+            renderCommands();
+        }
+        showActionFeedback(hadActiveSearch ? R.string.custom_commands_imported_search_cleared
+            : R.string.custom_commands_imported, imported);
     }
 
     @NonNull

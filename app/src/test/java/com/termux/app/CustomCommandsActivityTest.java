@@ -221,6 +221,62 @@ public class CustomCommandsActivityTest {
     }
 
     @Test
+    public void importClearsActiveSearchSoImportedCommandsAreVisible() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("ai-resume", "继续 Codex",
+            "codex resume", "apps/mobile", "AI", true,
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("frontend-test", "前端检查",
+            "pnpm test", "apps/web", "测试", true,
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("tmux-list", "查看 tmux",
+            "tmux list-sessions", "", "tmux", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            new CustomCommand("test-watch", "运行测试", "pnpm test -- --watch=false", "",
+                "测试", true, CustomCommand.Confirmation.ALWAYS),
+            new CustomCommand("log-tail", "查看日志", "tail -n 200 logs/app.log", "",
+                "日志", true, CustomCommand.Confirmation.DANGEROUS_ONLY)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        EditText search = activity.findViewById(R.id.custom_commands_search_input);
+        search.setText("codex");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals("已显示 1 / 4 条快捷指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_search_summary)).getText().toString());
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(1, null, actionList), 1,
+            actionList.getAdapter().getItemId(1));
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        preview.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals("", search.getText().toString());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_search_summary).getVisibility());
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+        assertTrue(listContainsCommandName(list, "运行测试"));
+        assertTrue(listContainsCommandName(list, "查看日志"));
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("清除筛选"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
     public void rejectsInvalidOrSensitiveClipboardImport() {
         ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
             .getSystemService(Context.CLIPBOARD_SERVICE);
@@ -465,5 +521,16 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_action_feedback).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_backup).getVisibility());
+    }
+
+    private static boolean listContainsCommandName(LinearLayout list, String name) {
+        for (int index = 0; index < list.getChildCount(); index++) {
+            View item = list.getChildAt(index);
+            TextView label = item.findViewById(R.id.custom_command_name);
+            if (label != null && name.equals(label.getText().toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

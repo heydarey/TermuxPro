@@ -886,6 +886,7 @@
     <string name="custom_commands_import_preview_message">Import %1$d custom commands from “%2$s” into the current workspace “%3$s”.\n\nDuplicate names will get an “imported” suffix. Import saves local settings only and does not run remote commands.</string>
     <string name="custom_commands_import_confirm">Import</string>
     <string name="custom_commands_imported">Imported %1$d custom commands. Still review the target and command before running.</string>
+    <string name="custom_commands_imported_search_cleared">Imported %1$d custom commands and cleared the filter to show the imported results. Still review the target and command before running.</string>
     <string name="custom_commands_search_label">Filter this workspace’s shortcuts</string>
     <string name="custom_commands_search_hint">Name, scenario, command, or directory</string>
     <string name="custom_commands_clear_search">Clear</string>
