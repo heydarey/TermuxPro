@@ -48,11 +48,11 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_claude_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_claude_history).setOnClickListener(view ->
-            launchAiCli(AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.PICK_HISTORY));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CLAUDE));
         findViewById(R.id.ai_cli_center_codex_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_codex_history).setOnClickListener(view ->
-            launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CODEX));
         findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
         findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
             confirmDeleteLatestHistory());
@@ -239,11 +239,43 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             return;
         }
         AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
-        launchAiCli(entry.tool, entry.mode);
+        launchAiCliWithModeGuard(entry.tool, entry.mode);
     }
 
     private void repeatHistoryEntry(AiLaunchHistoryStore.Entry entry) {
-        launchAiCli(entry.tool, entry.mode);
+        launchAiCliWithModeGuard(entry.tool, entry.mode);
+    }
+
+    private void launchAiCliWithModeGuard(AiCliLaunchCommand.Tool tool,
+                                          AiCliLaunchCommand.Mode mode) {
+        if (mode == AiCliLaunchCommand.Mode.PICK_HISTORY) {
+            confirmHistoryLaunch(tool);
+            return;
+        }
+        launchAiCli(tool, mode);
+    }
+
+    private void confirmHistoryLaunch(AiCliLaunchCommand.Tool tool) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !SshTargetValidator.isValid(workspace.host)
+            || workspace.port < 1 || workspace.port > 65535
+            || workspace.path == null || workspace.path.trim().isEmpty()) {
+            launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY);
+            return;
+        }
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.ai_cli_center_history_launch_title,
+                AiCliLaunchCommand.displayName(tool)))
+            .setMessage(getString(R.string.ai_cli_center_history_launch_message,
+                AiCliLaunchCommand.displayName(tool),
+                AiCliLaunchCommand.command(tool, AiCliLaunchCommand.Mode.PICK_HISTORY),
+                workspace.host,
+                workspace.port,
+                workspace.path))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_history_launch_action,
+                (dialog, which) -> launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY))
+            .create());
     }
 
     private void deleteLatestHistory() {

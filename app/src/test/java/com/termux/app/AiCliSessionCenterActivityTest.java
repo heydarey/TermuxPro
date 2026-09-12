@@ -2,6 +2,7 @@ package com.termux.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -137,6 +138,23 @@ public class AiCliSessionCenterActivityTest {
 
         activity.findViewById(R.id.ai_cli_center_claude_history).performClick();
 
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog historyConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(historyConfirm);
+        assertEquals("打开 Claude Code 历史选择？", shadowOf(historyConfirm).getTitle());
+        String message = ((TextView) historyConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(message.contains("执行命令：claude --resume"));
+        assertTrue(message.contains("只打开 CLI 原生选择器"));
+        assertTrue(message.contains("不会自动选择历史"));
+        assertTrue(message.contains("不会自动进入 tmux"));
+        assertTrue(message.contains("共享账号"));
+        assertEquals("打开历史选择",
+            historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertEquals(TermuxActivity.class.getName(), intent.getComponent().getClassName());
         Bundle extras = intent.getExtras();
@@ -150,6 +168,41 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(!startup.contains("tmux new-session"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("Claude Code"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("历史选择"));
+    }
+
+    @Test
+    public void repeatLastHistoryLaunchRequiresTargetConfirmation() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog historyConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(historyConfirm);
+        assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
+        String message = ((TextView) historyConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("执行命令：codex resume"));
+        assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
+        historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(repeated);
+        assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
+        assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
+            .contains("exec codex resume"));
     }
 
     @Test
@@ -375,6 +428,15 @@ public class AiCliSessionCenterActivityTest {
         AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(action);
         action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog historyConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(historyConfirm);
+        assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
+        String confirmMessage = ((TextView) historyConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(confirmMessage.contains("执行命令：codex resume"));
+        assertTrue(confirmMessage.contains("不会自动进入 tmux"));
+        historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 
         Intent repeated = shadowOf(activity).getNextStartedActivity();
