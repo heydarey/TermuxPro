@@ -113,10 +113,21 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/git_overview_state_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="#142332"
+                    android:lineSpacingExtra="3dp"
+                    android:padding="14dp"
+                    android:textColor="#D8E4EC"
+                    android:textSize="15sp" />
+
+                <TextView
                     android:id="@+id/git_overview_changes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="14dp"
                     android:textColor="#D8E4EC"
                     android:textSize="17sp" />
 

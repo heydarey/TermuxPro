@@ -279,6 +279,9 @@ public final class GitDiffActivity extends AppCompatActivity {
             overview.head));
         ((TextView) findViewById(R.id.git_overview_path)).setText(getString(
             R.string.git_workbench_target, target.host, target.port, target.path));
+        TextView stateSummaryView = findViewById(R.id.git_overview_state_summary);
+        stateSummaryView.setText(stateSummary(overview));
+        stateSummaryView.setContentDescription(stateSummaryView.getText());
         ((TextView) findViewById(R.id.git_overview_changes)).setText(getResources().getQuantityString(
             R.plurals.git_workbench_changed_files, overview.changedFiles, overview.changedFiles));
         ((TextView) findViewById(R.id.git_overview_index_state)).setText(getString(
@@ -423,6 +426,62 @@ public final class GitDiffActivity extends AppCompatActivity {
                 overview.ahead);
         }
         return getString(R.string.git_workbench_next_clean);
+    }
+
+    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话，降低手机上扫读成本。 */
+    @NonNull
+    private String stateSummary(@NonNull GitRepositoryOverview overview) {
+        return getString(R.string.git_workbench_state_summary, changeState(overview),
+            syncState(overview), recommendedAction(overview));
+    }
+
+    @NonNull
+    private String changeState(@NonNull GitRepositoryOverview overview) {
+        if (overview.detached) return getString(R.string.git_workbench_state_detached);
+        if (overview.changedFiles == 0) return getString(R.string.git_workbench_state_clean);
+        return getString(R.string.git_workbench_state_dirty, overview.changedFiles,
+            overview.stagedFiles, overview.unstagedFiles);
+    }
+
+    @NonNull
+    private String syncState(@NonNull GitRepositoryOverview overview) {
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            return getString(R.string.git_workbench_state_no_upstream);
+        }
+        if (overview.ahead > 0 && overview.behind > 0) {
+            return getString(R.string.git_workbench_state_diverged, overview.upstream,
+                overview.ahead, overview.behind);
+        }
+        if (overview.behind > 0) {
+            return getString(R.string.git_workbench_state_behind, overview.upstream,
+                overview.behind);
+        }
+        if (overview.ahead > 0) {
+            return getString(R.string.git_workbench_state_ahead, overview.upstream,
+                overview.ahead);
+        }
+        return getString(R.string.git_workbench_state_synced, overview.upstream);
+    }
+
+    @NonNull
+    private String recommendedAction(@NonNull GitRepositoryOverview overview) {
+        if (overview.detached) return getString(R.string.git_workbench_recommend_switch_branch);
+        if (overview.changedFiles > 0) {
+            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
+                return getString(R.string.git_workbench_recommend_commit);
+            }
+            if (!overview.fileChanges.isEmpty()) {
+                return getString(R.string.git_workbench_recommend_review_files);
+            }
+            return getString(R.string.git_workbench_recommend_review_diff);
+        }
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            return getString(R.string.git_workbench_recommend_create_branch);
+        }
+        if (overview.behind > 0) return getString(R.string.git_workbench_recommend_pull);
+        if (overview.ahead > 0) return getString(R.string.git_workbench_recommend_push);
+        if (!overview.commits.isEmpty()) return getString(R.string.git_workbench_recommend_commits);
+        return getString(R.string.git_workbench_recommend_create_branch);
     }
 
     @NonNull
