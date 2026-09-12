@@ -398,6 +398,7 @@
     <string name="workspace_command_confirm_message">The following command will be typed into the active terminal:\n\n%1$s</string>
     <string name="workspace_command_confirm_action">Send command</string>
     <string name="workspace_prompt_action">Prompt</string>
+    <string name="workspace_prompt_description">Open the prompt composer to write or paste multi-line input, then send it only to the current terminal after confirmation.</string>
     <string name="workspace_prompt_title">Compose terminal input</string>
     <string name="workspace_prompt_hint">Write or paste a multi-line prompt. It is sent only to the active terminal.</string>
     <string name="workspace_prompt_send">Send</string>
@@ -448,7 +449,9 @@
     <string name="workspace_tools_scrollback_action">Tools · History</string>
     <string name="workspace_tools_tui_scroll_action">Tools · TUI</string>
     <string name="workspace_git_status_action">Git workbench</string>
+    <string name="workspace_git_status_description">Open the Git workbench for the current workspace to review branches, changes, commits, and sync state.</string>
     <string name="workspace_git_diff_action">Review Git diff</string>
+    <string name="workspace_git_diff_description">Open Git diff review for the current workspace without committing, pulling, or pushing.</string>
     <string name="terminal_git_workbench_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="workspace_project_check_action">Run project checks</string>
     <string name="terminal_project_tasks_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
@@ -457,14 +460,18 @@
     <string name="terminal_connection_diagnostic_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="terminal_ssh_keys_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="workspace_tmux_sessions_action">tmux manager</string>
+    <string name="workspace_tmux_sessions_description">Review and explicitly attach to tmux sessions; only current-workspace TermuxPro sessions can be renamed or stopped.</string>
     <string name="terminal_task_sessions_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure the server, project directory, and tmux policy first.</string>
     <string name="workspace_interrupt_action">Interrupt (Ctrl+C)</string>
+    <string name="workspace_interrupt_description">Send Ctrl+C to the current terminal to interrupt a running command or AI CLI action.</string>
     <string name="workspace_preview_title">Web preview</string>
     <string name="workspace_preview_description">Create a loopback-only SSH tunnel, then open the project in your browser.</string>
     <string name="workspace_remote_port_hint">Remote port</string>
     <string name="workspace_local_port_hint">Phone port</string>
     <string name="workspace_start_preview_action">Start Web tunnel</string>
     <string name="workspace_open_preview_action">Open Web preview</string>
+    <string name="workspace_start_preview_description">Start a local-only SSH Web preview tunnel for the current workspace.</string>
+    <string name="workspace_open_preview_description">Open the configured local Web preview address in the phone browser.</string>
     <string name="workspace_error_preview_port">Port must be between 1 and 65535.</string>
     <string name="ai_attention_channel_name">Terminal attention</string>
     <string name="ai_attention_title">Terminal needs attention</string>
@@ -472,11 +479,16 @@
     <string name="workspace_keys_shell_action">Keys: Shell</string>
     <string name="workspace_keys_ai_action">Keys: AI CLI</string>
     <string name="workspace_keys_vim_action">Keys: Vim</string>
+    <string name="workspace_keys_shell_description">Switch to common Shell shortcut keys without sending a remote command.</string>
+    <string name="workspace_keys_ai_description">Switch to Claude/Codex shortcut keys without automatically confirming any AI action.</string>
+    <string name="workspace_keys_vim_description">Switch to common Vim shortcut keys without changing terminal content.</string>
     <string name="workspace_keys_shell_applied">Shell keys enabled</string>
     <string name="workspace_keys_ai_applied">AI CLI keys enabled</string>
     <string name="workspace_keys_vim_applied">Vim keys enabled</string>
     <string name="terminal_touch_scroll_switch_to_scrollback">Use terminal history scrolling (recommended)</string>
     <string name="terminal_touch_scroll_switch_to_tui">Use AI/TUI panel scrolling</string>
+    <string name="terminal_touch_scroll_scrollback_description">Switch back to history mode so finger swipes read earlier terminal output.</string>
+    <string name="terminal_touch_scroll_tui_description">Switch to AI/TUI control mode so finger swipes first control panels that support mouse events.</string>
     <string name="terminal_touch_scroll_scrollback_applied">Finger swipes now read terminal history</string>
     <string name="terminal_touch_scroll_tui_applied">Finger swipes now control AI/TUI panels that support mouse events</string>
     <string name="terminal_touch_scroll_tui_active_hint">AI/TUI control mode is active: finger swipes first control panels that support mouse events. To read earlier terminal output, tap “Tools · TUI” and switch back to history mode.</string>
@@ -673,6 +685,7 @@
         <item quantity="other">%1$d uncommitted files</item>
     </plurals>
     <string name="workspace_remote_files_action">Remote files</string>
+    <string name="workspace_remote_files_description">Browse the current workspace remote directory and read files in a bounded, read-only view.</string>
     <string name="remote_files_title">Remote files</string>
     <string name="remote_file_preview_title">File preview</string>
     <string name="remote_files_invalid_workspace">The workspace connection information is invalid.</string>
@@ -715,6 +728,7 @@
         <item quantity="other">No task sessions in this workspace. %1$d other workspace tasks exist; TermuxPro will not auto-attach or manage them.</item>
     </plurals>
     <string name="workspace_diagnostic_action">Environment</string>
+    <string name="workspace_diagnostic_description">Check SSH, tmux, Git, and AI CLI readiness for the current workspace without automatic fixes.</string>
     <string name="connection_diagnostic_title">Connection diagnostics</string>
     <string name="connection_diagnostic_running">Checking the active SSH connection and remote tools…</string>
     <string name="connection_diagnostic_success">Connection succeeded. Available tools are listed below.</string>
@@ -743,10 +757,13 @@
     <string name="connection_error_closed">The server closed the connection before authentication. Check its SSH policy or retry later.</string>
     <string name="ai_action_confirm_selection">AI: Confirm selected option</string>
     <string name="ai_action_reject_or_back">AI: Reject / back (Esc)</string>
+    <string name="ai_action_confirm_description">Send Enter only to the current AI CLI; check the highlighted option first. The app never approves automatically.</string>
+    <string name="ai_action_reject_description">Send Esc to the current AI CLI to go back, reject, or leave the current selection.</string>
     <string name="ai_action_confirm_title">Confirm the selected terminal option?</string>
     <string name="ai_action_confirm_message">This sends Enter only. Check the highlighted Claude Code or Codex option first; the app never approves automatically.</string>
     <string name="ai_action_confirm_send">Send Enter</string>
     <string name="workspace_ssh_keys_action">SSH keys</string>
+    <string name="workspace_ssh_keys_description">Open SSH key guidance without storing passwords or private keys.</string>
     <string name="ssh_keys_title">SSH public keys</string>
     <string name="ssh_keys_description">Only public keys are displayed. Private keys remain in the app-private OpenSSH directory and are never copied by this page.</string>
     <string name="ssh_keys_empty">No supported public key was found. Generate an Ed25519 key to get started.</string>
@@ -763,6 +780,7 @@
     <string name="workspace_development_tools_title">Development toolbox</string>
     <string name="workspace_development_tools_description">Open Git, tmux, files, project tasks, custom commands, diagnostics, and Web preview only when needed.</string>
     <string name="terminal_search_action">Search output</string>
+    <string name="terminal_search_description">Search available terminal history without reading remote files or private AI history.</string>
     <string name="terminal_search_title">Search terminal output</string>
     <string name="terminal_search_hint">Error text, filename, command…</string>
     <string name="terminal_search_results_title">“%1$s” · %2$d matches</string>
@@ -904,7 +922,11 @@
     <string name="terminal_ai_cli_center_action">AI CLI session center</string>
     <string name="terminal_ai_launch_claude_action">Start Claude Code</string>
     <string name="terminal_ai_launch_codex_action">Start Codex CLI</string>
+    <string name="terminal_ai_cli_center_description">Open the current workspace Claude/Codex center to choose a new or history entry.</string>
+    <string name="terminal_ai_launch_claude_description">Start Claude Code in the current terminal after choosing new or history mode.</string>
+    <string name="terminal_ai_launch_codex_description">Start Codex CLI in the current terminal after choosing new or history mode.</string>
     <string name="terminal_tools_section_keyboard">Key rows</string>
     <string name="terminal_custom_commands_action">Quick commands</string>
+    <string name="terminal_custom_commands_description">Open quick commands for the current workspace without running a command automatically.</string>
 
 </resources>

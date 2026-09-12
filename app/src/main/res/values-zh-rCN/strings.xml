@@ -276,6 +276,7 @@
     <string name="workspace_command_confirm_message">以下命令将输入当前终端：\n\n%1$s</string>
     <string name="workspace_command_confirm_action">发送命令</string>
     <string name="workspace_prompt_action">输入</string>
+    <string name="workspace_prompt_description">打开提示词编辑器，编写或粘贴多行内容，确认后只发送到当前终端。</string>
     <string name="workspace_prompt_title">编辑终端输入</string>
     <string name="workspace_prompt_hint">编写或粘贴多行提示词，内容只会发送到当前终端。</string>
     <string name="workspace_prompt_send">发送</string>
@@ -326,7 +327,9 @@
     <string name="workspace_tools_scrollback_action">工具箱·历史</string>
     <string name="workspace_tools_tui_scroll_action">工具箱·TUI</string>
     <string name="workspace_git_status_action">Git 工作台</string>
+    <string name="workspace_git_status_description">打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态。</string>
     <string name="workspace_git_diff_action">审查 Git Diff</string>
+    <string name="workspace_git_diff_description">打开当前工作区的 Git 改动审查，不直接提交、拉取或推送。</string>
     <string name="terminal_git_workbench_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="workspace_project_check_action">运行项目检查</string>
     <string name="terminal_project_tasks_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
@@ -335,14 +338,18 @@
     <string name="terminal_connection_diagnostic_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="terminal_ssh_keys_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="workspace_tmux_sessions_action">tmux 管理</string>
+    <string name="workspace_tmux_sessions_description">查看并显式进入 tmux 会话；只有当前工作区的 TermuxPro 会话可重命名或停止。</string>
     <string name="terminal_task_sessions_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器、项目目录和 tmux 策略。</string>
     <string name="workspace_interrupt_action">中断（Ctrl+C）</string>
+    <string name="workspace_interrupt_description">向当前终端发送 Ctrl+C，用于中断正在运行的命令或 AI CLI 操作。</string>
     <string name="workspace_preview_title">Web 项目预览</string>
     <string name="workspace_preview_description">建立仅限本机访问的 SSH 隧道，再用手机浏览器打开项目。</string>
     <string name="workspace_remote_port_hint">远端端口</string>
     <string name="workspace_local_port_hint">手机端口</string>
     <string name="workspace_start_preview_action">启动 Web 隧道</string>
     <string name="workspace_open_preview_action">打开 Web 预览</string>
+    <string name="workspace_start_preview_description">为当前工作区启动本机可访问的 SSH Web 预览隧道。</string>
+    <string name="workspace_open_preview_description">用手机浏览器打开已配置的本机 Web 预览地址。</string>
     <string name="workspace_error_preview_port">端口必须在 1 到 65535 之间。</string>
     <string name="ai_attention_channel_name">终端交互提醒</string>
     <string name="ai_attention_title">终端需要处理</string>
@@ -350,11 +357,16 @@
     <string name="workspace_keys_shell_action">键区：Shell</string>
     <string name="workspace_keys_ai_action">键区：AI CLI</string>
     <string name="workspace_keys_vim_action">键区：Vim</string>
+    <string name="workspace_keys_shell_description">切换到常规 Shell 常用快捷键，不发送远端命令。</string>
+    <string name="workspace_keys_ai_description">切换到 Claude/Codex 常用快捷键，不自动确认任何 AI 操作。</string>
+    <string name="workspace_keys_vim_description">切换到 Vim 常用快捷键，不改变当前终端内容。</string>
     <string name="workspace_keys_shell_applied">已切换为 Shell 键区</string>
     <string name="workspace_keys_ai_applied">已切换为 AI CLI 键区</string>
     <string name="workspace_keys_vim_applied">已切换为 Vim 键区</string>
     <string name="terminal_touch_scroll_switch_to_scrollback">改为查看终端历史（推荐）</string>
     <string name="terminal_touch_scroll_switch_to_tui">改为控制 AI/TUI 面板</string>
+    <string name="terminal_touch_scroll_scrollback_description">切回普通历史模式，手指上下滑动用于查看上方终端输出。</string>
+    <string name="terminal_touch_scroll_tui_description">切到 AI/TUI 控制模式，手指上下滑动会优先控制支持鼠标事件的面板。</string>
     <string name="terminal_touch_scroll_scrollback_applied">手指上下滑动已改为查看终端历史</string>
     <string name="terminal_touch_scroll_tui_applied">手指上下滑动已改为控制支持鼠标事件的 AI/TUI 面板</string>
     <string name="terminal_touch_scroll_tui_active_hint">当前为 AI/TUI 控制模式：手指上下滑动会优先控制支持鼠标事件的面板。若要查看上方终端输出，请点“工具箱·TUI”切回历史模式。</string>
@@ -550,6 +562,7 @@
         <item quantity="other">%1$d 个未提交文件</item>
     </plurals>
     <string name="workspace_remote_files_action">远端文件</string>
+    <string name="workspace_remote_files_description">浏览当前工作区远端目录，只读查看文件，受大小限制保护。</string>
     <string name="remote_files_title">远端文件</string>
     <string name="remote_file_preview_title">文件预览</string>
     <string name="remote_files_invalid_workspace">工作区连接信息无效。</string>
@@ -590,6 +603,7 @@
         <item quantity="other">当前工作区暂无任务会话；检测到 %1$d 个其他工作区任务，TermuxPro 不会自动进入或管理。</item>
     </plurals>
     <string name="workspace_diagnostic_action">环境诊断</string>
+    <string name="workspace_diagnostic_description">检查当前工作区 SSH、tmux、Git 和 AI CLI 环境，只读诊断不自动修复。</string>
     <string name="connection_diagnostic_title">连接诊断</string>
     <string name="connection_diagnostic_running">正在检查活动 SSH 连接和远端工具…</string>
     <string name="connection_diagnostic_success">连接成功，可用能力如下。</string>
@@ -618,10 +632,13 @@
     <string name="connection_error_closed">服务器在认证前关闭了连接，请检查 SSH 服务策略或稍后重试。</string>
     <string name="ai_action_confirm_selection">AI：确认当前选项</string>
     <string name="ai_action_reject_or_back">AI：拒绝/返回（Esc）</string>
+    <string name="ai_action_confirm_description">只向当前 AI CLI 发送 Enter，请先确认高亮选项；应用不会自动授权。</string>
+    <string name="ai_action_reject_description">向当前 AI CLI 发送 Esc，用于返回、拒绝或退出当前选择。</string>
     <string name="ai_action_confirm_title">确认终端当前选中的选项？</string>
     <string name="ai_action_confirm_message">此操作只发送 Enter。请先检查 Claude Code 或 Codex 当前高亮的选项；应用绝不会自动授权。</string>
     <string name="ai_action_confirm_send">发送 Enter</string>
     <string name="workspace_ssh_keys_action">SSH 密钥</string>
+    <string name="workspace_ssh_keys_description">打开 SSH 密钥辅助页，查看配置指引，不保存密码或私钥。</string>
     <string name="ssh_keys_title">SSH 公钥管理</string>
     <string name="ssh_keys_description">本页只展示公钥。私钥始终保留在应用私有的 OpenSSH 目录中，不会被本页读取或复制。</string>
     <string name="ssh_keys_empty">未找到支持的公钥，可以先生成 Ed25519 密钥。</string>
@@ -638,6 +655,7 @@
     <string name="workspace_development_tools_title">开发工具箱</string>
     <string name="workspace_development_tools_description">只在需要时打开 Git、tmux、文件、项目任务、快捷指令、诊断和 Web 预览。</string>
     <string name="terminal_search_action">搜索终端输出</string>
+    <string name="terminal_search_description">在当前可用的终端历史中搜索文本，不读取远端文件或 AI 私有历史。</string>
     <string name="terminal_search_title">搜索终端输出</string>
     <string name="terminal_search_hint">错误文本、文件名、命令……</string>
     <string name="terminal_search_results_title">“%1$s” · %2$d 条结果</string>
@@ -779,6 +797,10 @@
     <string name="terminal_ai_cli_center_action">AI CLI 会话中心</string>
     <string name="terminal_ai_launch_claude_action">启动 Claude Code</string>
     <string name="terminal_ai_launch_codex_action">启动 Codex CLI</string>
+    <string name="terminal_ai_cli_center_description">打开当前工作区的 Claude/Codex 会话中心，选择新建或历史入口。</string>
+    <string name="terminal_ai_launch_claude_description">在当前终端启动 Claude Code；启动前仍会确认新建或历史选择。</string>
+    <string name="terminal_ai_launch_codex_description">在当前终端启动 Codex CLI；启动前仍会确认新建或历史选择。</string>
     <string name="terminal_tools_section_keyboard">键区切换</string>
     <string name="terminal_custom_commands_action">快捷指令</string>
+    <string name="terminal_custom_commands_description">打开当前工作区快捷指令，不会自动执行命令。</string>
 </resources>
