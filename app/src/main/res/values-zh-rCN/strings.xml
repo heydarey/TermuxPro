@@ -367,12 +367,12 @@
     <string name="workspace_keys_ai_applied">已切换为 AI CLI 键区</string>
     <string name="workspace_keys_vim_applied">已切换为 Vim 键区</string>
     <string name="terminal_touch_scroll_switch_to_scrollback">改为查看终端历史（推荐）</string>
-    <string name="terminal_touch_scroll_switch_to_tui">改为控制 AI/TUI 面板</string>
+    <string name="terminal_touch_scroll_switch_to_tui">临时控制 AI/TUI 面板</string>
     <string name="terminal_touch_scroll_scrollback_description">切回普通历史模式，手指上下滑动用于查看上方终端输出。</string>
-    <string name="terminal_touch_scroll_tui_description">切到 AI/TUI 控制模式，手指上下滑动会优先控制支持鼠标事件的面板。</string>
+    <string name="terminal_touch_scroll_tui_description">仅本次终端临时切到 AI/TUI 控制模式，重新打开后仍优先查看终端历史。</string>
     <string name="terminal_touch_scroll_scrollback_applied">手指上下滑动已改为查看终端历史</string>
-    <string name="terminal_touch_scroll_tui_applied">手指上下滑动已改为控制支持鼠标事件的 AI/TUI 面板</string>
-    <string name="terminal_touch_scroll_tui_active_hint">当前为 AI/TUI 控制模式：手指上下滑动会优先控制支持鼠标事件的面板。若要查看上方终端输出，请点“工具箱·TUI”切回历史模式。</string>
+    <string name="terminal_touch_scroll_tui_applied">本次终端已临时改为控制支持鼠标事件的 AI/TUI 面板</string>
+    <string name="terminal_touch_scroll_tui_active_hint">当前为临时 AI/TUI 控制模式：手指上下滑动会优先控制支持鼠标事件的面板。若要查看上方终端输出，请点“工具箱·TUI”切回历史模式；重新打开终端后默认恢复历史滚动。</string>
     <string name="workspace_review_diff_action">Git 工作台</string>
     <string name="workspace_custom_commands_action">快捷指令</string>
     <string name="git_diff_title">Git 工作台</string>

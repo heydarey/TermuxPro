@@ -46,8 +46,9 @@ public class TerminalProjectToolsMenuTest {
         assertEquals(TerminalProjectToolsMenu.TOOL_SEARCH_OUTPUT, menu.getItem(7).getItemId());
         assertDescription(menu, 7, "在当前可用的终端历史中搜索文本，不读取远端文件或 AI 私有历史。");
         assertEquals(TerminalProjectToolsMenu.TOOL_TOUCH_SCROLL_MODE, menu.getItem(8).getItemId());
-        assertEquals("改为控制 AI/TUI 面板", menu.getItem(8).getTitle().toString());
-        assertDescription(menu, 8, "切到 AI/TUI 控制模式，手指上下滑动会优先控制支持鼠标事件的面板。");
+        assertEquals("临时控制 AI/TUI 面板", menu.getItem(8).getTitle().toString());
+        assertDescription(menu, 8,
+            "仅本次终端临时切到 AI/TUI 控制模式，重新打开后仍优先查看终端历史。");
 
         assertEquals("项目与 Git", menu.getItem(9).getTitle().toString());
         assertFalse(menu.getItem(9).isEnabled());
