@@ -563,6 +563,7 @@
     <string name="remote_file_binary">二进制文件不会加载到文本预览中。</string>
     <string name="remote_file_truncated">预览已在 1 MB 处停止。</string>
     <string name="workspace_project_tasks_action">项目任务 / 测试</string>
+    <string name="workspace_project_tasks_description">打开当前工作区的项目任务和测试页；先展示远端目标与命令，由你确认后执行，不会直接输入当前终端。</string>
     <string name="project_tasks_title">项目任务 / 测试</string>
     <string name="project_tasks_description">识别远端项目的测试、构建和开发任务；启动前会展示目标与完整命令，由你确认后执行。</string>
     <string name="project_tasks_target">执行目标 · %1$s:%2$d · %3$s</string>

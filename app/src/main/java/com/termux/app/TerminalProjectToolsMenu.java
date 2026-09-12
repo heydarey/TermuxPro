@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuItemCompat;
 
 import com.termux.R;
 
@@ -57,7 +58,8 @@ final class TerminalProjectToolsMenu {
         addHeader(context, menu, R.string.terminal_tools_section_project);
         menu.add(Menu.NONE, TOOL_GIT_DIFF, Menu.NONE, R.string.workspace_git_diff_action);
         menu.add(Menu.NONE, TOOL_REMOTE_FILES, Menu.NONE, R.string.workspace_remote_files_action);
-        menu.add(Menu.NONE, TOOL_PROJECT_CHECK, Menu.NONE, R.string.workspace_project_tasks_action);
+        addTool(context, menu, TOOL_PROJECT_CHECK, R.string.workspace_project_tasks_action,
+            R.string.workspace_project_tasks_description);
         menu.add(Menu.NONE, TOOL_START_WEB_PREVIEW, Menu.NONE, R.string.workspace_start_preview_action);
         menu.add(Menu.NONE, TOOL_OPEN_WEB_PREVIEW, Menu.NONE, R.string.workspace_open_preview_action);
 
@@ -81,6 +83,12 @@ final class TerminalProjectToolsMenu {
     private static void addHeader(@NonNull Context context, @NonNull Menu menu, int title) {
         MenuItem header = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, context.getString(title));
         header.setEnabled(false);
+    }
+
+    private static void addTool(@NonNull Context context, @NonNull Menu menu, int id, int title,
+                                int description) {
+        MenuItem item = menu.add(Menu.NONE, id, Menu.NONE, title);
+        MenuItemCompat.setContentDescription(item, context.getString(description));
     }
 
     static int toolsButtonLabel(boolean tuiTouchScrollMode) {
