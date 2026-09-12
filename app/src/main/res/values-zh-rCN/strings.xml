@@ -208,9 +208,9 @@
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>
     <string name="ai_cli_center_claude_new">新建 Claude</string>
-    <string name="ai_cli_center_claude_history">Claude 历史</string>
+    <string name="ai_cli_center_claude_history">选择 Claude 历史</string>
     <string name="ai_cli_center_codex_new">新建 Codex</string>
-    <string name="ai_cli_center_codex_history">Codex 历史</string>
+    <string name="ai_cli_center_codex_history">选择 Codex 历史</string>
     <string name="ai_cli_center_claude_new_description">新建 Claude 会话，安全默认：仅建立 SSH，不自动恢复历史，也不自动进入 tmux。</string>
     <string name="ai_cli_center_claude_history_description">选择 Claude 历史：只打开 Claude 原生选择器，不自动恢复。共享账号请确认会话归属。</string>
     <string name="ai_cli_center_codex_new_description">新建 Codex 会话，安全默认：仅建立 SSH，不自动恢复历史，也不自动进入 tmux。</string>
