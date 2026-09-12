@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-11T06:42:09Z
+- UTC：2026-09-12T04:29:19Z
 
 ## 当前目标
 
@@ -16,16 +16,16 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`3b3167d43bf9`
-- 最近提交：fix(ai): 确认删除单条启动记录
-- `origin/dev`：`ac3662135c19`
+- 当前提交：`2dd9f45da0bd`
+- 最近提交：Merge pull request #330 from heydarey/dev_dailyIteration
+- `origin/dev`：`2dd9f45da0bd`
 - `origin/master`：`43c7a5794fc8`
 - 版本源：`0.10.0` / `100002`
 
 ### 工作树
 
 ```text
- M app/src/main/java/com/termux/app/AiCliSessionCenterActivity.java
+干净
 ```
 
 ## 额度与资源
@@ -35,10 +35,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-11T06:42:03.643Z",
-    "usedPercent": 37,
-    "remainingPercent": 63,
-    "resetsAt": 1789435931,
+    "timestamp": "2026-09-12T04:29:15.360Z",
+    "usedPercent": 49,
+    "remainingPercent": 51,
+    "resetsAt": 1789435930,
     "windowMinutes": 10080
   },
   "minimumRemainingPercent": 15,
@@ -51,10 +51,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：2.99
-可用内存：10869 MiB
-工作区可用磁盘：8881 MiB
-工作区磁盘使用率：96%
+CPU：8 核，1 分钟负载：0.45
+可用内存：14349 MiB
+工作区可用磁盘：36841 MiB
+工作区磁盘使用率：81%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
 ```
@@ -64,13 +64,13 @@ KVM：不可用
 ### 打开的 dev PR
 
 ```json
-[{"headRefName":"dev_dailyIteration","number":319,"title":"fix(ai): 确认删除单条启动记录","url":"https://github.com/heydarey/TermuxPro/pull/319"}]
+当前没有以 dev 为目标的打开 PR。
 ```
 
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-11T06:12:22Z","databaseId":34568953634,"displayTitle":"TermuxPro CI","headSha":"ac3662135c190463cded4f0db53709483f9e1015","status":"completed"},{"conclusion":"success","createdAt":"2026-09-11T05:55:24Z","databaseId":34567820007,"displayTitle":"TermuxPro CI","headSha":"720194b27149e414e89ea4446ee8591b75642c08","status":"completed"},{"conclusion":"success","createdAt":"2026-09-11T05:37:57Z","databaseId":34566707329,"displayTitle":"TermuxPro CI","headSha":"625d16905de2841c86bc26e6925fe2a17a766eee","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-12T04:21:06Z","databaseId":34672772902,"displayTitle":"TermuxPro CI","headSha":"2dd9f45da0bd1236e77ff5a24a391c1582fe8967","status":"completed"},{"conclusion":"success","createdAt":"2026-09-12T03:57:39Z","databaseId":34671738196,"displayTitle":"TermuxPro CI","headSha":"b0c14f08be7fe51d1093e2e7f1554795baba04bc","status":"completed"},{"conclusion":"success","createdAt":"2026-09-12T03:40:21Z","databaseId":34670996661,"displayTitle":"TermuxPro CI","headSha":"f51b7e13365b98101df99d9c6f49fe22a562beb6","status":"completed"}]
 ```
 
 ### 最近 Release
