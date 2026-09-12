@@ -761,6 +761,7 @@
     <string name="custom_commands_import_preview_message">将从“%2$s”备份导入 %1$d 条快捷指令到当前工作区“%3$s”。\n\n重名会自动加“导入”后缀；导入只保存本地配置，不会执行远端命令。</string>
     <string name="custom_commands_import_confirm">导入</string>
     <string name="custom_commands_imported">已导入 %1$d 条快捷指令。运行前仍需查看目标和命令。</string>
+    <string name="custom_commands_imported_search_cleared">已导入 %1$d 条快捷指令，并清除筛选以显示导入结果。运行前仍需查看目标和命令。</string>
     <string name="custom_commands_search_label">筛选当前工作区指令</string>
     <string name="custom_commands_search_hint">名称、场景、命令或目录</string>
     <string name="custom_commands_clear_search">清除</string>
