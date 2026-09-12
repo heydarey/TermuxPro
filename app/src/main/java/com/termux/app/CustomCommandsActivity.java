@@ -25,10 +25,12 @@ import androidx.core.content.ContextCompat;
 import com.termux.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +59,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
     private View mSearchContainer;
     private View mSearchLabel;
     private View mExport;
+    private View mImport;
     private String mSearchQuery = "";
 
     @Override
@@ -78,11 +81,13 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mSearchContainer = (View) mSearchInput.getParent();
         mSearchLabel = findViewById(R.id.custom_commands_search_label);
         mExport = findViewById(R.id.custom_commands_export);
+        mImport = findViewById(R.id.custom_commands_import);
 
         findViewById(R.id.custom_commands_back).setOnClickListener(view -> finish());
         findViewById(R.id.custom_commands_add).setOnClickListener(view -> showEditor(null));
         findViewById(R.id.custom_commands_templates).setOnClickListener(view -> showTemplates());
         mExport.setOnClickListener(view -> exportCommands());
+        mImport.setOnClickListener(view -> importCommandsFromClipboard());
         mClearSearch.setOnClickListener(view -> mSearchInput.setText(""));
         mSearchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence value, int start, int count, int after) {}
@@ -110,6 +115,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchContainer.setVisibility(View.GONE);
             mSearchLabel.setVisibility(View.GONE);
             mExport.setEnabled(false);
+            mImport.setEnabled(false);
             return;
         }
         name.setText(mTarget.name);
@@ -142,11 +148,14 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             mSearchEmpty.setVisibility(View.GONE);
             mClearSearch.setVisibility(View.GONE);
             mExport.setVisibility(View.GONE);
+            mImport.setVisibility(View.GONE);
             return;
         }
         List<CustomCommand> commands = mStore.list(mTarget.id);
         mExport.setVisibility(commands.isEmpty() ? View.GONE : View.VISIBLE);
         mExport.setEnabled(!commands.isEmpty());
+        mImport.setVisibility(View.VISIBLE);
+        mImport.setEnabled(true);
         boolean canSearch = commands.size() >= 4;
         mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
         mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
@@ -364,6 +373,118 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         return root;
     }
 
+    private void importCommandsFromClipboard() {
+        if (mTarget == null || !mTarget.isConfigured()) {
+            showActionFeedback(R.string.custom_commands_invalid_workspace);
+            return;
+        }
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        if (clipboard == null || clipboard.getPrimaryClip() == null
+            || clipboard.getPrimaryClip().getItemCount() == 0) {
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            return;
+        }
+        CharSequence clip = clipboard.getPrimaryClip().getItemAt(0).coerceToText(this);
+        if (clip == null || TextUtils.isEmpty(clip.toString().trim())) {
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            return;
+        }
+        try {
+            ImportedCommands imported = parseImportJson(clip.toString());
+            confirmImport(imported);
+        } catch (JSONException error) {
+            showActionFeedback(R.string.custom_commands_import_invalid);
+        }
+    }
+
+    @NonNull
+    static ImportedCommands parseImportJson(@NonNull String value) throws JSONException {
+        JSONObject root = new JSONObject(value);
+        if (!"termuxpro.customCommands.v1".equals(root.optString("schema"))) {
+            throw new JSONException("Unsupported custom command backup schema");
+        }
+        JSONArray array = root.optJSONArray("commands");
+        if (array == null || array.length() == 0 || array.length() > 100) {
+            throw new JSONException("Invalid custom command count");
+        }
+        List<CustomCommand> commands = new ArrayList<>();
+        for (int index = 0; index < array.length(); index++) {
+            JSONObject item = array.getJSONObject(index);
+            CustomCommand.Confirmation confirmation = "DANGEROUS_ONLY".equals(
+                item.optString("confirmation"))
+                ? CustomCommand.Confirmation.DANGEROUS_ONLY
+                : CustomCommand.Confirmation.ALWAYS;
+            CustomCommand command = CustomCommand.create(
+                item.optString("name").trim(),
+                item.optString("command").trim(),
+                item.optString("workingDirectory").trim(),
+                item.optString("group").trim(),
+                confirmation);
+            command = command.withEnabled(item.optBoolean("enabled", true));
+            if (CustomCommandValidator.validate(command) != null) {
+                throw new JSONException("Invalid custom command entry");
+            }
+            commands.add(command);
+        }
+        return new ImportedCommands(root.optString("workspaceName"), commands);
+    }
+
+    private void confirmImport(ImportedCommands imported) {
+        String sourceWorkspace = TextUtils.isEmpty(imported.sourceWorkspaceName)
+            ? getString(R.string.custom_commands_import_unknown_workspace)
+            : imported.sourceWorkspaceName;
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(R.string.custom_commands_import_preview_title)
+            .setMessage(getString(R.string.custom_commands_import_preview_message,
+                imported.commands.size(), sourceWorkspace, mTarget.name))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.custom_commands_import_confirm,
+                (selectionDialog, which) -> importCommands(imported.commands))
+            .create();
+        TermuxProDialogStyle.show(this, dialog);
+    }
+
+    private void importCommands(List<CustomCommand> commands) {
+        Set<String> names = new HashSet<>();
+        for (CustomCommand command : mStore.list(mTarget.id)) {
+            names.add(command.name);
+        }
+        int imported = 0;
+        for (CustomCommand command : commands) {
+            String name = uniqueImportedName(command.name, names);
+            CustomCommand value = new CustomCommand(CustomCommand.create(name, command.command,
+                command.workingDirectory, command.group, command.confirmation).id, name,
+                command.command, command.workingDirectory, command.group, command.enabled,
+                command.confirmation);
+            mStore.save(mTarget.id, value);
+            imported++;
+        }
+        renderCommands();
+        showActionFeedback(R.string.custom_commands_imported, imported);
+    }
+
+    @NonNull
+    static String uniqueImportedName(@NonNull String originalName, @NonNull Set<String> names) {
+        String base = originalName.trim();
+        if (base.isEmpty()) base = "导入指令";
+        if (!names.contains(base)) {
+            names.add(base);
+            return base;
+        }
+        for (int index = 1; index <= 1000; index++) {
+            String suffix = index == 1 ? "（导入）" : "（导入 " + index + "）";
+            int maxBaseLength = Math.max(1, 64 - suffix.length());
+            String candidate = base.length() > maxBaseLength
+                ? base.substring(0, maxBaseLength) + suffix
+                : base + suffix;
+            if (!names.contains(candidate)) {
+                names.add(candidate);
+                return candidate;
+            }
+        }
+        throw new IllegalStateException("Too many duplicate custom command names");
+    }
+
     private void showEditor(@Nullable CustomCommand existing) {
         showEditor(existing, null);
     }
@@ -499,6 +620,17 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         mActionFeedback.setContentDescription(message);
         mActionFeedback.setVisibility(View.VISIBLE);
         mActionFeedback.announceForAccessibility(message);
+    }
+
+    static final class ImportedCommands {
+        @NonNull final String sourceWorkspaceName;
+        @NonNull final List<CustomCommand> commands;
+
+        ImportedCommands(@NonNull String sourceWorkspaceName,
+                         @NonNull List<CustomCommand> commands) {
+            this.sourceWorkspaceName = sourceWorkspaceName;
+            this.commands = commands;
+        }
     }
 
     private static final class CustomCommandTemplate {

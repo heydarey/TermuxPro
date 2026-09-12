@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
@@ -67,6 +69,8 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_export).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_import).getVisibility());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
@@ -102,6 +106,8 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_export).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_import).getVisibility());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertEquals(View.VISIBLE, feedback.getVisibility());
         assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
@@ -151,6 +157,85 @@ public class CustomCommandsActivityTest {
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertTrue(feedback.getText().toString().contains("已复制 2 条快捷指令 JSON"));
         assertTrue(feedback.getText().toString().contains("不会执行远端命令"));
+    }
+
+    @Test
+    public void importsClipboardBackupAfterPreviewWithoutExecuting() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-existing", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            new CustomCommand("git-old", "Git 状态", "git status --short --branch", "",
+                "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY),
+            new CustomCommand("ai-old", "继续 Codex", "codex resume", "apps/mobile",
+                "AI", false, CustomCommand.Confirmation.ALWAYS)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_import).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(preview);
+        assertEquals(activity.getString(R.string.custom_commands_import_preview_title),
+            shadowOf(preview).getTitle());
+        String message = ((TextView) preview.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("旧项目"));
+        assertTrue(message.contains("移动端"));
+        assertTrue(message.contains("不会执行远端命令"));
+        assertEquals(1, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+
+        preview.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        List<CustomCommand> imported = new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a");
+        assertEquals(3, imported.size());
+        assertEquals("Git 状态", imported.get(0).name);
+        assertEquals("Git 状态（导入）", imported.get(1).name);
+        assertEquals("git status --short --branch", imported.get(1).command);
+        assertEquals("继续 Codex", imported.get(2).name);
+        assertFalse(imported.get(2).enabled);
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("已导入 2 条快捷指令"));
+    }
+
+    @Test
+    public void rejectsInvalidOrSensitiveClipboardImport() {
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("bad",
+            "{\"schema\":\"termuxpro.customCommands.v1\",\"commands\":[{\"name\":\"危险\",\"command\":\"export TOKEN=abc\"}]}"));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_import).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("不是有效的 TermuxPro 快捷指令备份"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void importedDuplicateNamesRemainReadableAndBounded() {
+        HashSet<String> names = new HashSet<>();
+        names.add("运行测试");
+
+        assertEquals("运行测试（导入）",
+            CustomCommandsActivity.uniqueImportedName("运行测试", names));
+        assertTrue(names.contains("运行测试（导入）"));
     }
 
     @Test
@@ -363,5 +448,7 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_action_feedback).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_export).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_import).getVisibility());
     }
 }
