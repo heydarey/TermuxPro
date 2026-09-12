@@ -193,6 +193,8 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
         String message = ((TextView) historyConfirm.findViewById(android.R.id.message))
             .getText().toString();
+        assertTrue(message.contains("将重复这条 TermuxPro 本地启动记录"));
+        assertTrue(message.contains("原启动时间："));
         assertTrue(message.contains("执行命令：codex resume"));
         assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
         historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
@@ -434,6 +436,8 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
         String confirmMessage = ((TextView) historyConfirm.findViewById(android.R.id.message))
             .getText().toString();
+        assertTrue(confirmMessage.contains("将重复这条 TermuxPro 本地启动记录"));
+        assertTrue(confirmMessage.contains("原启动时间："));
         assertTrue(confirmMessage.contains("执行命令：codex resume"));
         assertTrue(confirmMessage.contains("不会自动进入 tmux"));
         historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();

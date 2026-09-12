@@ -48,11 +48,11 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_claude_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_claude_history).setOnClickListener(view ->
-            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CLAUDE));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CLAUDE, null));
         findViewById(R.id.ai_cli_center_codex_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_codex_history).setOnClickListener(view ->
-            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CODEX));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CODEX, null));
         findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
         findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
             confirmDeleteLatestHistory());
@@ -239,23 +239,23 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             return;
         }
         AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
-        launchAiCliWithModeGuard(entry.tool, entry.mode);
+        launchAiCliWithModeGuard(entry);
     }
 
     private void repeatHistoryEntry(AiLaunchHistoryStore.Entry entry) {
-        launchAiCliWithModeGuard(entry.tool, entry.mode);
+        launchAiCliWithModeGuard(entry);
     }
 
-    private void launchAiCliWithModeGuard(AiCliLaunchCommand.Tool tool,
-                                          AiCliLaunchCommand.Mode mode) {
-        if (mode == AiCliLaunchCommand.Mode.PICK_HISTORY) {
-            confirmHistoryLaunch(tool);
+    private void launchAiCliWithModeGuard(AiLaunchHistoryStore.Entry entry) {
+        if (entry.mode == AiCliLaunchCommand.Mode.PICK_HISTORY) {
+            confirmHistoryLaunch(entry.tool, entry);
             return;
         }
-        launchAiCli(tool, mode);
+        launchAiCli(entry.tool, entry.mode);
     }
 
-    private void confirmHistoryLaunch(AiCliLaunchCommand.Tool tool) {
+    private void confirmHistoryLaunch(AiCliLaunchCommand.Tool tool,
+                                      @Nullable AiLaunchHistoryStore.Entry repeatedEntry) {
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || !SshTargetValidator.isValid(workspace.host)
             || workspace.port < 1 || workspace.port > 65535
@@ -263,15 +263,24 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY);
             return;
         }
-        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.ai_cli_center_history_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
-            .setMessage(getString(R.string.ai_cli_center_history_launch_message,
+        String message = repeatedEntry == null
+            ? getString(R.string.ai_cli_center_history_launch_message,
                 AiCliLaunchCommand.displayName(tool),
                 AiCliLaunchCommand.command(tool, AiCliLaunchCommand.Mode.PICK_HISTORY),
                 workspace.host,
                 workspace.port,
-                workspace.path))
+                workspace.path)
+            : getString(R.string.ai_cli_center_history_repeat_launch_message,
+                AiCliLaunchCommand.displayName(tool),
+                AiCliLaunchCommand.command(tool, AiCliLaunchCommand.Mode.PICK_HISTORY),
+                workspace.host,
+                workspace.port,
+                workspace.path,
+                formatLaunchTime(repeatedEntry.launchedAtMillis));
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.ai_cli_center_history_launch_title,
+                AiCliLaunchCommand.displayName(tool)))
+            .setMessage(message)
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_history_launch_action,
                 (dialog, which) -> launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY))

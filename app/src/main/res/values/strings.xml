@@ -358,6 +358,7 @@
     <string name="ai_cli_center_history_time_unknown">not recorded</string>
     <string name="ai_cli_center_history_launch_title">Open %1$s history picker?</string>
     <string name="ai_cli_center_history_launch_message">A new SSH terminal will connect to:\n%3$s:%4$d · %5$s\n\nCommand: %2$s\n\nTermuxPro only opens the native CLI picker. It will not choose a history entry or auto-attach tmux. On shared accounts, confirm session ownership before continuing.</string>
+    <string name="ai_cli_center_history_repeat_launch_message">This repeats a local TermuxPro launch record: %1$s · history picker\nOriginal launch: %6$s\n%3$s:%4$d · %5$s\n\nCommand: %2$s\n\nTermuxPro only opens the native CLI picker. It will not choose a history entry or auto-attach tmux. On shared accounts, confirm session ownership before continuing.</string>
     <string name="ai_cli_center_history_launch_action">Open history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
     <string name="ai_cli_center_repeat_last_target">Repeat: %1$s · %2$s</string>
