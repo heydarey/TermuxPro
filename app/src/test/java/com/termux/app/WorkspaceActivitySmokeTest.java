@@ -40,7 +40,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals("TermuxPro", activity.getTitle());
         assertEquals("继续远程项目", activity.getString(R.string.workspace_home_title));
         assertEquals("打开远程终端", activity.getString(R.string.workspace_connect_action));
-        assertEquals("连接操作", activity.getString(R.string.workspace_manage_action));
+        assertEquals("复制/删除连接", activity.getString(R.string.workspace_manage_action));
         int[] visibleViews = {R.id.workspace_setup_button};
         for (int id : visibleViews) {
             View view = activity.findViewById(id);
@@ -80,14 +80,14 @@ public class WorkspaceActivitySmokeTest {
             ((TextView) activity.findViewById(R.id.workspace_remote_card_title))
                 .getText().toString());
         TextView manageButton = activity.findViewById(R.id.workspace_manage_button);
-        assertEquals("连接操作", manageButton.getText().toString());
-        assertEquals("复制或删除当前 SSH 工作区；不会影响远端文件。",
+        assertEquals("复制/删除连接", manageButton.getText().toString());
+        assertEquals("管理当前 SSH 连接的本地配置；不会影响远端文件。",
             manageButton.getContentDescription().toString());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_manage_button).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_new_button).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button).getVisibility());
-        assertEquals("打开工具箱",
+        assertEquals("打开开发工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_selector).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
@@ -124,7 +124,7 @@ public class WorkspaceActivitySmokeTest {
 
         activity.findViewById(R.id.workspace_toolbox_button).performClick();
 
-        assertEquals("收起工具箱",
+        assertEquals("收起开发工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
@@ -138,7 +138,7 @@ public class WorkspaceActivitySmokeTest {
 
         activity.findViewById(R.id.workspace_toolbox_button).performClick();
 
-        assertEquals("打开工具箱",
+        assertEquals("打开开发工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_preview_card).getVisibility());
@@ -164,7 +164,7 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
 
         activity.findViewById(R.id.workspace_save_button).performClick();
-        assertEquals("打开工具箱",
+        assertEquals("打开开发工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(R.id.workspace_development_tools_card).getVisibility());
         activity.finish();
