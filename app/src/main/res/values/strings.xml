@@ -328,9 +328,9 @@
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>
     <string name="ai_cli_center_claude_new">New Claude</string>
-    <string name="ai_cli_center_claude_history">Claude history</string>
+    <string name="ai_cli_center_claude_history">Choose Claude history</string>
     <string name="ai_cli_center_codex_new">New Codex</string>
-    <string name="ai_cli_center_codex_history">Codex history</string>
+    <string name="ai_cli_center_codex_history">Choose Codex history</string>
     <string name="ai_cli_center_claude_new_description">Start a new Claude session. Safe default: SSH only, with no history resume or automatic tmux entry.</string>
     <string name="ai_cli_center_claude_history_description">Choose Claude history. Opens only Claude’s native picker and never resumes automatically. Confirm session ownership on shared accounts.</string>
     <string name="ai_cli_center_codex_new_description">Start a new Codex session. Safe default: SSH only, with no history resume or automatic tmux entry.</string>
