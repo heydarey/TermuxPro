@@ -742,6 +742,12 @@
     <string name="custom_commands_target_label">执行目标</string>
     <string name="custom_commands_target_details">%1$s:%2$d · %3$s</string>
     <string name="custom_commands_scenario_hint">保存当前工作区常用命令；运行前始终核对目标。</string>
+    <string name="custom_commands_export">复制备份 JSON</string>
+    <string name="custom_commands_export_description">复制当前工作区的快捷指令 JSON；只读取本地配置，不执行远端命令。</string>
+    <string name="custom_commands_export_clip_label">TermuxPro 快捷指令备份</string>
+    <string name="custom_commands_export_empty">当前工作区还没有可备份的快捷指令。</string>
+    <string name="custom_commands_export_failed">快捷指令备份生成失败，请稍后重试。</string>
+    <string name="custom_commands_export_copied">已复制 %1$d 条快捷指令 JSON。可保存到安全位置或迁移到其他设备；不会执行远端命令。</string>
     <string name="custom_commands_search_label">筛选当前工作区指令</string>
     <string name="custom_commands_search_hint">名称、场景、命令或目录</string>
     <string name="custom_commands_clear_search">清除</string>
