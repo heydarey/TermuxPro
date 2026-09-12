@@ -86,6 +86,16 @@ public class WorkspaceActivitySmokeTest {
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_summary).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_manage_button).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_new_button).getVisibility());
+        TextView claudeButton = activity.findViewById(R.id.workspace_claude_button);
+        assertEquals("Claude Code", claudeButton.getText().toString());
+        assertTrue(claudeButton.getContentDescription().toString().contains("新建会话"));
+        assertTrue(claudeButton.getContentDescription().toString().contains("历史会话"));
+        assertTrue(claudeButton.getContentDescription().toString().contains("不自动进入 tmux"));
+        TextView codexButton = activity.findViewById(R.id.workspace_codex_button);
+        assertEquals("Codex CLI", codexButton.getText().toString());
+        assertTrue(codexButton.getContentDescription().toString().contains("新建会话"));
+        assertTrue(codexButton.getContentDescription().toString().contains("历史会话"));
+        assertTrue(codexButton.getContentDescription().toString().contains("不自动进入 tmux"));
         assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button).getVisibility());
         assertEquals("打开开发工具箱",
             ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText().toString());
