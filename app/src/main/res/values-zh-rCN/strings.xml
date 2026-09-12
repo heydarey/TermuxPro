@@ -276,6 +276,7 @@
     <string name="workspace_command_confirm_message">以下命令将输入当前终端：\n\n%1$s</string>
     <string name="workspace_command_confirm_action">发送命令</string>
     <string name="workspace_prompt_action">输入</string>
+    <string name="workspace_prompt_description">打开提示词编辑器，编写或粘贴多行内容，确认后只发送到当前终端。</string>
     <string name="workspace_prompt_title">编辑终端输入</string>
     <string name="workspace_prompt_hint">编写或粘贴多行提示词，内容只会发送到当前终端。</string>
     <string name="workspace_prompt_send">发送</string>

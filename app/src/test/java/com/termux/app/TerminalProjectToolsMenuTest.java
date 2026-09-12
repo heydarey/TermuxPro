@@ -42,7 +42,7 @@ public class TerminalProjectToolsMenuTest {
         assertEquals("当前终端", menu.getItem(5).getTitle().toString());
         assertFalse(menu.getItem(5).isEnabled());
         assertEquals(TerminalProjectToolsMenu.TOOL_PROMPT_COMPOSER, menu.getItem(6).getItemId());
-        assertDescription(menu, 6, "编写或粘贴多行提示词，内容只会发送到当前终端。");
+        assertDescription(menu, 6, "打开提示词编辑器，编写或粘贴多行内容，确认后只发送到当前终端。");
         assertEquals(TerminalProjectToolsMenu.TOOL_SEARCH_OUTPUT, menu.getItem(7).getItemId());
         assertDescription(menu, 7, "在当前可用的终端历史中搜索文本，不读取远端文件或 AI 私有历史。");
         assertEquals(TerminalProjectToolsMenu.TOOL_TOUCH_SCROLL_MODE, menu.getItem(8).getItemId());

@@ -398,6 +398,7 @@
     <string name="workspace_command_confirm_message">The following command will be typed into the active terminal:\n\n%1$s</string>
     <string name="workspace_command_confirm_action">Send command</string>
     <string name="workspace_prompt_action">Prompt</string>
+    <string name="workspace_prompt_description">Open the prompt composer to write or paste multi-line input, then send it only to the current terminal after confirmation.</string>
     <string name="workspace_prompt_title">Compose terminal input</string>
     <string name="workspace_prompt_hint">Write or paste a multi-line prompt. It is sent only to the active terminal.</string>
     <string name="workspace_prompt_send">Send</string>
