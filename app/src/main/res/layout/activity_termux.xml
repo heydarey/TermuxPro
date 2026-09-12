@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:backgroundTint="#68E0B7"
-                    android:contentDescription="@string/terminal_ai_cli_center_action"
+                    android:contentDescription="@string/terminal_ai_cli_center_description"
                     android:minWidth="0dp"
                     android:paddingHorizontal="9dp"
                     android:text="@string/terminal_ai_short"
