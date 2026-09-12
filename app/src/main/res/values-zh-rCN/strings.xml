@@ -206,6 +206,8 @@
     <string name="ai_cli_center_ai_risk_list_tmux">本次 AI 启动：仅连接 SSH；如需进入 tmux，请先从会话中心手动选择。</string>
     <string name="ai_cli_center_ai_risk_tmux">工作区默认 tmux：%1$s；AI 启动不会自动进入它，避免污染共享 Claude/tmux 会话。</string>
     <string name="ai_cli_center_ai_risk_unknown_policy">当前工作区策略无法识别；AI 启动按仅 SSH 处理，不自动进入 tmux。</string>
+    <string name="ai_cli_center_safe_default_label">推荐：新建独立 AI 会话</string>
+    <string name="ai_cli_center_history_caution_label">谨慎：只打开历史选择器</string>
     <string name="ai_cli_center_command_pair">新建：%1$s\n历史选择：%2$s</string>
     <string name="ai_cli_center_claude_title">Claude Code</string>
     <string name="ai_cli_center_codex_title">Codex CLI</string>
