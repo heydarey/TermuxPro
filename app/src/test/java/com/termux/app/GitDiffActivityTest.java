@@ -135,8 +135,15 @@ public final class GitDiffActivityTest {
 
         TextView index = activity.findViewById(R.id.git_overview_index_state);
         TextView sync = activity.findViewById(R.id.git_overview_sync);
+        TextView stateSummary = activity.findViewById(R.id.git_overview_state_summary);
         assertEquals("hdr@192.168.1.153:22 · ~/repo",
             ((TextView) activity.findViewById(R.id.git_overview_path)).getText().toString());
+        assertTrue(stateSummary.getText().toString().contains("共 3 个改动文件"));
+        assertTrue(stateSummary.getText().toString().contains("已暂存 2、未暂存 1"));
+        assertTrue(stateSummary.getText().toString().contains("已跟踪 origin/dev"));
+        assertTrue(stateSummary.getText().toString().contains("推荐动作"));
+        assertEquals(stateSummary.getText().toString(),
+            stateSummary.getContentDescription().toString());
         assertTrue(index.getText().toString().contains("已暂存 2"));
         assertTrue(index.getText().toString().contains("未暂存 1"));
         assertTrue(sync.getText().toString().contains("跟踪 origin/dev"));
