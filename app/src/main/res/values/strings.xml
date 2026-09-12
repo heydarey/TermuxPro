@@ -395,8 +395,8 @@
     <string name="workspace_open_sessions">Open terminal sessions</string>
     <string name="workspace_open_sessions_description">Open the left terminal session list. This only switches or manages local terminal tabs and does not connect to another remote server.</string>
     <string name="workspace_sessions_short">Sessions</string>
-    <string name="workspace_open_workbench">Remote setup</string>
-    <string name="workspace_open_workbench_description">Return to remote workspace setup for servers, project paths, and connection policy</string>
+    <string name="workspace_open_workbench">Workbench</string>
+    <string name="workspace_open_workbench_description">Return to the mobile development workbench for servers, project paths, AI entry points, and connection policy</string>
     <string name="terminal_sessions_title">Terminal sessions</string>
     <string name="terminal_sessions_hint">Tap to switch; touch and hold to rename; use Close to stop the current session</string>
     <string name="workspace_command_confirm_title">Send command to current session?</string>
