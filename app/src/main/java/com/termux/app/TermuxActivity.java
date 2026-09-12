@@ -705,8 +705,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         boolean tuiMode = TerminalView.TOUCH_SCROLL_MODE_TUI.equals(
             mPreferences.getTerminalTouchScrollMode());
         int touchModeLabel = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
+        int touchModeDescription = TerminalProjectToolsMenu.toolsButtonDescription(tuiMode);
         tools.setText(touchModeLabel);
-        tools.setContentDescription(getString(touchModeLabel));
+        tools.setContentDescription(getString(touchModeDescription));
         updateTouchScrollModeBanner(tuiMode);
     }
 

@@ -106,7 +106,7 @@ public class CustomLayoutsSmokeTest {
             workbench.getContentDescription().toString());
         assertTrue(workbench.getText().toString().contains("远程"));
         assertTrue(workbench.getContentDescription().toString().contains("配置"));
-        assertEquals(context.getString(R.string.workspace_open_sessions),
+        assertEquals(context.getString(R.string.workspace_open_sessions_description),
             sessions.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_sessions_short),
             sessions.getText().toString());
@@ -115,7 +115,7 @@ public class CustomLayoutsSmokeTest {
             aiCenter.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_tools_scrollback_action),
             tools.getText().toString());
-        assertEquals(context.getString(R.string.workspace_tools_scrollback_action),
+        assertEquals(context.getString(R.string.workspace_tools_scrollback_description),
             tools.getContentDescription().toString());
         assertEquals(context.getString(R.string.action_close_session),
             closeSession.getText().toString());

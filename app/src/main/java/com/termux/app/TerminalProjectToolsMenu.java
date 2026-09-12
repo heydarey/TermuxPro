@@ -117,4 +117,10 @@ final class TerminalProjectToolsMenu {
         return tuiTouchScrollMode ? R.string.workspace_tools_tui_scroll_action :
             R.string.workspace_tools_scrollback_action;
     }
+
+    /** 顶部工具箱按钮保持短文本，完整语义交给无障碍说明，避免小屏拥挤。 */
+    static int toolsButtonDescription(boolean tuiTouchScrollMode) {
+        return tuiTouchScrollMode ? R.string.workspace_tools_tui_scroll_description :
+            R.string.workspace_tools_scrollback_description;
+    }
 }
