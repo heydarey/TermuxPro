@@ -153,8 +153,9 @@ public final class UiRenderingInstrumentedTest {
             View terminal = terminalNavigation.get();
             assertNotNull(terminal);
             TextView workbench = terminal.findViewById(com.termux.R.id.workspace_home_button);
-            assertTrue(workbench.getText().toString().contains("远程"));
-            assertTrue(workbench.getContentDescription().toString().contains("配置"));
+            assertTrue(workbench.getText().toString().contains("工作台"));
+            assertTrue(workbench.getContentDescription().toString().contains("服务器"));
+            assertTrue(workbench.getContentDescription().toString().contains("AI"));
             assertTrue(!terminal.findViewById(com.termux.R.id.workspace_drawer_button)
                 .getContentDescription().toString().isEmpty());
             assertViewHasVisibleBounds(terminal.findViewById(
