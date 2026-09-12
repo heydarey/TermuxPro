@@ -257,6 +257,9 @@ UI/UX 与功能、安全和稳定性是同等级主线，不得把体验工作�
    手工抢跑创建、合并或取消同一分支 PR。只有自动工作流未在限定时间内创建 PR、已失败退出或 GitHub
    明确不可用时，才允许人工接管，并在报告中写明原因，避免同一提交出现重复控制器、pending 检查和
    取消/失败邮件噪声。
+   研发 PR 合并且 dev 收尾 CI 成功后，仍必须等待对应 `auto-dev-pr.yml` 控制器自身完成，再对齐
+   `dev_dailyIteration` 到最新 `dev`；不得在自动控制器仍为 `in_progress` 时推送同一长期分支，避免
+   concurrency 取消旧 run 并制造 cancelled 噪声。
    长期分支 `dev_dailyIteration` 对齐 `dev` 时若没有待合并提交，自动 PR 必须成功退出，不创建空 PR、
    不等待无意义门禁、不制造失败提醒。
    合并完成后由同一流水线对实际 merge commit 触发并等待一次 `dev` CI；收尾 CI 失败时先修复，不能

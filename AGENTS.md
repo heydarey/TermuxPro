@@ -91,6 +91,9 @@ tmux/Git 可视化、自定义快捷指令或上下文工具箱时，才允许�
 不要在自动工作流仍在运行时手工抢跑创建、合并或取消同一分支 PR，避免同一提交出现两个控制器、pending
 检查、取消记录和邮件噪声。只有自动工作流未在限定时间内创建 PR、已失败退出或 GitHub 明确不可用时，
 才允许人工接管，并必须先记录接管原因。
+研发 PR 已合并且 dev 收尾 CI 成功后，也必须先等待对应 `auto-dev-pr.yml` 控制器自身完成，再把
+`dev_dailyIteration` 对齐到最新 `dev`。不得在自动控制器仍为 `in_progress` 时推送同一长期分支，否则
+会被 concurrency 取消旧 run，制造无意义的 cancelled 记录和邮件噪声。
 长期分支 `dev_dailyIteration` 对齐 `dev` 时允许触发空差异 push；自动 PR 必须在发现相对 `dev`
 没有待合并提交时成功退出，不创建空 PR、不等待无意义门禁、不制造失败提醒。
 只有符合 `dev_release数字Rc数字_YYYYMMDD` 格式的候选发布分支，才允许在收尾 CI 成功后从唯一版本源
