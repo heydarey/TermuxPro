@@ -66,9 +66,11 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
         assertEquals("新建 Claude", text(activity, R.id.ai_cli_center_claude_new));
-        assertEquals("选择 Claude 历史", text(activity, R.id.ai_cli_center_claude_history));
+        assertEquals("Claude 历史选择器\n不自动恢复",
+            text(activity, R.id.ai_cli_center_claude_history));
         assertEquals("新建 Codex", text(activity, R.id.ai_cli_center_codex_new));
-        assertEquals("选择 Codex 历史", text(activity, R.id.ai_cli_center_codex_history));
+        assertEquals("Codex 历史选择器\n不自动恢复",
+            text(activity, R.id.ai_cli_center_codex_history));
         assertTrue(activity.findViewById(R.id.ai_cli_center_claude_new).getContentDescription()
             .toString().contains("不自动恢复历史"));
         assertTrue(activity.findViewById(R.id.ai_cli_center_claude_history).getContentDescription()
