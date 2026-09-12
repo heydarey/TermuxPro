@@ -33,3 +33,6 @@ description: 迭代、评审、测试或发布 TermuxPro Android 移动 AI 终�
 Goal 规则：TermuxPro 日常维护是长期持久 Goal。单个切片完成后不得把长期 Goal 标记为 `complete`；
 只能继续下一轮，或在用户要求、额度低于 15%、资源不足、外部服务不可用等情况下保存检查点并暂停等待
 恢复。只有用户明确终止项目托管或要求结束长期维护时，才允许结束长期 Goal。
+
+自动 PR 规则：研发 PR 合并且 dev 收尾 CI 成功后，仍必须等待对应 `auto-dev-pr.yml` 控制器自身完成，
+再对齐 `dev_dailyIteration` 到最新 `dev`，避免 concurrency 取消旧 run 并制造 cancelled 噪声。

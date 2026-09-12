@@ -179,6 +179,11 @@ if ! grep -Fq '限定时间内创建 PR' "$project_dir/AGENTS.md" || ! grep -Fq 
     echo "项目规则必须说明自动 PR 失效后的人工接管条件，不能在工作流仍运行时重复接管同一分支。" >&2
     exit 1
 fi
+if ! grep -Fq '等待对应 `auto-dev-pr.yml` 控制器自身完成' "$project_dir/AGENTS.md" \
+    || ! grep -Fq '等待对应 `auto-dev-pr.yml` 控制器自身完成' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目规则必须要求长期分支对齐前等待自动 PR 控制器完成，避免 concurrency 取消旧 run 制造噪声。" >&2
+    exit 1
+fi
 if ! grep -Fq 'wait_for_candidate_release()' "$auto_dev_pr_file"; then
     echo "候选发布等待必须有 Release 页面兜底，避免 Release 已成功但 run list 查询延迟导致自动 PR 空等。" >&2
     exit 1
