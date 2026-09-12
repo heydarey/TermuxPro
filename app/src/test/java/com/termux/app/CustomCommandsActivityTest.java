@@ -187,6 +187,8 @@ public class CustomCommandsActivityTest {
             .findViewById(R.id.custom_command_value)).getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
+        assertEquals("编辑/更多", ((TextView) list.getChildAt(1)
+            .findViewById(R.id.custom_command_manage)).getText().toString());
         list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 

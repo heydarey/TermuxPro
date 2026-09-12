@@ -724,7 +724,7 @@
     <string name="custom_commands_template_frontend_check">前端：安装后检查</string>
     <string name="custom_commands_run">查看并运行</string>
     <string name="custom_commands_run_now">运行</string>
-    <string name="custom_commands_manage">管理</string>
+    <string name="custom_commands_manage">编辑/更多</string>
     <string name="custom_commands_enabled_state">已启用</string>
     <string name="custom_commands_disabled_state">已停用</string>
     <string name="custom_commands_summary">%1$s · %2$s</string>
@@ -750,7 +750,7 @@
     <string name="custom_commands_preview_title">确认运行“%1$s”</string>
     <string name="custom_commands_preview_message">服务器：%1$s:%2$d\n目录：%3$s\n\n将执行：\n%4$s</string>
     <string name="custom_commands_execute">运行</string>
-    <string name="custom_commands_disabled_message">这条指令已停用。请先在管理菜单中启用。</string>
+    <string name="custom_commands_disabled_message">这条指令已停用。请先在“编辑/更多”菜单中启用。</string>
     <string name="custom_commands_edit">编辑</string>
     <string name="custom_commands_copy">复制为新指令</string>
     <string name="custom_commands_move_up">上移</string>
