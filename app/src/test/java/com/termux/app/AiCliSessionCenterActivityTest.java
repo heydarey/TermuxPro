@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -146,6 +148,20 @@ public class AiCliSessionCenterActivityTest {
 
         activity.findViewById(R.id.ai_cli_center_open_project_tasks).performClick();
         assertNextActivity(activity, ProjectTasksActivity.class);
+    }
+
+    @Test
+    public void nextActionsStayNearLaunchHistoryBeforeReferenceCards() {
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+        LinearLayout content = activity.findViewById(R.id.ai_cli_center_content);
+
+        assertTrue("AI 完成后的 Git/任务入口必须靠近本地记录，不能埋到命令说明之后",
+            indexOfChild(content, R.id.ai_cli_center_next_card)
+                < indexOfChild(content, R.id.ai_cli_center_prepare_card));
+        assertTrue("启动前确认仍保留在 Claude/Codex 命令参考之前",
+            indexOfChild(content, R.id.ai_cli_center_prepare_card)
+                < indexOfChild(content, R.id.ai_cli_center_safety_notice));
     }
 
     @Test
@@ -569,6 +585,12 @@ public class AiCliSessionCenterActivityTest {
         CharSequence description = activity.findViewById(id).getContentDescription();
         assertNotNull(description);
         assertTrue(description.toString().contains(expectedText));
+    }
+
+    private static int indexOfChild(LinearLayout parent, int id) {
+        View child = parent.findViewById(id);
+        assertNotNull(child);
+        return parent.indexOfChild(child);
     }
 
     private static void assertNextActivity(AiCliSessionCenterActivity activity,
