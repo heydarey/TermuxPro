@@ -792,6 +792,9 @@
     <string name="custom_commands_run">查看并运行</string>
     <string name="custom_commands_run_now">运行</string>
     <string name="custom_commands_manage">编辑/更多</string>
+    <string name="custom_commands_run_description">查看并运行“%1$s”；目标 %2$s:%3$d，目录 %4$s。</string>
+    <string name="custom_commands_run_now_description">立即运行“%1$s”；目标 %2$s:%3$d，目录 %4$s。</string>
+    <string name="custom_commands_manage_description">编辑、复制、排序、停用或删除“%1$s”。</string>
     <string name="custom_commands_enabled_state">已启用</string>
     <string name="custom_commands_disabled_state">已停用</string>
     <string name="custom_commands_summary">%1$s · %2$s · %3$s:%4$d</string>

@@ -406,8 +406,14 @@ public class CustomCommandsActivityTest {
                 .getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
+        assertEquals("立即运行“查看状态”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+            list.getChildAt(1).findViewById(R.id.custom_command_run)
+                .getContentDescription().toString());
         assertEquals("编辑/更多", ((TextView) list.getChildAt(1)
             .findViewById(R.id.custom_command_manage)).getText().toString());
+        assertEquals("编辑、复制、排序、停用或删除“查看状态”。",
+            list.getChildAt(1).findViewById(R.id.custom_command_manage)
+                .getContentDescription().toString());
         list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 
@@ -507,6 +513,9 @@ public class CustomCommandsActivityTest {
         assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
         assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
             .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("查看并运行“Codex 历史”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+            list.getChildAt(4).findViewById(R.id.custom_command_run)
+                .getContentDescription().toString());
         assertEquals("Git 状态", store.list("workspace-a").get(0).name);
         assertEquals("Codex 历史", store.list("workspace-a").get(1).name);
         assertEquals("Git 提交", store.list("workspace-a").get(2).name);

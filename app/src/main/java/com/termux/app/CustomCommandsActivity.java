@@ -219,14 +219,20 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
         String directory = TextUtils.isEmpty(command.workingDirectory)
             ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
-        ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
-            getString(R.string.custom_commands_summary, group, directory, mTarget.host,
-                mTarget.port));
+        String targetSummary = getString(R.string.custom_commands_summary, group, directory,
+            mTarget.host, mTarget.port);
+        ((TextView) row.findViewById(R.id.custom_command_summary)).setText(targetSummary);
         ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
         boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
             || CustomCommandValidator.isLikelyDangerous(command.command);
         ((TextView) row.findViewById(R.id.custom_command_run)).setText(requiresPreview
             ? R.string.custom_commands_run : R.string.custom_commands_run_now);
+        row.findViewById(R.id.custom_command_run).setContentDescription(getString(
+            requiresPreview ? R.string.custom_commands_run_description
+                : R.string.custom_commands_run_now_description,
+            command.name, mTarget.host, mTarget.port, directory));
+        row.findViewById(R.id.custom_command_manage).setContentDescription(getString(
+            R.string.custom_commands_manage_description, command.name));
         row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
         row.findViewById(R.id.custom_command_run).setOnClickListener(view -> {
             if (requiresPreview) preview(command); else execute(command);

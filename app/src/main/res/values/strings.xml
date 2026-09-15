@@ -917,6 +917,9 @@
     <string name="custom_commands_run">Review and run</string>
     <string name="custom_commands_run_now">Run</string>
     <string name="custom_commands_manage">Edit/more</string>
+    <string name="custom_commands_run_description">Review and run “%1$s”; target %2$s:%3$d, directory %4$s.</string>
+    <string name="custom_commands_run_now_description">Run “%1$s” now; target %2$s:%3$d, directory %4$s.</string>
+    <string name="custom_commands_manage_description">Edit, duplicate, reorder, disable, or delete “%1$s”.</string>
     <string name="custom_commands_enabled_state">Enabled</string>
     <string name="custom_commands_disabled_state">Disabled</string>
     <string name="custom_commands_summary">%1$s · %2$s · %3$s:%4$d</string>
