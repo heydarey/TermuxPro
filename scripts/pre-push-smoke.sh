@@ -136,6 +136,7 @@ static_checks=(
     "./test/goal-lifecycle-policy-test.sh"
     "./test/generated-cache-cleanup-test.sh"
     "./test/android-sdk-bootstrap-test.sh"
+    "./test/android-string-resource-parity-test.sh"
 )
 
 for check in "${static_checks[@]}"; do
