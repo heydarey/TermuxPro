@@ -171,6 +171,19 @@ if ! grep -Fq '查询 GitHub Actions 超时或失败' "$auto_dev_pr_file"; then
     echo "自动研发 PR 工作流等待 CI 时必须容忍短暂查询失败，不能把 GitHub API 抖动误判成项目失败。" >&2
     exit 1
 fi
+if grep -Fq 'pulls/$pr_number/merge" \' "$auto_dev_pr_file" \
+    && grep -Fq -- '--jq' <(grep -A6 'pulls/$pr_number/merge" \\' "$auto_dev_pr_file"); then
+    echo "自动研发 PR 合并不能直接对 Pulls merge API 响应使用 --jq，空响应会误报失败。" >&2
+    exit 1
+fi
+if ! grep -Fq 'merge_pr_and_resolve_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq 'resolve_pr_merge_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq 'Pulls merge API 返回空响应或缺少 sha，开始核验 PR 是否已合并。' "$auto_dev_pr_file" \
+    || ! grep -Fq '.mergeCommit.oid // empty' "$auto_dev_pr_file" \
+    || ! grep -Fq '.merge_commit_sha // empty' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 合并必须容忍 GitHub merge API 空响应，并通过 PR 状态二次解析 merge commit。" >&2
+    exit 1
+fi
 if grep -Fq -- '--commit "$target_sha"' "$auto_dev_pr_file"; then
     echo "自动研发 PR 不得用 --commit 等待 workflow_dispatch 的 dev 收尾 CI，避免已触发 run 查询不到而空等超时。" >&2
     exit 1
