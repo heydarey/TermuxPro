@@ -46,6 +46,15 @@ final class AiCliLaunchMessage {
     }
 
     @NonNull
+    static String title(@NonNull Context context, @NonNull AiCliLaunchCommand.Tool tool,
+                        boolean terminalEntrypoint) {
+        int titleRes = terminalEntrypoint
+            ? R.string.ai_session_terminal_launch_title
+            : R.string.ai_session_launch_title;
+        return context.getString(titleRes, AiCliLaunchCommand.displayName(tool));
+    }
+
+    @NonNull
     static String actionLabel(@NonNull Context context, @NonNull AiCliLaunchCommand.Tool tool,
                               @NonNull AiCliLaunchCommand.Mode mode) {
         int labelRes = mode == AiCliLaunchCommand.Mode.NEW_SESSION
@@ -57,6 +66,19 @@ final class AiCliLaunchMessage {
     @NonNull
     static String buttonLabel(@NonNull Context context, @NonNull AiCliLaunchCommand.Tool tool,
                               @NonNull AiCliLaunchCommand.Mode mode) {
+        return buttonLabel(context, tool, mode, false);
+    }
+
+    @NonNull
+    static String buttonLabel(@NonNull Context context, @NonNull AiCliLaunchCommand.Tool tool,
+                              @NonNull AiCliLaunchCommand.Mode mode,
+                              boolean terminalEntrypoint) {
+        if (terminalEntrypoint) {
+            int terminalLabelRes = mode == AiCliLaunchCommand.Mode.NEW_SESSION
+                ? R.string.ai_session_terminal_new_button
+                : R.string.ai_session_terminal_history_button;
+            return context.getString(terminalLabelRes, AiCliLaunchCommand.command(tool, mode));
+        }
         int labelRes = mode == AiCliLaunchCommand.Mode.NEW_SESSION
             ? R.string.ai_session_new_button : R.string.ai_session_history_button;
         return context.getString(labelRes, AiCliLaunchCommand.command(tool, mode));

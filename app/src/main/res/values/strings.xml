@@ -292,6 +292,7 @@
     <string name="workspace_start_codex">Codex CLI</string>
     <string name="workspace_start_codex_description">Open Codex CLI launch confirmation. New session is the safe default; history must be chosen manually and tmux is never attached automatically.</string>
     <string name="ai_session_launch_title">Start %1$s</string>
+    <string name="ai_session_terminal_launch_title">Send to current terminal: %1$s</string>
     <string name="ai_session_claude_guidance">Claude Code is often used from a shared remote account. New session is the safe default. To resume history, choose the exact session from Claude’s own picker.</string>
     <string name="ai_session_codex_guidance">Codex CLI is usually user-scoped, but TermuxPro still never auto-enters the latest session. Confirm the current project before starting or resuming.</string>
     <string name="ai_session_target_message">Current target\n%1$s:%2$d · %3$s\n\n%4$s</string>
@@ -301,6 +302,8 @@
     <string name="ai_session_pick_history_action">Open history picker\nCommand: %1$s\nOpen the CLI picker yourself; TermuxPro will not auto-enter the latest session.</string>
     <string name="ai_session_new_button">New session (safe default)\n%1$s</string>
     <string name="ai_session_history_button">Open history picker (no automatic resume)\n%1$s</string>
+    <string name="ai_session_terminal_new_button">Send new-session command to current terminal\n%1$s</string>
+    <string name="ai_session_terminal_history_button">Send history-picker command to current terminal\n%1$s\nNo automatic resume</string>
     <string name="ai_cli_center_title">AI CLI session center</string>
     <string name="ai_cli_center_summary">Use this as Prepare environment → Start AI → Review result. TermuxPro does not read private AI history and never auto-enters the latest session.</string>
     <string name="ai_cli_center_context_title">Current context</string>
@@ -986,8 +989,8 @@
     <string name="terminal_ai_launch_claude_action">Start Claude Code</string>
     <string name="terminal_ai_launch_codex_action">Start Codex CLI</string>
     <string name="terminal_ai_cli_center_description">Open the current workspace Claude/Codex center to choose a new or history entry.</string>
-    <string name="terminal_ai_launch_claude_description">Start Claude Code in the current terminal after choosing new or history mode.</string>
-    <string name="terminal_ai_launch_codex_description">Start Codex CLI in the current terminal after choosing new or history mode.</string>
+    <string name="terminal_ai_launch_claude_description">Choose new or history mode first, then send the Claude Code command to the terminal currently on screen.</string>
+    <string name="terminal_ai_launch_codex_description">Choose new or history mode first, then send the Codex CLI command to the terminal currently on screen.</string>
     <string name="terminal_tools_section_keyboard">Key rows</string>
     <string name="terminal_custom_commands_action">Quick commands</string>
     <string name="terminal_custom_commands_description">Open quick commands for the current workspace without running a command automatically.</string>
