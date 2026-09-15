@@ -758,8 +758,12 @@
     <string name="custom_commands_scenario_hint">保存当前工作区常用命令；运行前始终核对目标。</string>
     <string name="custom_commands_backup">备份与迁移</string>
     <string name="custom_commands_backup_description">打开快捷指令备份与导入操作；不会直接执行远端命令。</string>
+    <string name="custom_commands_import_backup">导入备份</string>
+    <string name="custom_commands_import_backup_description">当前工作区还没有快捷指令；从剪贴板导入备份，确认前不会保存或执行远端命令。</string>
     <string name="custom_commands_backup_title">备份与迁移</string>
     <string name="custom_commands_backup_message">当前工作区有 %1$d 条快捷指令。备份和导入只处理本地配置，不会执行远端命令。</string>
+    <string name="custom_commands_import_backup_title">导入快捷指令备份</string>
+    <string name="custom_commands_import_backup_message">当前工作区还没有快捷指令。可从剪贴板导入 TermuxPro 备份；确认前不会保存，也不会执行远端命令。</string>
     <string name="custom_commands_export">复制备份 JSON</string>
     <string name="custom_commands_export_description">复制当前工作区的快捷指令 JSON；只读取本地配置，不执行远端命令。</string>
     <string name="custom_commands_export_clip_label">TermuxPro 快捷指令备份</string>

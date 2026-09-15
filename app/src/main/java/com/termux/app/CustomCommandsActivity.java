@@ -149,6 +149,12 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         List<CustomCommand> commands = mStore.list(mTarget.id);
         mBackup.setVisibility(View.VISIBLE);
         mBackup.setEnabled(true);
+        boolean empty = commands.isEmpty();
+        ((TextView) mBackup).setText(empty ? R.string.custom_commands_import_backup
+            : R.string.custom_commands_backup);
+        mBackup.setContentDescription(getString(empty
+            ? R.string.custom_commands_import_backup_description
+            : R.string.custom_commands_backup_description));
         boolean canSearch = commands.size() >= 4;
         mSearchContainer.setVisibility(canSearch ? View.VISIBLE : View.GONE);
         mSearchLabel.setVisibility(canSearch ? View.VISIBLE : View.GONE);
@@ -331,8 +337,11 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 getString(R.string.custom_commands_import)
             };
         AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(R.string.custom_commands_backup_title)
-            .setMessage(getString(R.string.custom_commands_backup_message, commands.size()))
+            .setTitle(commands.isEmpty() ? R.string.custom_commands_import_backup_title
+                : R.string.custom_commands_backup_title)
+            .setMessage(commands.isEmpty()
+                ? getString(R.string.custom_commands_import_backup_message)
+                : getString(R.string.custom_commands_backup_message, commands.size()))
             .setItems(labels, (selectionDialog, which) -> {
                 if (!commands.isEmpty() && which == 0) {
                     exportCommands();

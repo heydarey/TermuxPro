@@ -69,6 +69,10 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_backup).getVisibility());
+        assertEquals("导入备份", ((TextView) activity.findViewById(
+            R.id.custom_commands_backup)).getText().toString());
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_description),
+            activity.findViewById(R.id.custom_commands_backup).getContentDescription().toString());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
@@ -109,6 +113,8 @@ public class CustomCommandsActivityTest {
             R.id.custom_commands_scenario_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_backup).getVisibility());
+        assertEquals("备份与迁移", ((TextView) activity.findViewById(
+            R.id.custom_commands_backup)).getText().toString());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertEquals(View.VISIBLE, feedback.getVisibility());
         assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
@@ -293,6 +299,8 @@ public class CustomCommandsActivityTest {
         activity.findViewById(R.id.custom_commands_backup).performClick();
         shadowOf(Looper.getMainLooper()).idle();
         ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_title),
+            shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle());
         assertEquals(1, actionList.getAdapter().getCount());
         assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(0).toString());
         actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
