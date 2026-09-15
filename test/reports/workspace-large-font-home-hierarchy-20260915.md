@@ -48,12 +48,15 @@
 
 ## 远端验收要求
 
-推送后必须等待：
+已完成：
 
-- 分支 `TermuxPro CI` 通过；
-- 分支 `TermuxPro Emulator UI` 通过，并人工复核 `workspace-connection-verified-font200.png`；
-- 自动 PR 控制器合入 `dev` 后，`dev` 收尾 CI 通过；
-- `dev_dailyIteration` 对齐空检查成功。
+- PR #360 合入 `dev`，merge commit 为 `a8fcc1b41156ff325961cd41db87c4f857839ab2`。
+- 分支 `TermuxPro CI` run `34955398870`：通过。
+- 分支 `TermuxPro Emulator UI` run `34955398936`：通过，artifact `termuxpro-emulator-ui-381`。
+- 人工复核 `font200/workspace-connection-verified-font200.png`：200% 字体下“当前连接”、打开远程终端和
+  Claude/Codex 已在首屏可见，AI 快捷入口保持双列；工具箱入口仍需滚动一点，作为下一轮信息架构继续项。
+- 自动 PR 控制器 run `34955398975`：通过。
+- `dev` 收尾 CI run `34956168166`：通过。
 
 ## 非目标
 
