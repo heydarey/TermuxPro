@@ -130,9 +130,11 @@ jobs:
           ./test/github-check-suites-test.sh
       - name: 启动隔离 SSH 与 tmux fixture
         if: steps.changes.outputs.android_runtime == 'true'
+        timeout-minutes: 5
         run: ./scripts/start-ssh-fixture.sh
       - name: 全模块测试
         if: steps.changes.outputs.android_runtime == 'true'
+        timeout-minutes: 20
         run: |
           for attempt in 1 2 3; do
             echo "全模块测试：第 $attempt 次尝试"
@@ -147,6 +149,7 @@ jobs:
           exit 1
       - name: Lint 与 Debug APK
         if: steps.changes.outputs.android_runtime == 'true'
+        timeout-minutes: 15
         run: |
           ./gradlew --no-daemon --max-workers=2 --stacktrace lint
           ./gradlew --no-daemon --max-workers=1 --stacktrace -Dorg.gradle.jvmargs="-Xmx4096M -Dfile.encoding=UTF-8" :app:assembleDebug
