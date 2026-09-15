@@ -257,6 +257,7 @@
     <string name="workspace_home_subtitle">Open the remote terminal first, then use tmux, Git, files and command tools when needed. The home screen keeps only the connection path.</string>
     <string name="workspace_back_action">Back</string>
     <string name="workspace_remote_card_title">Server and project</string>
+    <string name="workspace_remote_card_title_compact">Current connection</string>
     <string name="workspace_remote_card_description">Configure the SSH target, project path and connection policy. Passwords, private keys and known_hosts stay with OpenSSH.</string>
     <string name="workspace_name_hint">Workspace name</string>
     <string name="workspace_host_label">SSH address (pasting an ssh command is supported)</string>
@@ -289,8 +290,10 @@
     <string name="workspace_connection_diagnostic_action">Check active connection and environment</string>
     <string name="workspace_ai_quick_title">AI CLI quick start</string>
     <string name="workspace_start_claude">Claude Code</string>
+    <string name="workspace_start_claude_compact">Claude</string>
     <string name="workspace_start_claude_description">Open Claude Code launch confirmation. New session is the safe default; history must be chosen manually and tmux is never attached automatically.</string>
     <string name="workspace_start_codex">Codex CLI</string>
+    <string name="workspace_start_codex_compact">Codex</string>
     <string name="workspace_start_codex_description">Open Codex CLI launch confirmation. New session is the safe default; history must be chosen manually and tmux is never attached automatically.</string>
     <string name="ai_session_launch_title">Start %1$s</string>
     <string name="ai_session_terminal_launch_title">Send to current terminal: %1$s</string>
@@ -441,11 +444,17 @@
     <string name="workspace_edit_action">Edit connection</string>
     <string name="workspace_advanced_action">tmux connection mode</string>
     <string name="workspace_advanced_hide_action">Hide tmux connection mode</string>
+    <string name="workspace_summary_target_compact">%1$s · %2$s:%3$s</string>
     <string name="workspace_summary_details">%1$s:%2$s · %3$s · %4$s</string>
+    <string name="workspace_summary_details_compact">%1$s · %2$s</string>
     <string name="workspace_summary_policy_ssh_only">tmux: do not attach by default; opening the workspace starts SSH only.</string>
+    <string name="workspace_summary_policy_ssh_only_compact">tmux: no auto attach</string>
     <string name="workspace_summary_policy_list_sessions">tmux: list sessions after SSH connects, but do not auto-attach.</string>
+    <string name="workspace_summary_policy_list_sessions_compact">tmux: list only</string>
     <string name="workspace_summary_policy_attach_session">tmux: attach only the specified session “%1$s”; other sessions will not be restored.</string>
+    <string name="workspace_summary_policy_attach_session_compact">tmux: attach “%1$s”</string>
     <string name="workspace_summary_policy_create_or_attach">tmux: create or attach the specified session “%1$s”; best for an isolated personal workspace.</string>
+    <string name="workspace_summary_policy_create_or_attach_compact">tmux: create/attach “%1$s”</string>
     <string name="workspace_summary_policy_unknown">tmux: unrecognized policy; TermuxPro will treat this workspace as SSH only.</string>
     <string name="workspace_status_unverified">Not verified</string>
     <string name="workspace_status_recently_opened">Recently opened</string>

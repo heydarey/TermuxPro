@@ -43,7 +43,7 @@ jobs:
       - name: 安装 Android NDK
         timeout-minutes: 5
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;29.0.14206865'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.0.12077973'
       - name: 恢复 Release 签名材料
         timeout-minutes: 2
         env:

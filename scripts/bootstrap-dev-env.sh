@@ -17,7 +17,7 @@ fi
     "platforms;android-36" \
     "build-tools;35.0.0" \
     "platform-tools" \
-    "ndk;29.0.14206865"
+    "ndk;27.0.12077973"
 
 escaped_sdk="${sdk_root//\\/\\\\}"
 escaped_sdk="${escaped_sdk//:/\\:}"

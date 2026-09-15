@@ -112,7 +112,7 @@ jobs:
       - name: 安装 Android NDK
         if: steps.changes.outputs.android_runtime == 'true'
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;29.0.14206865'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.0.12077973'
       - name: 检查仓库秘密边界
         run: |
           forbidden_files="$(git ls-files | grep -E '(^|/)(\.signing/|.*\.(p12|jks|keystore|key)$|.*\.pass$)' | grep -v '^app/testkey_untrusted\.jks$' || true)"
