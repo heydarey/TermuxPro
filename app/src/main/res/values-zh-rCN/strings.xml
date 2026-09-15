@@ -269,6 +269,12 @@
     <string name="ai_cli_center_open_tmux">选择 / 管理 tmux 会话</string>
     <string name="ai_cli_center_open_git">查看 Git 改动</string>
     <string name="ai_cli_center_open_project_tasks">项目任务 / 测试</string>
+    <string name="ai_cli_center_open_workspace_description">打开服务器与项目配置；只修改本地工作区连接信息，不会连接或改变远端文件。</string>
+    <string name="ai_cli_center_open_templates_description">打开当前工作区快捷指令与模板；用于保存常用命令，进入页面不会自动执行远端命令。</string>
+    <string name="ai_cli_center_open_diagnostic_description">只读检查当前工作区 SSH、tmux、Git、Node、Java、Claude Code 和 Codex CLI 环境，不自动修复或授权。</string>
+    <string name="ai_cli_center_open_tmux_description">打开当前工作区 tmux 管理；显式选择会话后才进入，未归属会话不会被自动恢复、重命名或停止。</string>
+    <string name="ai_cli_center_open_git_description">打开当前工作区 Git 工作台；查看分支、改动和提交记录，不会直接提交、拉取、推送或丢弃修改。</string>
+    <string name="ai_cli_center_open_project_tasks_description">打开项目任务与测试页；先展示远端目标和命令确认，不会把测试命令直接输入当前 Claude 或 Codex 终端。</string>
     <string name="workspace_open_local_terminal">打开本地终端</string>
     <string name="workspace_security_tip">首次连接需确认服务器指纹并输入密码或配置 SSH 密钥；TermuxPro 不会自动进入未指定的 tmux 或 AI 历史会话。</string>
     <string name="workspace_error_host">请输入有效的 SSH 别名、主机、“用户名@主机”、“用户名@主机:端口”或“ssh -p 端口 用户名@主机”。</string>

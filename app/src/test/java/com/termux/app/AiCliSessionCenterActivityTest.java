@@ -109,6 +109,22 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_scope)
             .contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不跨工作区"));
+        assertDescription(activity, R.id.ai_cli_center_open_workspace,
+            "只修改本地工作区连接信息");
+        assertDescription(activity, R.id.ai_cli_center_open_templates,
+            "进入页面不会自动执行远端命令");
+        assertDescription(activity, R.id.ai_cli_center_open_diagnostic,
+            "只读检查当前工作区");
+        assertDescription(activity, R.id.ai_cli_center_open_diagnostic,
+            "不自动修复或授权");
+        assertDescription(activity, R.id.ai_cli_center_open_tmux,
+            "显式选择会话后才进入");
+        assertDescription(activity, R.id.ai_cli_center_open_tmux,
+            "未归属会话不会被自动恢复");
+        assertDescription(activity, R.id.ai_cli_center_open_git,
+            "不会直接提交、拉取、推送或丢弃修改");
+        assertDescription(activity, R.id.ai_cli_center_open_project_tasks,
+            "不会把测试命令直接输入当前 Claude 或 Codex 终端");
 
         activity.findViewById(R.id.ai_cli_center_open_workspace).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
@@ -546,6 +562,13 @@ public class AiCliSessionCenterActivityTest {
 
     private static String text(AiCliSessionCenterActivity activity, int id) {
         return ((TextView) activity.findViewById(id)).getText().toString();
+    }
+
+    private static void assertDescription(AiCliSessionCenterActivity activity, int id,
+                                          String expectedText) {
+        CharSequence description = activity.findViewById(id).getContentDescription();
+        assertNotNull(description);
+        assertTrue(description.toString().contains(expectedText));
     }
 
     private static void assertNextActivity(AiCliSessionCenterActivity activity,
