@@ -52,6 +52,22 @@ if ! grep -Fq "timeout-minutes: 20" "$project_dir/.github/workflows/ci.yml" \
     echo "CI 和模拟器重步骤必须设置步骤级超时，避免单个 Gradle/截图阶段挂住导致 PR 长时间 pending。" >&2
     exit 1
 fi
+release_file="$project_dir/.github/workflows/release.yml"
+for release_step_timeout in \
+    "timeout-minutes: 35" \
+    "timeout-minutes: 20" \
+    "timeout-minutes: 10" \
+    "timeout-minutes: 8"; do
+    if ! grep -Fq "$release_step_timeout" "$release_file"; then
+        echo "Release workflow 的构建、模拟器安装/启动和覆盖升级重步骤必须设置步骤级超时，避免正式包发布长时间 pending。" >&2
+        exit 1
+    fi
+done
+if ! grep -Fq "timeout-minutes: 3" "$release_file" \
+    || ! grep -Fq "timeout-minutes: 2" "$release_file"; then
+    echo "Release workflow 的轻步骤也必须设置短超时，避免 GitHub/API/签名恢复异常时整条流水线空等。" >&2
+    exit 1
+fi
 if ! grep -Fq -- '--stacktrace lint' "$project_dir/.github/workflows/ci.yml" \
     || ! grep -Fq -- '--stacktrace -Dorg.gradle.jvmargs="-Xmx4096M -Dfile.encoding=UTF-8" :app:assembleDebug' "$project_dir/.github/workflows/ci.yml"; then
     echo "CI 必须将 Lint 与 Debug APK 拆成独立 Gradle 进程，并为 APK 打包单独配置堆内存，避免 GitHub Runner OOM。" >&2
