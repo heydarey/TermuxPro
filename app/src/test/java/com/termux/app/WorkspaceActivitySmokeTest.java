@@ -257,12 +257,20 @@ public class WorkspaceActivitySmokeTest {
             TextView details = activity.findViewById(R.id.workspace_summary_details);
             TextView policy = activity.findViewById(R.id.workspace_summary_policy);
             assertEquals("当前连接", title.getText().toString());
-            assertEquals("远程开发 · hdr@192.168.1.153:22", target.getText().toString());
-            assertEquals("~/ · 最近验证", details.getText().toString());
+            assertEquals("远程开发", target.getText().toString());
+            assertEquals("hdr@192.168.1.153 · ~/", details.getText().toString());
             assertEquals("tmux：不自动进入", policy.getText().toString());
-            assertEquals("远程开发", target.getContentDescription().toString());
+            assertEquals("远程开发 · hdr@192.168.1.153:22",
+                target.getContentDescription().toString());
             assertTrue(details.getContentDescription().toString()
                 .contains("hdr@192.168.1.153:22"));
+            assertTrue(details.getContentDescription().toString().contains("最近验证"));
+            assertEquals("连接",
+                ((TextView) activity.findViewById(R.id.workspace_manage_button)).getText()
+                    .toString());
+            assertEquals("新建",
+                ((TextView) activity.findViewById(R.id.workspace_new_button)).getText()
+                    .toString());
             assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_connect_button)
                 .getVisibility());
             assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_ai_actions)
