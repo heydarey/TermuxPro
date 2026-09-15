@@ -794,7 +794,7 @@
     <string name="custom_commands_manage">编辑/更多</string>
     <string name="custom_commands_enabled_state">已启用</string>
     <string name="custom_commands_disabled_state">已停用</string>
-    <string name="custom_commands_summary">%1$s · %2$s</string>
+    <string name="custom_commands_summary">%1$s · %2$s · %3$s:%4$d</string>
     <string name="custom_commands_default_group">未分组</string>
     <string name="custom_commands_default_directory">工作区目录</string>
     <string name="custom_commands_edit_title">编辑快捷指令</string>
