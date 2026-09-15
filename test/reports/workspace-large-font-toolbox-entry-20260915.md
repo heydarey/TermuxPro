@@ -41,14 +41,19 @@
 - 定向 Robolectric：当前共享机项目级 SDK 缺少 NDK `27.0.12077973`，Gradle 配置阶段失败关闭；
   需要远端 Actions 完成 JVM/Robolectric、Lint/APK 和模拟器 UI 门禁。
 
-## 远端验收要求
+## 远端验收结论
 
-推送后必须等待：
+已完成：
 
-- 分支 `TermuxPro CI` 通过；
-- 分支 `TermuxPro Emulator UI` 通过，并人工复核 `font200/workspace-connection-verified-font200.png`；
-- 自动 PR 控制器合入 `dev` 后，`dev` 收尾 CI 通过；
-- `dev_dailyIteration` 对齐空检查成功。
+- PR #362 自动合入了首版压缩，但人工复核 `termuxpro-emulator-ui-382` 后判定工具箱入口仍未进入首屏；
+  因此继续用 PR #363 覆盖修正，不回滚、不删除历史。
+- PR #363 合入 `dev`，merge commit 为 `6ad536e75d7b5c7f4fb13d329f56eb988c103d60`。
+- 分支 `TermuxPro CI` run `34959161014`：通过。
+- 分支 `TermuxPro Emulator UI` run `34959161029`：通过，artifact `termuxpro-emulator-ui-385`。
+- 人工复核 `font200/workspace-connection-verified-font200.png`：200% 字体下“打开远程终端”、Claude/Codex
+  和“工具箱”入口均在首屏可见；低频“连接 / 新建”短按钮没有挤压主路径。
+- 自动 PR 控制器 run `34959161008`：通过。
+- `dev` 收尾 CI run `34959824311`：通过。
 
 ## 非目标
 
