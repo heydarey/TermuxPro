@@ -468,12 +468,29 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.custom_commands_import_preview_title)
             .setMessage(getString(R.string.custom_commands_import_preview_message,
-                imported.commands.size(), sourceWorkspace, mTarget.name))
+                imported.commands.size(), sourceWorkspace, mTarget.name,
+                buildImportCommandPreview(imported.commands)))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.custom_commands_import_confirm,
                 (selectionDialog, which) -> importCommands(imported.commands))
             .create();
         TermuxProDialogStyle.show(this, dialog);
+    }
+
+    @NonNull
+    private String buildImportCommandPreview(@NonNull List<CustomCommand> commands) {
+        int limit = Math.min(3, commands.size());
+        List<String> names = new ArrayList<>();
+        for (int index = 0; index < limit; index++) {
+            names.add(commands.get(index).name);
+        }
+        String preview = TextUtils.join(getString(R.string.custom_commands_import_preview_separator),
+            names);
+        int remaining = commands.size() - limit;
+        if (remaining > 0) {
+            preview = getString(R.string.custom_commands_import_preview_more, preview, remaining);
+        }
+        return preview;
     }
 
     private void importCommands(List<CustomCommand> commands) {
