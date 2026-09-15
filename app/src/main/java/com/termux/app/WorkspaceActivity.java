@@ -228,6 +228,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_subtitle).setVisibility(View.GONE);
         findViewById(R.id.workspace_remote_description).setVisibility(View.GONE);
         findViewById(R.id.workspace_security_footer).setVisibility(View.GONE);
+        mHostInput.setHint(R.string.workspace_host_hint_compact);
         stackButtonRow(R.id.workspace_ai_actions);
         stackButtonRow(R.id.workspace_tools_row_one);
         stackButtonRow(R.id.workspace_tools_row_two);

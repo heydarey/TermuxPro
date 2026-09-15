@@ -261,6 +261,7 @@
     <string name="workspace_name_hint">Workspace name</string>
     <string name="workspace_host_label">SSH address (pasting an ssh command is supported)</string>
     <string name="workspace_host_hint">For example: user@192.168.1.153</string>
+    <string name="workspace_host_hint_compact">user@host or ssh command</string>
     <string name="workspace_port_label">SSH port</string>
     <string name="workspace_port_hint">Default: 22</string>
     <string name="workspace_path_label">Remote project path</string>
