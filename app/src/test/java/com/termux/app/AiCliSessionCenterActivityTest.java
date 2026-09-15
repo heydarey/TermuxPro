@@ -176,13 +176,13 @@ public class AiCliSessionCenterActivityTest {
             assertEquals("仅连接 SSH；不自动进入 tmux 或历史。",
                 text(activity, R.id.ai_cli_center_ai_risk));
             assertEquals("推荐：新开 SSH", text(activity, R.id.ai_cli_center_safe_default_label));
-            assertEquals("谨慎：打开历史选择器",
+            assertEquals("谨慎：历史手选，不自动恢复",
                 text(activity, R.id.ai_cli_center_history_caution_label));
             assertEquals("Claude\n新开 SSH", text(activity, R.id.ai_cli_center_claude_new));
             assertEquals("Codex\n新开 SSH", text(activity, R.id.ai_cli_center_codex_new));
-            assertEquals("Claude 历史\n不自动恢复",
+            assertEquals("Claude\n历史手选",
                 text(activity, R.id.ai_cli_center_claude_history));
-            assertEquals("Codex 历史\n不自动恢复",
+            assertEquals("Codex\n历史手选",
                 text(activity, R.id.ai_cli_center_codex_history));
             assertTrue(activity.findViewById(R.id.ai_cli_center_start_hint)
                 .getVisibility() == View.GONE);
