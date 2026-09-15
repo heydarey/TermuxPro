@@ -919,7 +919,7 @@
     <string name="custom_commands_manage">Edit/more</string>
     <string name="custom_commands_enabled_state">Enabled</string>
     <string name="custom_commands_disabled_state">Disabled</string>
-    <string name="custom_commands_summary">%1$s · %2$s</string>
+    <string name="custom_commands_summary">%1$s · %2$s · %3$s:%4$d</string>
     <string name="custom_commands_default_group">Ungrouped</string>
     <string name="custom_commands_default_directory">Workspace directory</string>
     <string name="custom_commands_edit_title">Edit quick command</string>

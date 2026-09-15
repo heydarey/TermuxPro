@@ -97,6 +97,11 @@ public class CustomCommandsActivityTest {
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
         assertEquals(2, list.getChildCount());
         assertEquals("未分组 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        String summary = ((TextView) list.getChildAt(1).findViewById(
+            R.id.custom_command_summary)).getText().toString();
+        assertTrue(summary.contains("未分组"));
+        assertTrue(summary.contains("工作区目录"));
+        assertTrue(summary.contains("hdr@192.168.1.153:22"));
         assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
@@ -396,6 +401,9 @@ public class CustomCommandsActivityTest {
         assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
         assertEquals("git status --short", ((TextView) list.getChildAt(1)
             .findViewById(R.id.custom_command_value)).getText().toString());
+        assertEquals("Git · 工作区目录 · hdr@192.168.1.153:22",
+            ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_summary))
+                .getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
         assertEquals("编辑/更多", ((TextView) list.getChildAt(1)

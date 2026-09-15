@@ -220,7 +220,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         String directory = TextUtils.isEmpty(command.workingDirectory)
             ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
         ((TextView) row.findViewById(R.id.custom_command_summary)).setText(
-            getString(R.string.custom_commands_summary, group, directory));
+            getString(R.string.custom_commands_summary, group, directory, mTarget.host,
+                mTarget.port));
         ((TextView) row.findViewById(R.id.custom_command_value)).setText(command.command);
         boolean requiresPreview = command.confirmation == CustomCommand.Confirmation.ALWAYS
             || CustomCommandValidator.isLikelyDangerous(command.command);
