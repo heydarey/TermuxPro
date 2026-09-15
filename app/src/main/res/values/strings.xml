@@ -901,7 +901,7 @@
     <string name="custom_commands_import_invalid">The clipboard is not a valid TermuxPro custom command backup, or it contains invalid or sensitive commands.</string>
     <string name="custom_commands_import_unknown_workspace">Unknown workspace</string>
     <string name="custom_commands_import_preview_title">Confirm custom command import</string>
-    <string name="custom_commands_import_preview_message">Import %1$d custom commands from “%2$s” into the current workspace “%3$s”.\n\nWill import: %4$s\n\nDuplicate names will get an “imported” suffix. Import saves local settings only and does not run remote commands.</string>
+    <string name="custom_commands_import_preview_message">Import %1$d custom commands from “%2$s” into the current workspace “%3$s”.\nTarget: %4$s\n\nWill import: %5$s\n\nDuplicate names will get an “imported” suffix. Import saves local settings only and does not run remote commands.</string>
     <string name="custom_commands_import_preview_separator">, </string>
     <string name="custom_commands_import_preview_more">%1$s, plus %2$d more</string>
     <string name="custom_commands_import_confirm">Import</string>
