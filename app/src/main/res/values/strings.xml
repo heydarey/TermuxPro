@@ -883,8 +883,12 @@
     <string name="custom_commands_scenario_hint">Save frequent commands for this workspace; always verify the target before running.</string>
     <string name="custom_commands_backup">Backup and migrate</string>
     <string name="custom_commands_backup_description">Open custom command backup and import actions; no remote command is run directly.</string>
+    <string name="custom_commands_import_backup">Import backup</string>
+    <string name="custom_commands_import_backup_description">This workspace has no quick commands yet; import a backup from the clipboard. Nothing is saved or run until you confirm.</string>
     <string name="custom_commands_backup_title">Backup and migrate</string>
     <string name="custom_commands_backup_message">This workspace has %1$d custom commands. Backup and import only handle local settings and do not run remote commands.</string>
+    <string name="custom_commands_import_backup_title">Import quick command backup</string>
+    <string name="custom_commands_import_backup_message">This workspace has no quick commands yet. Import a TermuxPro backup from the clipboard; nothing is saved or run until you confirm.</string>
     <string name="custom_commands_export">Copy backup JSON</string>
     <string name="custom_commands_export_description">Copy this workspace’s custom command JSON; reads local settings only and does not run remote commands.</string>
     <string name="custom_commands_export_clip_label">TermuxPro custom commands backup</string>
