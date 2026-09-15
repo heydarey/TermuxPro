@@ -267,6 +267,9 @@ public class WorkspaceActivitySmokeTest {
                 .getVisibility());
             assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_ai_actions)
                 .getVisibility());
+            assertEquals("AI CLI",
+                ((TextView) activity.findViewById(R.id.workspace_ai_title)).getText()
+                    .toString());
             TextView claude = activity.findViewById(R.id.workspace_claude_button);
             TextView codex = activity.findViewById(R.id.workspace_codex_button);
             assertEquals("Claude", claude.getText().toString());
@@ -275,6 +278,11 @@ public class WorkspaceActivitySmokeTest {
             assertTrue(codex.getContentDescription().toString().contains("不自动进入 tmux"));
             assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button)
                 .getVisibility());
+            assertEquals("工具箱",
+                ((TextView) activity.findViewById(R.id.workspace_toolbox_button)).getText()
+                    .toString());
+            assertTrue(activity.findViewById(R.id.workspace_toolbox_button)
+                .getContentDescription().toString().contains("Git"));
             activity.finish();
         } finally {
             configuration.fontScale = oldFontScale;
