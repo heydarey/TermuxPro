@@ -289,6 +289,7 @@
     <string name="workspace_connection_check_unknown">The %1$s check could not determine the connection state. Open diagnostics for details.</string>
     <string name="workspace_connection_diagnostic_action">Check active connection and environment</string>
     <string name="workspace_ai_quick_title">AI CLI quick start</string>
+    <string name="workspace_ai_quick_title_compact">AI CLI</string>
     <string name="workspace_start_claude">Claude Code</string>
     <string name="workspace_start_claude_compact">Claude</string>
     <string name="workspace_start_claude_description">Open Claude Code launch confirmation. New session is the safe default; history must be chosen manually and tmux is never attached automatically.</string>
@@ -476,6 +477,8 @@
     <string name="workspace_delete_message">Connection metadata for “%1$s” will be removed. SSH keys and remote files are not affected.</string>
     <string name="workspace_toolbox_show_action">Open dev toolbox</string>
     <string name="workspace_toolbox_hide_action">Hide dev toolbox</string>
+    <string name="workspace_toolbox_show_action_compact">Toolbox</string>
+    <string name="workspace_toolbox_hide_action_compact">Hide toolbox</string>
     <string name="workspace_toolbox_description">Open custom commands, Git, files, tasks, tmux, diagnostics, SSH keys, and Web preview tools when needed</string>
     <string name="workspace_tools_action">Toolbox</string>
     <string name="terminal_ai_short">AI</string>

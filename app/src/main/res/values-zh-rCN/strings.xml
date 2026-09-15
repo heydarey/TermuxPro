@@ -169,6 +169,7 @@
     <string name="workspace_connection_check_unknown">%1$s 的检查未能确定连接状态，请打开连接诊断查看详情。</string>
     <string name="workspace_connection_diagnostic_action">检查已有连接与远端环境</string>
     <string name="workspace_ai_quick_title">AI CLI 快速启动</string>
+    <string name="workspace_ai_quick_title_compact">AI CLI</string>
     <string name="workspace_start_claude">Claude Code</string>
     <string name="workspace_start_claude_compact">Claude</string>
     <string name="workspace_start_claude_description">打开 Claude Code 启动确认；新建会话是安全默认，历史会话需手动选择，不自动进入 tmux。</string>
@@ -354,6 +355,8 @@
     <string name="workspace_delete_message">将删除“%1$s”的连接信息，不会影响 SSH 密钥和远端文件。</string>
     <string name="workspace_toolbox_show_action">打开开发工具箱</string>
     <string name="workspace_toolbox_hide_action">收起开发工具箱</string>
+    <string name="workspace_toolbox_show_action_compact">工具箱</string>
+    <string name="workspace_toolbox_hide_action_compact">收起工具箱</string>
     <string name="workspace_toolbox_description">按需打开快捷指令、Git、文件、任务、tmux、诊断、SSH 密钥和 Web 预览工具</string>
     <string name="workspace_tools_action">工具箱</string>
     <string name="terminal_ai_short">AI</string>

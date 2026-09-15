@@ -233,11 +233,17 @@ public final class WorkspaceActivity extends AppCompatActivity {
         compactText(R.id.workspace_summary_target, 17, 2);
         compactText(R.id.workspace_summary_details, 15, 2);
         compactText(R.id.workspace_summary_policy, 14, 2);
+        compactText(R.id.workspace_ai_title, 16, 1);
         mHostInput.setHint(R.string.workspace_host_hint_compact);
+        ((TextView) findViewById(R.id.workspace_ai_title))
+            .setText(R.string.workspace_ai_quick_title_compact);
         ((android.widget.Button) findViewById(R.id.workspace_claude_button))
             .setText(R.string.workspace_start_claude_compact);
         ((android.widget.Button) findViewById(R.id.workspace_codex_button))
             .setText(R.string.workspace_start_codex_compact);
+        compactButton(R.id.workspace_claude_button, 48);
+        compactButton(R.id.workspace_codex_button, 48);
+        compactButton(R.id.workspace_toolbox_button, 48);
         stackButtonRow(R.id.workspace_tools_row_one);
         stackButtonRow(R.id.workspace_tools_row_two);
         stackButtonRow(R.id.workspace_tools_row_three);
@@ -250,7 +256,26 @@ public final class WorkspaceActivity extends AppCompatActivity {
         view.setMaxLines(maxLines);
     }
 
-    /** 大字体下取消双列，避免按钮文字被横向省略或固定高度裁切。 */
+    /** 大字体模式保持 48dp 触控底线，同时减少低价值垂直占用。 */
+    private void compactButton(int viewId, int minHeightDp) {
+        View view = findViewById(viewId);
+        int minHeight = dp(minHeightDp);
+        view.setMinimumHeight(minHeight);
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params != null && params.height > minHeight) {
+            params.height = minHeight;
+            view.setLayoutParams(params);
+        }
+        if (view instanceof TextView) {
+            ((TextView) view).setTextSize(16);
+        }
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /** 大字体下仅把工具箱内部低频工具行改为纵向，避免按钮文字被横向省略。 */
     private void stackButtonRow(int rowId) {
         LinearLayout row = findViewById(rowId);
         row.setOrientation(LinearLayout.VERTICAL);
@@ -828,9 +853,13 @@ public final class WorkspaceActivity extends AppCompatActivity {
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_toolbox_button).setVisibility(
             canShowToolbox ? View.VISIBLE : View.GONE);
+        boolean largeFont = getResources().getConfiguration().fontScale >= 1.5f;
         ((android.widget.Button) findViewById(R.id.workspace_toolbox_button)).setText(
-            mToolboxExpanded ? R.string.workspace_toolbox_hide_action
-                : R.string.workspace_toolbox_show_action);
+            mToolboxExpanded
+                ? (largeFont ? R.string.workspace_toolbox_hide_action_compact
+                    : R.string.workspace_toolbox_hide_action)
+                : (largeFont ? R.string.workspace_toolbox_show_action_compact
+                    : R.string.workspace_toolbox_show_action));
         findViewById(R.id.workspace_development_tools_card).setVisibility(
             showToolboxContent ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_preview_card).setVisibility(
