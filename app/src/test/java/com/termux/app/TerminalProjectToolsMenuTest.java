@@ -83,10 +83,12 @@ public class TerminalProjectToolsMenuTest {
         assertFalse(menu.getItem(18).isEnabled());
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CLAUDE, menu.getItem(19).getItemId());
         assertEquals("启动 Claude Code", menu.getItem(19).getTitle().toString());
-        assertDescription(menu, 19, "在当前终端启动 Claude Code；启动前仍会确认新建或历史选择。");
+        assertDescription(menu, 19,
+            "先确认新建或历史选择，再把 Claude Code 命令发送到当前正在显示的终端。");
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CODEX, menu.getItem(20).getItemId());
         assertEquals("启动 Codex CLI", menu.getItem(20).getTitle().toString());
-        assertDescription(menu, 20, "在当前终端启动 Codex CLI；启动前仍会确认新建或历史选择。");
+        assertDescription(menu, 20,
+            "先确认新建或历史选择，再把 Codex CLI 命令发送到当前正在显示的终端。");
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CONFIRM, menu.getItem(21).getItemId());
         assertDescription(menu, 21, "只向当前 AI CLI 发送 Enter，请先确认高亮选项；应用不会自动授权。");
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_REJECT, menu.getItem(22).getItemId());

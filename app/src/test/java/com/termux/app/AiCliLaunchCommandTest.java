@@ -75,6 +75,20 @@ public class AiCliLaunchCommandTest {
     }
 
     @Test
+    public void terminalEntrypointTitleAndButtonsSayCurrentTerminal() {
+        assertEquals("发送到当前终端：Claude Code", AiCliLaunchMessage.title(
+            RuntimeEnvironment.getApplication(), AiCliLaunchCommand.Tool.CLAUDE, true));
+        assertEquals("启动 Claude Code", AiCliLaunchMessage.title(
+            RuntimeEnvironment.getApplication(), AiCliLaunchCommand.Tool.CLAUDE, false));
+        assertTrue(AiCliLaunchMessage.buttonLabel(RuntimeEnvironment.getApplication(),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.NEW_SESSION, true)
+            .contains("发送新建命令到当前终端"));
+        assertTrue(AiCliLaunchMessage.buttonLabel(RuntimeEnvironment.getApplication(),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY, true)
+            .contains("发送历史选择器命令到当前终端"));
+    }
+
+    @Test
     public void actionLabelsPreviewExactCliCommand() {
         assertTrue(AiCliLaunchMessage.actionLabel(RuntimeEnvironment.getApplication(),
             AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION)
