@@ -228,11 +228,26 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_subtitle).setVisibility(View.GONE);
         findViewById(R.id.workspace_remote_description).setVisibility(View.GONE);
         findViewById(R.id.workspace_security_footer).setVisibility(View.GONE);
+        compactText(R.id.workspace_home_title, 22, 1);
+        compactText(R.id.workspace_remote_card_title, 18, 1);
+        compactText(R.id.workspace_summary_target, 17, 2);
+        compactText(R.id.workspace_summary_details, 15, 2);
+        compactText(R.id.workspace_summary_policy, 14, 2);
         mHostInput.setHint(R.string.workspace_host_hint_compact);
-        stackButtonRow(R.id.workspace_ai_actions);
+        ((android.widget.Button) findViewById(R.id.workspace_claude_button))
+            .setText(R.string.workspace_start_claude_compact);
+        ((android.widget.Button) findViewById(R.id.workspace_codex_button))
+            .setText(R.string.workspace_start_codex_compact);
         stackButtonRow(R.id.workspace_tools_row_one);
         stackButtonRow(R.id.workspace_tools_row_two);
         stackButtonRow(R.id.workspace_tools_row_three);
+    }
+
+    /** 大字体模式优先保证关键动作露出，保留完整信息到无障碍描述。 */
+    private void compactText(int viewId, float textSizeSp, int maxLines) {
+        TextView view = findViewById(viewId);
+        view.setTextSize(textSizeSp);
+        view.setMaxLines(maxLines);
     }
 
     /** 大字体下取消双列，避免按钮文字被横向省略或固定高度裁切。 */
@@ -758,16 +773,33 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_back_button).setVisibility(
             shouldShowWorkspaceBack(showEditor, configured) ? View.VISIBLE : View.GONE);
         if (configured) {
-            ((TextView) findViewById(R.id.workspace_summary_target)).setText(profile.name);
+            boolean largeFont = getResources().getConfiguration().fontScale >= 1.5f;
+            ((TextView) findViewById(R.id.workspace_remote_card_title)).setText(
+                largeFont ? R.string.workspace_remote_card_title_compact
+                    : R.string.workspace_remote_card_title);
             WorkspaceConnectionState state = mConnectionStateStore.read(profile.id);
             boolean fresh = state != null && state.isVerificationFresh(System.currentTimeMillis());
             String status = fresh ? getString(R.string.workspace_status_recently_verified) :
                 state != null && state.hasVerifiedFact()
                     ? getString(R.string.workspace_status_verification_expired)
                     : getString(R.string.workspace_status_unverified);
-            ((TextView) findViewById(R.id.workspace_summary_details)).setText(getString(
-                R.string.workspace_summary_details, profile.host, profile.port, profile.path,
-                status));
+            TextView target = findViewById(R.id.workspace_summary_target);
+            TextView details = findViewById(R.id.workspace_summary_details);
+            if (largeFont) {
+                target.setText(getString(R.string.workspace_summary_target_compact,
+                    profile.name, profile.host, profile.port));
+                details.setText(getString(R.string.workspace_summary_details_compact,
+                    profile.path, status));
+                target.setContentDescription(profile.name);
+                details.setContentDescription(getString(R.string.workspace_summary_details,
+                    profile.host, profile.port, profile.path, status));
+            } else {
+                target.setText(profile.name);
+                details.setText(getString(R.string.workspace_summary_details, profile.host,
+                    profile.port, profile.path, status));
+                target.setContentDescription(target.getText());
+                details.setContentDescription(details.getText());
+            }
             TextView policy = findViewById(R.id.workspace_summary_policy);
             policy.setText(workspacePolicySummary(profile));
             policy.setContentDescription(policy.getText());
@@ -873,16 +905,30 @@ public final class WorkspaceActivity extends AppCompatActivity {
         String sessionName = TextUtils.isEmpty(profile.sessionName)
             ? defaultSessionName(profile.id) : profile.sessionName;
         if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_list_sessions_compact);
+            }
             return getString(R.string.workspace_summary_policy_list_sessions);
         }
         if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_attach_session_compact,
+                    sessionName);
+            }
             return getString(R.string.workspace_summary_policy_attach_session, sessionName);
         }
         if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_create_or_attach_compact,
+                    sessionName);
+            }
             return getString(R.string.workspace_summary_policy_create_or_attach, sessionName);
         }
         if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(profile.connectionPolicy)) {
             return getString(R.string.workspace_summary_policy_unknown);
+        }
+        if (getResources().getConfiguration().fontScale >= 1.5f) {
+            return getString(R.string.workspace_summary_policy_ssh_only_compact);
         }
         return getString(R.string.workspace_summary_policy_ssh_only);
     }

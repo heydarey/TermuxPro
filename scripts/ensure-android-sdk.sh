@@ -82,7 +82,7 @@ packages=(
     "platforms;android-36"
     "build-tools;35.0.0"
     "platform-tools"
-    "ndk;29.0.14206865"
+    "ndk;27.0.12077973"
 )
 if (( install_optional_emulator == 1 )); then
     packages+=("emulator" "system-images;android-35;google_apis;x86_64")

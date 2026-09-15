@@ -3,7 +3,7 @@
 ## 环境要求
 
 开发机需要 Git、64 位 JDK 17、Android SDK Platform 36、Build Tools 35.0.0、Platform Tools，
-以及 NDK `29.0.14206865`。推荐 Linux；macOS 可用，Windows 推荐 WSL2 配合 Android Studio SDK。
+以及 NDK `27.0.12077973`。推荐 Linux；macOS 可用，Windows 推荐 WSL2 配合 Android Studio SDK。
 项目使用 Gradle Wrapper 9.2.1，构建过程最多使用 2 个 Worker，默认 JVM 上限 2 GB。
 
 ## 首次准备

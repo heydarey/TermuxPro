@@ -226,6 +226,65 @@ public class WorkspaceActivitySmokeTest {
     }
 
     @Test
+    public void largeFontSavedWorkspaceUsesCompactSummaryBeforePrimaryActions()
+        throws JSONException {
+        android.content.res.Configuration configuration = RuntimeEnvironment.getApplication()
+            .getResources().getConfiguration();
+        float oldFontScale = configuration.fontScale;
+        configuration.fontScale = 2.0f;
+        try {
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+
+            Intent intent = new Intent(RuntimeEnvironment.getApplication(), WorkspaceActivity.class);
+            intent.putExtra(WorkspaceActivity.EXTRA_UI_TEST_SSH_READY, true);
+            WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class, intent)
+                .setup().get();
+            ((EditText) activity.findViewById(R.id.workspace_host_input))
+                .setText("hdr@192.168.1.153");
+            activity.findViewById(R.id.workspace_save_button).performClick();
+            String profiles = activity.getSharedPreferences("ai_terminal_workspace", 0)
+                .getString("profiles_v2", "[]");
+            String workspaceId = new JSONArray(profiles).getJSONObject(0).getString("id");
+            new WorkspaceConnectionStateStore(activity).save(workspaceId,
+                new WorkspaceConnectionState(WorkspaceConnectionState.Status.VERIFIED,
+                    null, System.currentTimeMillis()));
+            activity.onResume();
+
+            TextView title = activity.findViewById(R.id.workspace_remote_card_title);
+            TextView target = activity.findViewById(R.id.workspace_summary_target);
+            TextView details = activity.findViewById(R.id.workspace_summary_details);
+            TextView policy = activity.findViewById(R.id.workspace_summary_policy);
+            assertEquals("当前连接", title.getText().toString());
+            assertEquals("远程开发 · hdr@192.168.1.153:22", target.getText().toString());
+            assertEquals("~/ · 最近验证", details.getText().toString());
+            assertEquals("tmux：不自动进入", policy.getText().toString());
+            assertEquals("远程开发", target.getContentDescription().toString());
+            assertTrue(details.getContentDescription().toString()
+                .contains("hdr@192.168.1.153:22"));
+            assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_connect_button)
+                .getVisibility());
+            assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_ai_actions)
+                .getVisibility());
+            TextView claude = activity.findViewById(R.id.workspace_claude_button);
+            TextView codex = activity.findViewById(R.id.workspace_codex_button);
+            assertEquals("Claude", claude.getText().toString());
+            assertEquals("Codex", codex.getText().toString());
+            assertTrue(claude.getContentDescription().toString().contains("不自动进入 tmux"));
+            assertTrue(codex.getContentDescription().toString().contains("不自动进入 tmux"));
+            assertEquals(View.VISIBLE, activity.findViewById(R.id.workspace_toolbox_button)
+                .getVisibility());
+            activity.finish();
+        } finally {
+            configuration.fontScale = oldFontScale;
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+        }
+    }
+
+    @Test
     public void editingExistingWorkspaceCanReturnToSummaryWithoutLeavingPage() {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
         EditText host = activity.findViewById(R.id.workspace_host_input);

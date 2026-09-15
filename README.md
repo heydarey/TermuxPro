@@ -46,7 +46,7 @@ Git 工作台已支持状态概览、分支查看/切换/新建、提交历史�
 - Linux 或 macOS（Windows 建议 WSL2）
 - Git 2.40+、JDK 17
 - Android SDK Platform 36、Build Tools 35.0.0
-- Android NDK `29.0.14206865`
+- Android NDK `27.0.12077973`
 - Android API/屏幕/字体模拟器矩阵；触发厂商或硬件相关风险时使用 ARM64 实体设备或云真机
 
 Gradle Wrapper 已提交，无需单独安装 Gradle：

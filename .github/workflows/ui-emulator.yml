@@ -55,7 +55,7 @@ jobs:
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
             'platform-tools' 'emulator' 'platforms;android-36' 'build-tools;36.0.0' \
-            'system-images;android-35;google_apis;x86_64' 'ndk;29.0.14206865'
+            'system-images;android-35;google_apis;x86_64' 'ndk;27.0.12077973'
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
       - name: 创建并启动隔离模拟器
         timeout-minutes: 8
