@@ -211,6 +211,7 @@ public class CustomCommandsActivityTest {
             .getText().toString();
         assertTrue(message.contains("旧项目"));
         assertTrue(message.contains("移动端"));
+        assertTrue(message.contains("将导入：Git 状态、继续 Codex"));
         assertTrue(message.contains("不会执行远端命令"));
         assertEquals(1, new CustomCommandStore(RuntimeEnvironment.getApplication())
             .list("workspace-a").size());
@@ -229,6 +230,42 @@ public class CustomCommandsActivityTest {
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertTrue(feedback.getText().toString().contains("已导入 2 条快捷指令"));
+    }
+
+    @Test
+    public void importPreviewShowsReadableBoundedCommandNamesBeforeSaving() throws Exception {
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            CustomCommand.create("运行测试", "pnpm test", "", "测试",
+                CustomCommand.Confirmation.ALWAYS),
+            CustomCommand.create("查看 Git", "git status --short", "", "Git",
+                CustomCommand.Confirmation.DANGEROUS_ONLY),
+            CustomCommand.create("继续 Codex", "codex resume", "", "AI",
+                CustomCommand.Confirmation.ALWAYS),
+            CustomCommand.create("查看日志", "tail -n 200 logs/app.log", "", "日志",
+                CustomCommand.Confirmation.DANGEROUS_ONLY)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        String message = ((TextView) preview.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("将导入：运行测试、查看 Git、继续 Codex，另有 1 条"));
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
     }
 
     @Test
