@@ -47,6 +47,11 @@ if ! grep -Fq "if: steps.changes.outputs.android_runtime == 'true'" "$project_di
     echo "CI Android 重步骤必须受变更类型门禁控制。" >&2
     exit 1
 fi
+if ! grep -Fq "timeout-minutes: 20" "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq "timeout-minutes: 12" "$project_dir/.github/workflows/ui-emulator.yml"; then
+    echo "CI 和模拟器重步骤必须设置步骤级超时，避免单个 Gradle/截图阶段挂住导致 PR 长时间 pending。" >&2
+    exit 1
+fi
 if ! grep -Fq -- '--stacktrace lint' "$project_dir/.github/workflows/ci.yml" \
     || ! grep -Fq -- '--stacktrace -Dorg.gradle.jvmargs="-Xmx4096M -Dfile.encoding=UTF-8" :app:assembleDebug' "$project_dir/.github/workflows/ci.yml"; then
     echo "CI 必须将 Lint 与 Debug APK 拆成独立 Gradle 进程，并为 APK 打包单独配置堆内存，避免 GitHub Runner OOM。" >&2
