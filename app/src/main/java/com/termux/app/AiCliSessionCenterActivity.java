@@ -70,14 +70,50 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     /** 大字体优先保证四个 AI 核心操作可见，完整上下文和策略仍由可读控件保留。 */
     private void configureLargeFontHierarchy() {
         if (getResources().getConfiguration().fontScale < 1.5f) return;
+        reduceVerticalPadding(R.id.ai_cli_center_content, 12);
+        reduceVerticalPadding(R.id.ai_cli_center_target_card, 12);
+        reduceVerticalPadding(R.id.ai_cli_center_start_card, 12);
         findViewById(R.id.ai_cli_center_context_title).setVisibility(View.GONE);
         findViewById(R.id.ai_cli_center_target_label).setVisibility(View.GONE);
+        findViewById(R.id.ai_cli_center_target).setVisibility(View.GONE);
         TextView hint = findViewById(R.id.ai_cli_center_start_hint);
         hint.setText(R.string.ai_cli_center_start_hint_compact);
         hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
         // 200% 字体下“开始 AI 工作”卡片已经有风险摘要、推荐/谨慎标签和四个核心按钮。
         // 隐藏重复说明，确保四个启动入口仍在首屏可见；完整语义保留给辅助技术。
         hint.setVisibility(View.GONE);
+        TextView risk = findViewById(R.id.ai_cli_center_ai_risk);
+        if (!getString(R.string.ai_cli_center_ai_risk_missing)
+            .contentEquals(risk.getText())) {
+            risk.setContentDescription(risk.getText());
+            risk.setText(R.string.ai_cli_center_ai_risk_compact);
+        }
+        ((TextView) findViewById(R.id.ai_cli_center_safe_default_label))
+            .setText(R.string.ai_cli_center_safe_default_label_compact);
+        ((TextView) findViewById(R.id.ai_cli_center_history_caution_label))
+            .setText(R.string.ai_cli_center_history_caution_label_compact);
+        TextView claudeNew = findViewById(R.id.ai_cli_center_claude_new);
+        TextView claudeHistory = findViewById(R.id.ai_cli_center_claude_history);
+        TextView codexNew = findViewById(R.id.ai_cli_center_codex_new);
+        TextView codexHistory = findViewById(R.id.ai_cli_center_codex_history);
+        claudeNew.setText(R.string.ai_cli_center_claude_new_compact);
+        claudeNew.setContentDescription(getString(R.string.ai_cli_center_claude_new)
+            + "。" + getString(R.string.ai_cli_center_claude_new_description));
+        claudeHistory.setText(R.string.ai_cli_center_claude_history_compact);
+        claudeHistory.setContentDescription(getString(R.string.ai_cli_center_claude_history)
+            + "。" + getString(R.string.ai_cli_center_claude_history_description));
+        codexNew.setText(R.string.ai_cli_center_codex_new_compact);
+        codexNew.setContentDescription(getString(R.string.ai_cli_center_codex_new)
+            + "。" + getString(R.string.ai_cli_center_codex_new_description));
+        codexHistory.setText(R.string.ai_cli_center_codex_history_compact);
+        codexHistory.setContentDescription(getString(R.string.ai_cli_center_codex_history)
+            + "。" + getString(R.string.ai_cli_center_codex_history_description));
+    }
+
+    private void reduceVerticalPadding(int viewId, int paddingDp) {
+        View view = findViewById(viewId);
+        int padding = Math.round(paddingDp * getResources().getDisplayMetrics().density);
+        view.setPadding(padding, padding, padding, padding);
     }
 
     private void bindTarget() {

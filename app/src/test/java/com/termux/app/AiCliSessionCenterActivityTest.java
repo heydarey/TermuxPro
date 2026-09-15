@@ -9,6 +9,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -50,9 +51,9 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("开始 AI 工作", text(activity, R.id.ai_cli_center_start_title));
         assertTrue(text(activity, R.id.ai_cli_center_start_hint).contains("不会自动进入会话或 tmux"));
         assertTrue(text(activity, R.id.ai_cli_center_ai_risk).contains("不会猜服务器"));
-        assertEquals("推荐：新建独立 AI 会话",
+        assertEquals("推荐：新开 SSH 终端启动",
             text(activity, R.id.ai_cli_center_safe_default_label));
-        assertEquals("谨慎：只打开历史选择器",
+        assertEquals("谨慎：新开 SSH 终端打开历史选择器",
             text(activity, R.id.ai_cli_center_history_caution_label));
         assertEquals("启动前先确认", text(activity, R.id.ai_cli_center_prepare_title));
         assertTrue(text(activity, R.id.ai_cli_center_prepare_hint).contains("共享服务器"));
@@ -68,18 +69,18 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("先回到“服务器与项目”"));
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
-        assertEquals("新建 Claude", text(activity, R.id.ai_cli_center_claude_new));
-        assertEquals("Claude 历史选择器\n不自动恢复",
+        assertEquals("新开 SSH 跑 Claude", text(activity, R.id.ai_cli_center_claude_new));
+        assertEquals("新开 SSH 打开 Claude 历史选择器\n不自动恢复",
             text(activity, R.id.ai_cli_center_claude_history));
-        assertEquals("新建 Codex", text(activity, R.id.ai_cli_center_codex_new));
-        assertEquals("Codex 历史选择器\n不自动恢复",
+        assertEquals("新开 SSH 跑 Codex", text(activity, R.id.ai_cli_center_codex_new));
+        assertEquals("新开 SSH 打开 Codex 历史选择器\n不自动恢复",
             text(activity, R.id.ai_cli_center_codex_history));
         assertTrue(activity.findViewById(R.id.ai_cli_center_claude_new).getContentDescription()
-            .toString().contains("不自动恢复历史"));
+            .toString().contains("新开 SSH 终端"));
         assertTrue(activity.findViewById(R.id.ai_cli_center_claude_history).getContentDescription()
             .toString().contains("共享账号请确认会话归属"));
         assertTrue(activity.findViewById(R.id.ai_cli_center_codex_history).getContentDescription()
-            .toString().contains("不自动恢复"));
+            .toString().contains("新开 SSH 终端"));
 
         activity.findViewById(R.id.ai_cli_center_claude_new).performClick();
         assertNextActivity(activity, WorkspaceActivity.class);
@@ -148,6 +149,55 @@ public class AiCliSessionCenterActivityTest {
 
         activity.findViewById(R.id.ai_cli_center_open_project_tasks).performClick();
         assertNextActivity(activity, ProjectTasksActivity.class);
+    }
+
+    @Test
+    public void largeFontUsesCompactVisibleAiActionsWithoutLosingSafetyDescriptions() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        Configuration configuration = RuntimeEnvironment.getApplication().getResources()
+            .getConfiguration();
+        float oldFontScale = configuration.fontScale;
+        configuration.fontScale = 2.0f;
+        try {
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+
+            AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+                AiCliSessionCenterActivity.class).setup().get();
+
+            assertTrue(activity.findViewById(R.id.ai_cli_center_target).getVisibility()
+                == View.GONE);
+            assertEquals("仅连接 SSH；不自动进入 tmux 或历史。",
+                text(activity, R.id.ai_cli_center_ai_risk));
+            assertEquals("推荐：新开 SSH", text(activity, R.id.ai_cli_center_safe_default_label));
+            assertEquals("谨慎：打开历史选择器",
+                text(activity, R.id.ai_cli_center_history_caution_label));
+            assertEquals("Claude\n新开 SSH", text(activity, R.id.ai_cli_center_claude_new));
+            assertEquals("Codex\n新开 SSH", text(activity, R.id.ai_cli_center_codex_new));
+            assertEquals("Claude 历史\n不自动恢复",
+                text(activity, R.id.ai_cli_center_claude_history));
+            assertEquals("Codex 历史\n不自动恢复",
+                text(activity, R.id.ai_cli_center_codex_history));
+            assertTrue(activity.findViewById(R.id.ai_cli_center_start_hint)
+                .getVisibility() == View.GONE);
+            assertDescription(activity, R.id.ai_cli_center_claude_history,
+                "新开 SSH 打开 Claude 历史选择器");
+            assertDescription(activity, R.id.ai_cli_center_claude_history,
+                "共享账号请确认会话归属");
+            assertDescription(activity, R.id.ai_cli_center_codex_history,
+                "新开 SSH 打开 Codex 历史选择器");
+        } finally {
+            configuration.fontScale = oldFontScale;
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+        }
     }
 
     @Test
