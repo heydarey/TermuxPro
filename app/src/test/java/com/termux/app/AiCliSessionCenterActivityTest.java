@@ -200,8 +200,8 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
         String message = ((TextView) historyConfirm.findViewById(android.R.id.message))
             .getText().toString();
-        assertTrue(message.contains("将重复这条 TermuxPro 本地启动记录"));
-        assertTrue(message.contains("原启动时间："));
+        assertTrue(message.contains("将再次打开这条 TermuxPro 本地启动记录"));
+        assertTrue(message.contains("本地记录时间："));
         assertTrue(message.contains("执行命令：codex resume"));
         assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
         historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
@@ -246,11 +246,11 @@ public class AiCliSessionCenterActivityTest {
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
         AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(deleteConfirm);
-        assertEquals("删除最近这条 AI 启动记录？", shadowOf(deleteConfirm).getTitle());
+        assertEquals("删除最近这条本地启动记录？", shadowOf(deleteConfirm).getTitle());
         String deleteMessage = ((TextView) deleteConfirm.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(deleteMessage.contains("Codex CLI · 历史选择"));
-        assertTrue(deleteMessage.contains("启动时间："));
+        assertTrue(deleteMessage.contains("本地记录时间："));
         assertTrue(deleteMessage.contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(deleteMessage.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("删除本地记录",
@@ -295,14 +295,14 @@ public class AiCliSessionCenterActivityTest {
         confirm = ShadowAlertDialog.getLatestAlertDialog();
         confirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         shadowOf(Looper.getMainLooper()).idle();
-        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 AI 启动记录"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 TermuxPro 本地启动记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
         assertEquals("重复上次", text(activity, R.id.ai_cli_center_repeat_last));
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog empty = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(empty);
-        assertEquals("当前工作区 AI 启动记录", shadowOf(empty).getTitle());
+        assertEquals("当前工作区本地启动记录", shadowOf(empty).getTitle());
     }
 
     @Test
@@ -351,7 +351,7 @@ public class AiCliSessionCenterActivityTest {
 
         assertEquals("查看全部记录", text(activity, R.id.ai_cli_center_manage_history));
         assertTrue(activity.findViewById(R.id.ai_cli_center_manage_history).getContentDescription()
-            .toString().contains("重复或删除"));
+            .toString().contains("再次打开或删除"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还有 1 条已折叠"));
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
@@ -370,7 +370,7 @@ public class AiCliSessionCenterActivityTest {
         String message = ((TextView) action.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));
-        assertTrue(message.contains("启动时间："));
+        assertTrue(message.contains("本地记录时间："));
         assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("再次打开入口",
             action.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
@@ -380,11 +380,11 @@ public class AiCliSessionCenterActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(deleteConfirm);
-        assertEquals("删除这条 AI 启动记录？", shadowOf(deleteConfirm).getTitle());
+        assertEquals("删除这条本地启动记录？", shadowOf(deleteConfirm).getTitle());
         String deleteMessage = ((TextView) deleteConfirm.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(deleteMessage.contains("Claude Code · 新建会话"));
-        assertTrue(deleteMessage.contains("启动时间："));
+        assertTrue(deleteMessage.contains("本地记录时间："));
         assertTrue(deleteMessage.contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(deleteMessage.contains("不会删除 Claude/Codex 远端历史"));
         deleteConfirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
@@ -443,8 +443,8 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("打开 Codex CLI 历史选择？", shadowOf(historyConfirm).getTitle());
         String confirmMessage = ((TextView) historyConfirm.findViewById(android.R.id.message))
             .getText().toString();
-        assertTrue(confirmMessage.contains("将重复这条 TermuxPro 本地启动记录"));
-        assertTrue(confirmMessage.contains("原启动时间："));
+        assertTrue(confirmMessage.contains("将再次打开这条 TermuxPro 本地启动记录"));
+        assertTrue(confirmMessage.contains("本地记录时间："));
         assertTrue(confirmMessage.contains("执行命令：codex resume"));
         assertTrue(confirmMessage.contains("不会自动进入 tmux"));
         historyConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
