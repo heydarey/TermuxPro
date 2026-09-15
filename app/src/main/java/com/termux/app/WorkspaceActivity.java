@@ -235,6 +235,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         compactText(R.id.workspace_summary_policy, 14, 2);
         compactText(R.id.workspace_ai_title, 16, 1);
         mHostInput.setHint(R.string.workspace_host_hint_compact);
+        compactManagementActionsForLargeFont();
         ((TextView) findViewById(R.id.workspace_ai_title))
             .setText(R.string.workspace_ai_quick_title_compact);
         ((android.widget.Button) findViewById(R.id.workspace_claude_button))
@@ -273,6 +274,31 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * 已配置首页的大字体场景里，连接管理和新建工作区是低频入口。
+     * 改成横向短按钮，避免它们挤压“远程终端 / AI CLI / 工具箱”的主路径。
+     */
+    private void compactManagementActionsForLargeFont() {
+        LinearLayout row = findViewById(R.id.workspace_management_actions);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        compactInlineButton(R.id.workspace_manage_button,
+            R.string.workspace_manage_action_compact, 0);
+        compactInlineButton(R.id.workspace_new_button, R.string.workspace_new_action_compact, 8);
+    }
+
+    private void compactInlineButton(int viewId, int textResId, int marginStartDp) {
+        View view = findViewById(viewId);
+        if (view instanceof TextView) {
+            ((TextView) view).setText(textResId);
+            ((TextView) view).setTextSize(16);
+        }
+        view.setMinimumHeight(dp(48));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        params.setMarginStart(dp(marginStartDp));
+        view.setLayoutParams(params);
     }
 
     /** 大字体下仅把工具箱内部低频工具行改为纵向，避免按钮文字被横向省略。 */
@@ -811,11 +837,12 @@ public final class WorkspaceActivity extends AppCompatActivity {
             TextView target = findViewById(R.id.workspace_summary_target);
             TextView details = findViewById(R.id.workspace_summary_details);
             if (largeFont) {
-                target.setText(getString(R.string.workspace_summary_target_compact,
+                target.setText(getString(R.string.workspace_summary_target_large_font,
+                    profile.name));
+                details.setText(getString(R.string.workspace_summary_details_large_font,
+                    compactHostPort(profile), profile.path));
+                target.setContentDescription(getString(R.string.workspace_summary_target_compact,
                     profile.name, profile.host, profile.port));
-                details.setText(getString(R.string.workspace_summary_details_compact,
-                    profile.path, status));
-                target.setContentDescription(profile.name);
                 details.setContentDescription(getString(R.string.workspace_summary_details,
                     profile.host, profile.port, profile.path, status));
             } else {
@@ -960,6 +987,11 @@ public final class WorkspaceActivity extends AppCompatActivity {
             return getString(R.string.workspace_summary_policy_ssh_only_compact);
         }
         return getString(R.string.workspace_summary_policy_ssh_only);
+    }
+
+    private String compactHostPort(WorkspaceProfile profile) {
+        if ("22".equals(profile.port)) return profile.host;
+        return profile.host + ":" + profile.port;
     }
 
     private static String defaultSessionName(String id) {

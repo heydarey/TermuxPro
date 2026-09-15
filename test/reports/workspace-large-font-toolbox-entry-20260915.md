@@ -22,8 +22,16 @@
   - AI 区块标题从“AI CLI 快速启动”收敛为“AI CLI”；
   - Claude/Codex 按钮保持双列，文字仍为“Claude / Codex”，按钮高度压缩到 48dp 触控底线；
   - 工具箱按钮高度压缩到 48dp，文案收敛为“工具箱 / 收起工具箱”；
+  - 低频“复制/删除连接 / 新建工作区”改为横向短按钮“连接 / 新建”；
+  - 摘要主行只保留工作区名，服务器与路径收敛到次级行，完整 host、port、path 和验证状态保留在
+    `contentDescription`。
   - 工具箱按钮的完整能力说明继续保留在 `contentDescription`，避免视觉压缩影响 TalkBack。
 - 默认字体不改变原文案和布局，继续显示“AI CLI 快速启动”和“打开开发工具箱 / 收起开发工具箱”。
+- 首次推送后人工复核 `termuxpro-emulator-ui-382` 的
+  `font200/workspace-connection-verified-font200.png`，发现工具箱入口仍未进入首屏；本轮验收负责人驳回，
+  并继续压缩连接管理按钮与摘要层级。
+- 第二次推送后远端模拟器 UI run `34958524356` 在编译阶段失败，根因是 `WorkspaceProfile.port` 为
+  `String`，新加的 `compactHostPort()` 误用 `== 22` 整数比较；已修复为 `"22".equals(profile.port)`。
 
 ## 本地验证
 
