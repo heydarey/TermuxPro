@@ -211,6 +211,7 @@ public class CustomCommandsActivityTest {
             .getText().toString();
         assertTrue(message.contains("旧项目"));
         assertTrue(message.contains("移动端"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("将导入：Git 状态、继续 Codex"));
         assertTrue(message.contains("不会执行远端命令"));
         assertEquals(1, new CustomCommandStore(RuntimeEnvironment.getApplication())
@@ -262,6 +263,7 @@ public class CustomCommandsActivityTest {
         AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
         String message = ((TextView) preview.findViewById(android.R.id.message))
             .getText().toString();
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("将导入：运行测试、查看 Git、继续 Codex，另有 1 条"));
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
             .list("workspace-a").size());
