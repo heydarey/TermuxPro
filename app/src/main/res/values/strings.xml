@@ -391,6 +391,12 @@
     <string name="ai_cli_center_open_tmux">Choose / manage tmux session</string>
     <string name="ai_cli_center_open_git">Review Git changes</string>
     <string name="ai_cli_center_open_project_tasks">Project tasks / tests</string>
+    <string name="ai_cli_center_open_workspace_description">Open server and project settings. This only edits the local workspace connection config; it does not connect or change remote files.</string>
+    <string name="ai_cli_center_open_templates_description">Open quick commands and templates for the current workspace. Use it to save repeated commands; opening the page never runs a remote command.</string>
+    <string name="ai_cli_center_open_diagnostic_description">Run read-only checks for SSH, tmux, Git, Node, Java, Claude Code, and Codex CLI in the current workspace. Nothing is fixed or approved automatically.</string>
+    <string name="ai_cli_center_open_tmux_description">Open tmux management for the current workspace. Sessions are attached only after explicit selection; unowned sessions are never auto-resumed, renamed, or stopped.</string>
+    <string name="ai_cli_center_open_git_description">Open the Git workbench for the current workspace. Review branches, changes, and commits without directly committing, pulling, pushing, or discarding changes.</string>
+    <string name="ai_cli_center_open_project_tasks_description">Open project tasks and tests. It shows the remote target and command for confirmation first, and never types test commands into the current Claude or Codex terminal.</string>
     <string name="workspace_open_local_terminal">Open local terminal</string>
     <string name="workspace_security_tip">The first SSH connection still requires explicit host fingerprint confirmation.</string>
     <string name="workspace_error_host">Enter a valid SSH alias, host, user@host, user@host:port, or ssh -p port user@host.</string>
