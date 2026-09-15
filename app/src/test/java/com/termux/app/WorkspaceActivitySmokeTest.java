@@ -639,6 +639,34 @@ public class WorkspaceActivitySmokeTest {
     }
 
     @Test
+    public void largeFontUsesShortSshAddressHintWithoutChangingFieldLabel() {
+        android.content.res.Configuration configuration = RuntimeEnvironment.getApplication()
+            .getResources().getConfiguration();
+        float oldFontScale = configuration.fontScale;
+        configuration.fontScale = 2.0f;
+        try {
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+
+            WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class)
+                .setup().get();
+
+            TextView label = activity.findViewById(R.id.workspace_host_label);
+            EditText host = activity.findViewById(R.id.workspace_host_input);
+            assertEquals("SSH 地址（支持粘贴 ssh 命令）", label.getText().toString());
+            assertEquals("user@host 或 ssh 命令", host.getHint().toString());
+            assertEquals(R.id.workspace_host_input, label.getLabelFor());
+            activity.finish();
+        } finally {
+            configuration.fontScale = oldFontScale;
+            RuntimeEnvironment.getApplication().getResources()
+                .updateConfiguration(configuration,
+                    RuntimeEnvironment.getApplication().getResources().getDisplayMetrics());
+        }
+    }
+
+    @Test
     public void aiShortcutRequiresExplicitNewOrHistoryChoice() {
         WorkspaceActivity activity = Robolectric.buildActivity(WorkspaceActivity.class).setup().get();
 

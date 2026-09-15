@@ -141,6 +141,7 @@
     <string name="workspace_name_hint">工作区名称</string>
     <string name="workspace_host_label">SSH 地址（支持粘贴 ssh 命令）</string>
     <string name="workspace_host_hint">例如 hdr@192.168.1.153</string>
+    <string name="workspace_host_hint_compact">user@host 或 ssh 命令</string>
     <string name="workspace_port_label">SSH 端口</string>
     <string name="workspace_port_hint">默认 22</string>
     <string name="workspace_path_label">远程项目路径</string>
