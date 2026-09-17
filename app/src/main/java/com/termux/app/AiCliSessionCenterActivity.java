@@ -273,7 +273,10 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             mLaunchHistory.size(), mLaunchHistory.size()));
         clear.setContentDescription(getString(
             R.string.ai_cli_center_clear_history_target_description,
-            workspace.name, mLaunchHistory.size()));
+            workspace.name,
+            mLaunchHistory.size(),
+            getString(R.string.ai_cli_center_history_target,
+                workspace.host, workspace.port, workspace.path)));
     }
 
     private String modeLabel(AiCliLaunchCommand.Mode mode) {
@@ -533,7 +536,10 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
             .setTitle(R.string.ai_cli_center_clear_history_title)
             .setMessage(getString(R.string.ai_cli_center_clear_history_message,
-                workspace.name, mLaunchHistory.size()))
+                workspace.name,
+                mLaunchHistory.size(),
+                getString(R.string.ai_cli_center_history_target,
+                    workspace.host, workspace.port, workspace.path)))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_clear_history_action,
                 (dialog, which) -> clearCurrentHistory())

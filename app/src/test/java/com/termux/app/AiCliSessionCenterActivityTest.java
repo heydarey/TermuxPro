@@ -395,6 +395,8 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_clear_history));
         assertDescription(activity, R.id.ai_cli_center_clear_history, "远程开发");
         assertDescription(activity, R.id.ai_cli_center_clear_history, "2 条 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "hdr@192.168.1.153:22 · ~/project");
         assertDescription(activity, R.id.ai_cli_center_clear_history, "不会删除 Claude/Codex 远端历史");
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
@@ -441,6 +443,7 @@ public class AiCliSessionCenterActivityTest {
             .getText().toString();
         assertTrue(message.contains("远程开发"));
         assertTrue(message.contains("2 条本地启动记录"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("清空本地记录",
             confirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
