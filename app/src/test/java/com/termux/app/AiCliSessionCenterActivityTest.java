@@ -339,6 +339,7 @@ public class AiCliSessionCenterActivityTest {
         String message = ((TextView) changed.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("本地记录时间："));
         assertTrue(message.contains("记录目标："));
         assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("当前目标："));
