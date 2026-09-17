@@ -503,9 +503,13 @@
     <string name="git_workbench_history_tools">历史与临时保存</string>
     <string name="git_workbench_branches">分支</string>
     <string name="git_workbench_fetch">更新远端</string>
+    <string name="git_workbench_fetch_enabled_description">只更新上游状态，不合并、不修改工作树。</string>
+    <string name="git_workbench_fetch_disabled_description">当前分支没有配置上游，暂时不能更新远端状态。</string>
     <string name="git_workbench_fetching">正在更新 %1$s 的远端状态，不会合并…</string>
     <string name="git_workbench_fetch_failed">Git 未完成远端更新，当前工作树已保留。\n\n%1$s</string>
     <string name="git_workbench_pull">快进拉取</string>
+    <string name="git_workbench_pull_enabled_description">确认后从上游快进拉取，不会 merge 或 rebase。</string>
+    <string name="git_workbench_pull_disabled_description">只有当前分支已配置上游并落后上游时，才能快进拉取。</string>
     <string name="git_workbench_pull_message">从 %2$s 快进 %1$d 个提交？不会 merge、不会 rebase，且只在工作树干净时执行。</string>
     <string name="git_workbench_pull_action">确认快进</string>
     <string name="git_workbench_pulling">正在从 %1$s 快进更新…</string>
@@ -514,6 +518,8 @@
     <string name="git_workbench_pull_dirty_remote_blocked">远端 Git 仍检测到未提交文件，已阻止拉取。请刷新后先处理工作树。</string>
     <string name="git_workbench_pull_failed">Git 未完成快进拉取，当前工作树已保留。\n\n%1$s</string>
     <string name="git_workbench_push">推送</string>
+    <string name="git_workbench_push_enabled_description">确认后把本地提交普通推送到已配置上游；这里不支持 force push。</string>
+    <string name="git_workbench_push_disabled_description">需要已配置上游、有本地提交、不落后上游且不是游离 HEAD，才能推送。</string>
     <string name="git_workbench_push_message">将 %1$d 个本地提交推送到 %2$s？这里只会普通推送到已配置上游分支，不会 force push。</string>
     <string name="git_workbench_push_dirty_message">将 %1$d 个本地提交推送到 %2$s？%3$d 个未提交文件只会留在工作树，不会被推送。</string>
     <string name="git_workbench_push_action">推送提交</string>
@@ -527,9 +533,15 @@
     <string name="git_workbench_review_files">按文件审查</string>
     <string name="git_workbench_review_diff">查看完整 Diff</string>
     <string name="git_workbench_files">按文件</string>
+    <string name="git_workbench_files_enabled_description">按文件审查并调整暂存状态；不会提交、推送、丢弃或重置文件。</string>
+    <string name="git_workbench_files_disabled_description">Git 当前没有返回文件级改动；修改文件后刷新即可按文件审查。</string>
     <string name="git_workbench_index_state">已暂存 %1$d · 未暂存 %2$d</string>
     <string name="git_workbench_stage_all">暂存全部</string>
+    <string name="git_workbench_stage_all_enabled_description">确认后暂存全部未暂存/未跟踪文件；不会提交或推送。</string>
+    <string name="git_workbench_stage_all_disabled_description">当前没有未暂存或未跟踪文件，暂存全部不可用。</string>
     <string name="git_workbench_unstage_all">取消暂存</string>
+    <string name="git_workbench_unstage_all_enabled_description">确认后把全部已暂存文件移回工作树，文件内容保持不变。</string>
+    <string name="git_workbench_unstage_all_disabled_description">当前没有已暂存文件，取消暂存不可用。</string>
     <string name="git_workbench_stage_all_message">将 %1$d 个未暂存/未跟踪文件加入暂存区。不会提交、不会推送，也不会丢弃工作区文件。</string>
     <string name="git_workbench_unstage_all_message">将 %1$d 个已暂存文件移出暂存区。文件内容会保留在工作区，不会执行硬重置。</string>
     <string name="git_workbench_stage_all_action">确认暂存</string>
@@ -555,6 +567,8 @@
     <string name="git_workbench_stage_file_failed">Git 没有暂存该文件，工作区内容保持不变。\n\n%1$s</string>
     <string name="git_workbench_unstage_file_failed">Git 没有取消暂存该文件，工作区内容保持不变。\n\n%1$s</string>
     <string name="git_workbench_stash_save">保存 Stash</string>
+    <string name="git_workbench_stash_enabled_description">确认后把当前改动保存为 stash；不会提交或推送。</string>
+    <string name="git_workbench_stash_disabled_description">当前工作树没有改动，不能保存 stash。</string>
     <string name="git_workbench_stashes">Stash 列表</string>
     <plurals name="git_workbench_stashes_title_count">
         <item quantity="other">Stash 列表（%1$d）</item>
@@ -589,6 +603,8 @@
     <string name="git_workbench_stash_apply_failed">Git 未应用 stash。请先核对工作树状态再重试。\n\n%1$s</string>
     <string name="git_workbench_stash_drop_failed">Git 未删除该 stash。\n\n%1$s</string>
     <string name="git_workbench_commit">提交</string>
+    <string name="git_workbench_commit_enabled_description">确认后提交已暂存文件，不会自动推送。</string>
+    <string name="git_workbench_commit_disabled_description">当前没有已暂存文件，不能提交。</string>
     <string name="git_workbench_commit_hint">例如 fix: 优化手机终端体验</string>
     <string name="git_workbench_commit_message">提交 %1$d 个已暂存文件到分支 %3$s。\n\n目标：%4$s:%5$d · %6$s\n\n%2$d 个未暂存文件不会进入本次提交。不会推送远端。</string>
     <string name="git_workbench_commit_action">提交已暂存</string>
@@ -620,6 +636,8 @@
     <string name="git_workbench_create_branch_conflict">未创建分支：本地分支 %1$s 已存在。请刷新后从本地分支列表切换。</string>
     <string name="git_workbench_create_branch_failed">Git 未创建分支，当前工作树已保留。\n\n%1$s</string>
     <string name="git_workbench_delete_branch">删除本地分支</string>
+    <string name="git_workbench_delete_branch_enabled_description">确认后安全删除非当前本地分支；不会删除远端分支。</string>
+    <string name="git_workbench_delete_branch_disabled_description">当前只有当前分支，或没有可安全删除的本地分支。</string>
     <string name="git_workbench_delete_branch_message">删除本地分支 %1$s？这里只执行安全删除：不会删除当前分支、不会删除远端分支，也不会 force；如果 Git 判断该分支尚未合并，会自动拒绝。</string>
     <string name="git_workbench_delete_branch_action">确认删除</string>
     <string name="git_workbench_deleting_branch">正在安全删除本地分支 %1$s…</string>

@@ -155,7 +155,10 @@ public final class GitDiffActivityTest {
         assertTrue(((Button) activity.findViewById(R.id.git_overview_stage_all_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        Button filesButton = activity.findViewById(R.id.git_overview_files_button);
+        assertTrue(!filesButton.isEnabled());
+        assertTrue(filesButton.getContentDescription().toString()
+            .contains("没有返回文件级改动"));
         assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
             .getVisibility());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
@@ -184,13 +187,32 @@ public final class GitDiffActivityTest {
             .contains("只删除选中的单条 stash"));
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_fetch_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_pull_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_push_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_stage_all_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        Button fetchButton = activity.findViewById(R.id.git_overview_fetch_button);
+        Button pullButton = activity.findViewById(R.id.git_overview_pull_button);
+        Button pushButton = activity.findViewById(R.id.git_overview_push_button);
+        Button stageButton = activity.findViewById(R.id.git_overview_stage_all_button);
+        Button unstageButton = activity.findViewById(R.id.git_overview_unstage_all_button);
+        Button commitButton = activity.findViewById(R.id.git_overview_commit_button);
+        Button stashButton = activity.findViewById(R.id.git_overview_stash_button);
+        Button deleteBranchButton = activity.findViewById(R.id.git_overview_delete_branch_button);
+        assertTrue(!fetchButton.isEnabled());
+        assertTrue(fetchButton.getContentDescription().toString().contains("没有配置上游"));
+        assertTrue(!pullButton.isEnabled());
+        assertTrue(pullButton.getContentDescription().toString().contains("落后上游"));
+        assertTrue(!pushButton.isEnabled());
+        assertTrue(pushButton.getContentDescription().toString().contains("才能推送"));
+        assertTrue(!stageButton.isEnabled());
+        assertTrue(stageButton.getContentDescription().toString().contains("没有未暂存"));
+        assertTrue(!unstageButton.isEnabled());
+        assertTrue(unstageButton.getContentDescription().toString().contains("没有已暂存"));
+        assertTrue(!commitButton.isEnabled());
+        assertTrue(commitButton.getContentDescription().toString().contains("不能提交"));
+        assertTrue(!stashButton.isEnabled());
+        assertTrue(stashButton.getContentDescription().toString().contains("没有改动"));
+        assertTrue(!deleteBranchButton.isEnabled());
+        assertTrue(deleteBranchButton.getContentDescription().toString()
+            .contains("没有可安全删除"));
+        assertTrue(!filesButton.isEnabled());
         assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
             .getVisibility());
     }
