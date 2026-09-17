@@ -42,12 +42,26 @@ require_contains "$zh" "这里不是 Claude/Codex 历史库" \
     "AI 会话中心记录区必须直接说明不是 Claude/Codex 私有历史。"
 require_contains "$zh" '再次打开：%1$s · %2$s' \
     "重复本地记录按钮必须表达再次打开入口，不能暗示恢复远端历史。"
+require_contains "$zh" "再次打开最近本地记录" \
+    "AI 会话中心空态/禁用态的重复按钮也必须明确是本地记录。"
 require_contains "$zh" "当前工作区还没有 TermuxPro 本地启动记录" \
     "AI 会话中心空态必须沿用 TermuxPro 本地记录语义。"
+require_contains "$zh" "删除最近本地记录" \
+    "AI 会话中心空态/禁用态的删除按钮也必须明确是本地记录。"
+require_contains "$zh" "清空本地记录" \
+    "AI 会话中心清空按钮必须明确只影响本地记录。"
 require_contains "$zh" "删除这条本地启动记录" \
     "AI 会话中心删除确认标题必须明确只删除本地启动记录。"
 require_contains "$zh" '本地记录时间：%6$s' \
     "AI 会话中心记录详情必须使用本地记录时间，不能暗示远端 AI 会话时间。"
+require_contains "$en" "Open latest local record" \
+    "英文 AI 会话中心重复按钮必须明确是本地记录，不能只写 Repeat last。"
+require_contains "$en" "Delete latest local record" \
+    "英文 AI 会话中心删除按钮必须明确是本地记录。"
+require_contains "$en" "Clear local records" \
+    "英文 AI 会话中心清空按钮必须明确只清空本地记录。"
+require_contains "$en" "Latest %1\$d local launch record" \
+    "英文 AI 会话中心记录摘要必须使用 local launch record，不能写成模糊 entry record。"
 require_contains "$choice_layout" "@+id/ai_session_new_button" \
     "AI 会话弹窗必须提供可见的新建会话操作。"
 require_contains "$choice_layout" "@+id/ai_session_history_button" \
