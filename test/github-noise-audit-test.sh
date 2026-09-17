@@ -53,6 +53,7 @@ required_patterns=(
     '本脚本只读审计，不删除远端分支、标签或 Release。'
     '永远排除 master、dev、dev_dailyIteration 和打开 PR 的 head 分支。'
     '删除远端分支前必须再次确认分支已合入 origin/dev，且无打开 PR、无候选/稳定发布风险。'
+    '默认最多展示 50 个候选，避免审计报告本身制造噪声；设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 可显示全部。'
     '- dev_oldFeatureMerged_20260901'
     '- hotfix_crashMerged_20260901'
 )
@@ -130,5 +131,46 @@ for pattern in "${noisy_patterns[@]}"; do
         exit 1
     fi
 done
+
+limited_output="$(
+    TERMUXPRO_AUDIT_BRANCHES_FILE="$noisy_branches" \
+    TERMUXPRO_AUDIT_OPEN_PRS_FILE="$noisy_prs" \
+    TERMUXPRO_AUDIT_RELEASES_FILE="$noisy_releases" \
+    TERMUXPRO_AUDIT_CANDIDATE_LIMIT=3 \
+    "$project_dir/scripts/audit-github-noise.sh"
+)"
+limited_patterns=(
+    '- dev_oldFeature01Merged_20260901'
+    '- dev_oldFeature02Merged_20260901'
+    '- dev_oldFeature03Merged_20260901'
+    '……另有 22 个候选未显示；如需完整清单，设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 后重跑。'
+)
+for pattern in "${limited_patterns[@]}"; do
+    if ! grep -Fq -- "$pattern" <<<"$limited_output"; then
+        echo "GitHub 噪声审计限量输出缺少：$pattern" >&2
+        echo "$limited_output" >&2
+        exit 1
+    fi
+done
+if grep -Fq -- '- dev_oldFeature04Merged_20260901' <<<"$limited_output"; then
+    echo "限量输出不应展示超过上限的候选。" >&2
+    exit 1
+fi
+
+full_output="$(
+    TERMUXPRO_AUDIT_BRANCHES_FILE="$noisy_branches" \
+    TERMUXPRO_AUDIT_OPEN_PRS_FILE="$noisy_prs" \
+    TERMUXPRO_AUDIT_RELEASES_FILE="$noisy_releases" \
+    TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 \
+    "$project_dir/scripts/audit-github-noise.sh"
+)"
+if ! grep -Fq -- '- dev_oldFeature25Merged_20260901' <<<"$full_output"; then
+    echo "候选上限为 0 时应展示完整清单。" >&2
+    exit 1
+fi
+if grep -Fq -- '候选未显示' <<<"$full_output"; then
+    echo "候选上限为 0 时不应提示仍有未显示候选。" >&2
+    exit 1
+fi
 
 echo "GitHub 噪声审计脚本测试通过。"
