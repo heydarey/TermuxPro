@@ -139,8 +139,13 @@ if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ci.yml' '完整 CI'; th
     echo "自动研发 PR 工作流必须显式处理预合并 CI 失败，不能让 set -e 直接把自动 PR 标成失败。" >&2
     exit 1
 fi
-if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI'; then" "$auto_dev_pr_file"; then
-    echo "自动研发 PR 工作流必须显式处理预合并模拟器失败，不能重复制造失败通知。" >&2
+if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI' \"\$emulator_target_sha\"; then" "$auto_dev_pr_file"; then
+    echo "自动研发 PR 工作流必须显式处理预合并模拟器失败，并按最后一个 UI 影响提交等待门禁，不能重复制造失败通知。" >&2
+    exit 1
+fi
+if ! grep -Fq 'resolve_latest_emulator_ui_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq '复用最后一个 UI 影响提交' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须在后续只改测试/文档时复用 PR 内最后一个 UI 影响提交的模拟器门禁，避免等待不存在的当前 SHA UI run。" >&2
     exit 1
 fi
 if ! grep -Fq 'GH_COMMAND_TIMEOUT_SECONDS: 45' "$auto_dev_pr_file"; then
