@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-12T08:51:37Z
+- UTC：2026-09-17T08:19:28Z
 
 ## 当前目标
 
@@ -15,17 +15,20 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ## 代码状态
 
-- 当前分支：`dev_dailyIteration`
-- 当前提交：`74146464a13c`
-- 最近提交：Merge pull request #340 from heydarey/dev_dailyIteration
-- `origin/dev`：`74146464a13c`
-- `origin/master`：`43c7a5794fc8`
-- 版本源：`0.10.0` / `100002`
+- 当前分支：`dev`
+- 当前提交：`af70a244e69b`
+- 最近提交：chore(release): 发布0.10.1正式版
+- `origin/dev`：`af70a244e69b`
+- `origin/master`：`af70a244e69b`
+- 版本源：`0.10.1` / `100102`
 
 ### 工作树
 
 ```text
-干净
+ M .agents/skills/termuxpro-development/SKILL.md
+ M README.md
+ M docs/PRODUCT_BACKLOG.md
+ M test/reports/0.10.1-release-readiness.md
 ```
 
 ## 额度与资源
@@ -35,9 +38,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-12T08:51:32.568Z",
-    "usedPercent": 0,
-    "remainingPercent": 100,
+    "timestamp": "2026-09-17T08:19:37.175Z",
+    "usedPercent": 61,
+    "remainingPercent": 39,
     "resetsAt": 1789805405,
     "windowMinutes": 10080
   },
@@ -51,10 +54,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：1.08
-可用内存：14370 MiB
-工作区可用磁盘：36507 MiB
-工作区磁盘使用率：82%
+CPU：8 核，1 分钟负载：1.97
+可用内存：6237 MiB
+工作区可用磁盘：37824 MiB
+工作区磁盘使用率：81%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
 ```
@@ -70,17 +73,17 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-12T08:44:06Z","databaseId":34684025479,"displayTitle":"TermuxPro CI","headSha":"74146464a13ccc76c00ed1ccb907f299aad78e1b","status":"completed"},{"conclusion":"success","createdAt":"2026-09-12T08:24:32Z","databaseId":34683190443,"displayTitle":"TermuxPro CI","headSha":"2eb5cec3ef8056e070a7e475509aa6c4ed823e04","status":"completed"},{"conclusion":"success","createdAt":"2026-09-12T07:52:57Z","databaseId":34681859334,"displayTitle":"TermuxPro CI","headSha":"bbccdaf93dfeabdc3826fb259c27860806f365c1","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-17T08:02:55Z","databaseId":35197601931,"displayTitle":"chore(release): 发布0.10.1正式版","headSha":"af70a244e69b43eb8f693360387ddb617cad7f41","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T07:55:34Z","databaseId":35196979067,"displayTitle":"chore(release): 发布0.10.1正式版","headSha":"3c31a560792f154f2d55947293feb1ceb92ea6e3","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T07:49:04Z","databaseId":35196435177,"displayTitle":"TermuxPro CI","headSha":"3c31a560792f154f2d55947293feb1ceb92ea6e3","status":"completed"}]
 ```
 
 ### 最近 Release
 
 ```text
-TermuxPro v0.10.0	Latest	v0.10.0	2026-09-09T05:00:08Z
+TermuxPro v0.10.1	Latest	v0.10.1	2026-09-17T08:17:31Z
+TermuxPro v0.10.1-rc.1	Pre-release	v0.10.1-rc.1	2026-09-17T07:38:52Z
+TermuxPro v0.10.0		v0.10.0	2026-09-09T05:00:08Z
 TermuxPro v0.10.0-rc.1	Pre-release	v0.10.0-rc.1	2026-09-09T04:16:32Z
 TermuxPro v0.9.9-rc.1	Pre-release	v0.9.9-rc.1	2026-09-08T06:32:09Z
-TermuxPro v0.9.8-rc.1	Pre-release	v0.9.8-rc.1	2026-09-08T04:47:37Z
-TermuxPro v0.9.7		v0.9.7	2026-09-08T03:30:54Z
 ```
 
 ## 恢复步骤
