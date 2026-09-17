@@ -10,6 +10,7 @@ concurrency:
 
 permissions:
   actions: write
+  checks: read
   contents: write
   pull-requests: write
 
@@ -153,6 +154,11 @@ jobs:
               if ! record="$(gh_safe "${args[@]}" \
                 --jq "map(select((.event == \"push\" or .event == \"workflow_dispatch\") and .headSha == \"$target_sha\"))[0] // empty")"; then
                 echo "$label 查询 GitHub Actions 超时或失败，第 $attempt 次后继续等待。"
+                if wait_for_check_run "$workflow" "$label" "$target_sha"; then
+                  return 0
+                elif [[ "$?" == '2' ]]; then
+                  return 1
+                fi
                 sleep 20
                 continue
               fi
@@ -167,10 +173,54 @@ jobs:
                 fi
               else
                 echo "$label 尚未创建，等待触发。"
+                if wait_for_check_run "$workflow" "$label" "$target_sha"; then
+                  return 0
+                elif [[ "$?" == '2' ]]; then
+                  return 1
+                fi
               fi
               sleep 20
             done
             echo "$label 等待超时，保留 PR #$pr_number。" >&2
+            return 1
+          }
+
+          workflow_check_name() {
+            case "$1" in
+              '.github/workflows/ci.yml')
+                echo 'test'
+                ;;
+              '.github/workflows/ui-emulator.yml')
+                echo 'emulator-ui'
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
+          wait_for_check_run() {
+            workflow="$1"
+            label="$2"
+            target_sha="$3"
+            if ! check_name="$(workflow_check_name "$workflow")"; then
+              return 1
+            fi
+            if ! check_json="$(gh_safe api "repos/$REPOSITORY/commits/$target_sha/check-runs?check_name=$check_name" \
+              --jq '.check_runs
+                | map(select(.app.slug == "github-actions"))
+                | sort_by(.started_at // .created_at)
+                | last // empty')" || [[ -z "$check_json" ]]; then
+              return 1
+            fi
+            check_status="$(jq -r '.status // ""' <<<"$check_json")"
+            check_conclusion="$(jq -r '.conclusion // ""' <<<"$check_json")"
+            echo "$label GitHub Checks 兜底：$check_name $check_status ${check_conclusion:-等待结论}"
+            if [[ "$check_status" == 'completed' ]]; then
+              [[ "$check_conclusion" == 'success' ]] && return 0
+              echo "$label GitHub Checks 兜底未通过，保留 PR #$pr_number。" >&2
+              return 2
+            fi
             return 1
           }
 
