@@ -470,6 +470,7 @@ public final class GitDiffActivityTest {
         AlertDialog stashes = dirty.createStashesDialog();
         assertNotNull(stashes);
         dirty.showStyledDialog(stashes);
+        assertEquals("Stash 列表（1）", shadowOf(stashes).getTitle().toString());
         assertEquals(1, stashes.getListView().getAdapter().getCount());
         assertTrue(stashes.getListView().getAdapter().getItem(0).toString()
             .contains("WIP mobile flow"));
@@ -490,6 +491,8 @@ public final class GitDiffActivityTest {
         clean.confirmApplyStash(entry);
         AlertDialog apply = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(apply);
+        assertEquals(clean.getString(R.string.git_workbench_stash_apply_action),
+            apply.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         assertTrue(((TextView) apply.findViewById(android.R.id.message)).getText()
             .toString().contains("stash 会保留"));
         apply.dismiss();
@@ -504,6 +507,14 @@ public final class GitDiffActivityTest {
             drop.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
         assertTrue(((TextView) drop.findViewById(android.R.id.message)).getText()
             .toString().contains("不触碰工作树和远端仓库"));
+
+        clean.showStashActionsForTesting(entry);
+        AlertDialog actions = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(actions);
+        assertEquals("应用但保留", actions.getListView().getAdapter().getItem(0)
+            .toString());
+        assertEquals("删除这一条", actions.getListView().getAdapter().getItem(1)
+            .toString());
     }
 
     @Test
