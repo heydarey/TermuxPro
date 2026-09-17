@@ -19,11 +19,15 @@
 3. AI 会话中心多处强调不读取 Claude/Codex 私有历史，但批量清空按钮本身缺少无障碍说明。
    - 影响旅程：TalkBack 或自动化验收只能读到“清空记录”，无法判断它是否会影响远端 AI 历史、tmux 或终端输出。
    - 推进理由：可见文案保持短，但辅助语义必须包含工作区、数量和不影响远端对象的边界。
+4. 后续代码复核发现批量清空确认弹窗只展示工作区名和数量，没有展示 `host:port · path`。
+   - 影响旅程：多工作区名称相似时，用户最后确认前仍要依赖记忆判断目标。
+   - 推进理由：单条删除已经展示远端目标，批量清空作为更高风险动作也必须在最后决策点展示目标。
 
 ## 实现范围
 
 - 有历史时，`清空记录` 按钮改为 `清空 N 条本地记录`。
-- 按钮 `contentDescription` 包含当前工作区名称、记录数，以及“不删除 Claude/Codex 远端历史、tmux 会话或终端输出”。
+- 按钮 `contentDescription` 包含当前工作区名称、`host:port · path`、记录数，以及“不删除 Claude/Codex 远端历史、tmux 会话或终端输出”。
+- 清空确认弹窗展示当前 `host:port · path`。
 - 无工作区或无记录时仍保持普通 `清空记录`，按钮禁用。
 - 清空确认弹窗、实际清空逻辑和工作区隔离不变。
 
@@ -46,4 +50,6 @@
 - `./scripts/validate-skills.sh`：通过。
 - `git diff --check`：通过。
 - `./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiCliSessionCenterActivityTest`：本地远程机启动 Gradle 后超过 60 秒无输出，按共享资源策略手动中断；未进入可证明的测试失败状态，Android/Robolectric 结果以 GitHub CI 为准。
+- `./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiCliSessionCenterActivityTest.repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory`：本地未进入测试执行阶段，Gradle 配置期从 `dl.google.com` 拉取 Android Gradle Plugin 超时。
 - `./scripts/pre-push-smoke.sh origin/dev`：静态阶段通过（Skill、版本、workflow 策略、发布通知、GitHub 噪声、上下文检查点、Goal 生命周期、缓存清理、Android SDK 引导、字符串资源和资源守卫）；进入 Gradle 阶段后超过 60 秒无输出，按共享远程机资源策略手动中断，Android/Robolectric 结果以 GitHub CI 为准。
+- 本轮再次运行 `./scripts/pre-push-smoke.sh`：静态阶段通过；进入 Gradle 阶段后长时间无输出，为避免占用共享远程机器资源，人工中断。最终 Android/Robolectric 门禁以 GitHub CI 为准。
