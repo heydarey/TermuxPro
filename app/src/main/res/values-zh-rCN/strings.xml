@@ -726,11 +726,11 @@
     <string name="ssh_keys_empty">未找到支持的公钥，可以先生成 Ed25519 密钥。</string>
     <string name="ssh_keys_generate_action">生成 Ed25519 密钥</string>
     <string name="ssh_keys_generate_title">生成 SSH 密钥？</string>
-    <string name="ssh_keys_generate_message">将在新终端中打开官方 ssh-keygen 交互，请在那里设置口令；应用不会读取或保存口令。</string>
+    <string name="ssh_keys_generate_message">将在新的本地终端中打开官方 ssh-keygen 交互，并把密钥创建在 TermuxPro 应用私有的 OpenSSH 目录中。请在那里设置口令；应用不会读取或保存口令。</string>
     <string name="ssh_keys_copy_action">复制公钥</string>
     <string name="ssh_keys_install_action">安装到服务器</string>
     <string name="ssh_keys_install_title">安装公钥？</string>
-    <string name="ssh_keys_install_message">要打开交互终端，将公钥安装到 %1$s 吗？\n\n%2$s</string>
+    <string name="ssh_keys_install_message">要打开交互终端，将公钥安装到 %1$s:%2$d 吗？\n\n命令：\n%3$s\n\n认证过程仍留在 OpenSSH 中；TermuxPro 不会读取或保存服务器密码。</string>
     <string name="ssh_keys_clipboard_label">SSH 公钥</string>
     <string name="ssh_keys_copied">公钥已复制</string>
     <string name="workspace_task_sessions_action">tmux 管理</string>
