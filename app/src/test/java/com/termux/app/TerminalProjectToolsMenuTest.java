@@ -30,7 +30,8 @@ public class TerminalProjectToolsMenuTest {
         assertFalse(menu.getItem(0).isEnabled());
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CENTER, menu.getItem(1).getItemId());
         assertEquals("AI CLI 会话中心", menu.getItem(1).getTitle().toString());
-        assertDescription(menu, 1, "打开当前工作区的 Claude/Codex 会话中心，选择新建或历史入口。");
+        assertDescription(menu, 1,
+            "打开当前工作区的 Claude/Codex 会话中心，先选择新建或历史入口；不会立即发送命令、自动恢复历史或进入 tmux。");
         assertEquals(TerminalProjectToolsMenu.TOOL_GIT_STATUS, menu.getItem(2).getItemId());
         assertEquals("Git 工作台", menu.getItem(2).getTitle().toString());
         assertDescription(menu, 2, "打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态。");

@@ -341,8 +341,10 @@ shell、基础会话、基础快捷键或基础文件能力，不进入产品主
   终端标签、不连接新远端，`工具箱·历史/TUI`未在无障碍语义中解释当前手指滑动含义；已补中英文
   contentDescription 与布局/菜单断言，证据见 `test/reports/terminal-header-accessible-entry-20260911.md`。
   当前继续补齐 `AI` 短标签的无障碍语义：可见文本仍保持“AI”以保护窄屏顶栏，但 contentDescription
-  明确会打开当前工作区 Claude/Codex 会话中心并选择新建或历史入口，证据见
-  `test/reports/terminal-ai-entry-accessibility-20260912.md`。当前主动审计继续发现“远程配置”更像一次性设置，
+  明确会打开当前工作区 Claude/Codex 会话中心并选择新建或历史入口；本轮继续补强安全边界说明，顶栏
+  `AI` 入口不立即发送命令、不自动恢复历史，也不进入 tmux，避免共享 Claude/tmux 场景下把短标签误解为
+  一键恢复。证据见 `test/reports/terminal-ai-entry-accessibility-20260912.md` 和
+  `test/reports/terminal-ai-entry-safe-semantics-20260917.md`。当前主动审计继续发现“远程配置”更像一次性设置，
   不像终端里随时返回的移动开发工作台；已将短标签收敛为“工作台”，完整语义放入无障碍说明，明确包含
   服务器、项目目录、AI 入口和连接策略，不新增按钮、不改变终端行为，证据见
   `test/reports/terminal-workbench-entry-copy-20260912.md`。
