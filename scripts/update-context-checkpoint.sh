@@ -178,8 +178,9 @@ $release_window
 2. 运行 \`./scripts/codex-quota-guard.sh\`，只有总剩余额度低于 15% 才暂停主动迭代。
 3. 运行 \`./scripts/resource-guard.sh\`，共享服务器上保持单个重任务，Gradle 使用 \`--max-workers=2\`。
 4. 检查 \`git status --short --branch\`、打开 PR、最近 CI 和 Release 状态。
-5. 运行或读取 \`./scripts/release-window-guard.sh\` 结果；若稳定版已满 7 天，先发布正式版或落盘 HOLD，
-   不继续普通 P2/P3 切片。
+5. 运行或读取 \`./scripts/release-window-guard.sh\` 结果；若稳定版已满 5 天，优先做发布评审；若已满
+   7 天，先发布正式版或落盘有证据的 HOLD，不继续普通 P2/P3 切片。少发版不是不发版，连续评审几天
+   无 P0/P1 且已有用户可感知价值时，必须推进一周至少一次正式稳定版发布。
 6. 从 \`docs/PRODUCT_BACKLOG.md\` 中最高优先级的 TermuxPro 增值服务切片继续。
 
 ## 安全红线
