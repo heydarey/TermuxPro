@@ -266,6 +266,9 @@
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_repeat_last_target">再次打开：%1$s · %2$s</string>
     <string name="ai_cli_center_repeat_stale_target">处理过期记录：%1$s · %2$s</string>
+    <string name="ai_cli_center_repeat_launch_title">再次打开 %1$s？</string>
+    <string name="ai_cli_center_repeat_launch_message">将再次打开这条 TermuxPro 本地启动记录：%1$s · %2$s\n本地记录时间：%7$s\n目标：%4$s:%5$d · %6$s\n\n执行命令：%3$s\n\n这会新开 SSH 终端，不会自动进入 tmux，也不会删除 Claude/Codex 远端历史。共享账号下请确认这仍然是你的任务。</string>
+    <string name="ai_cli_center_repeat_launch_action">确认打开</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
     <string name="ai_cli_center_delete_latest_target">删除本地记录：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条本地启动记录？</string>
