@@ -211,12 +211,19 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             nextStep.setText(R.string.ai_cli_center_history_next_missing_workspace);
             repeat.setEnabled(false);
             repeat.setText(R.string.ai_cli_center_repeat_last);
+            repeat.setContentDescription(getString(
+                R.string.ai_cli_center_repeat_missing_workspace_description));
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
+            deleteLatest.setContentDescription(getString(
+                R.string.ai_cli_center_delete_missing_workspace_description));
             manageHistory.setEnabled(false);
+            manageHistory.setContentDescription(getString(
+                R.string.ai_cli_center_manage_history_missing_workspace_description));
             clear.setEnabled(false);
             clear.setText(R.string.ai_cli_center_clear_history);
-            clear.setContentDescription(getString(R.string.ai_cli_center_clear_history));
+            clear.setContentDescription(getString(
+                R.string.ai_cli_center_clear_history_missing_workspace_description));
             return;
         }
         scope.setText(getString(R.string.ai_cli_center_history_scope,
@@ -227,12 +234,19 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             nextStep.setText(R.string.ai_cli_center_history_next_empty);
             repeat.setEnabled(false);
             repeat.setText(R.string.ai_cli_center_repeat_last);
+            repeat.setContentDescription(getString(
+                R.string.ai_cli_center_repeat_empty_description, workspace.name));
             deleteLatest.setEnabled(false);
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
+            deleteLatest.setContentDescription(getString(
+                R.string.ai_cli_center_delete_empty_description, workspace.name));
             manageHistory.setEnabled(false);
+            manageHistory.setContentDescription(getString(
+                R.string.ai_cli_center_manage_history_empty_description, workspace.name));
             clear.setEnabled(false);
             clear.setText(R.string.ai_cli_center_clear_history);
-            clear.setContentDescription(getString(R.string.ai_cli_center_clear_history));
+            clear.setContentDescription(getString(
+                R.string.ai_cli_center_clear_history_empty_description, workspace.name));
             return;
         }
         StringBuilder builder = new StringBuilder();
@@ -253,6 +267,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         summary.setText(builder.toString());
         AiLaunchHistoryStore.Entry latest = mLaunchHistory.get(0);
         boolean latestMatchesWorkspace = historyEntryMatchesWorkspace(latest, workspace);
+        String targetLabel = getString(R.string.ai_cli_center_history_target,
+            workspace.host, workspace.port, workspace.path);
         nextStep.setText(latestMatchesWorkspace
             ? getString(R.string.ai_cli_center_history_next_ready,
                 AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode))
@@ -263,10 +279,24 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 ? R.string.ai_cli_center_repeat_last_target
                 : R.string.ai_cli_center_repeat_stale_target,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
+        repeat.setContentDescription(latestMatchesWorkspace
+            ? getString(R.string.ai_cli_center_repeat_last_target_description,
+                AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode),
+                targetLabel)
+            : getString(R.string.ai_cli_center_repeat_stale_target_description,
+                AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode),
+                targetLabel));
         deleteLatest.setEnabled(true);
         deleteLatest.setText(getString(R.string.ai_cli_center_delete_latest_target,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
+        deleteLatest.setContentDescription(getString(
+            R.string.ai_cli_center_delete_latest_target_description,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode),
+            targetLabel));
         manageHistory.setEnabled(true);
+        manageHistory.setContentDescription(getString(
+            R.string.ai_cli_center_manage_history_target_description,
+            mLaunchHistory.size(), workspace.name));
         clear.setEnabled(true);
         clear.setText(getResources().getQuantityString(
             R.plurals.ai_cli_center_clear_history_target,
@@ -275,8 +305,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             R.string.ai_cli_center_clear_history_target_description,
             workspace.name,
             mLaunchHistory.size(),
-            getString(R.string.ai_cli_center_history_target,
-                workspace.host, workspace.port, workspace.path)));
+            targetLabel));
     }
 
     private String modeLabel(AiCliLaunchCommand.Mode mode) {

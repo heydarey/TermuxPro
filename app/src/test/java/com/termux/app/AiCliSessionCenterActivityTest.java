@@ -67,6 +67,16 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不会猜测服务器"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("先回到“服务器与项目”"));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "当前没有有效远程工作区");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不会猜服务器");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "不会删除远端 AI 历史");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "未选择有效工作区");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "不能清空本地启动记录");
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
         assertEquals("新开 SSH 跑 Claude", text(activity, R.id.ai_cli_center_claude_new));
@@ -112,6 +122,14 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_scope)
             .contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不跨工作区"));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "当前工作区“远程开发”还没有 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "没有本地启动记录可删除");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "没有本地启动记录可查看");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "没有本地启动记录可清空");
         assertDescription(activity, R.id.ai_cli_center_open_workspace,
             "只修改本地工作区连接信息");
         assertDescription(activity, R.id.ai_cli_center_open_templates,
@@ -317,6 +335,12 @@ public class AiCliSessionCenterActivityTest {
             .contains("目标已变化，请先检查工作区"));
         assertEquals("处理过期记录：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_repeat_last));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "最近本地记录目标已变化");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不会启动 Claude/Codex");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "目标已变化记录会被阻止直接启动");
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
@@ -393,6 +417,18 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_delete_latest));
         assertEquals("清空 2 条本地记录",
             text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "再次打开最近本地记录：Codex CLI · 历史选择");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不自动进入 tmux");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不读取远端 AI 历史");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "只删除 TermuxPro 本地记录");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "远程开发");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "目标已变化记录会被阻止直接启动");
         assertDescription(activity, R.id.ai_cli_center_clear_history, "远程开发");
         assertDescription(activity, R.id.ai_cli_center_clear_history, "2 条 TermuxPro 本地启动记录");
         assertDescription(activity, R.id.ai_cli_center_clear_history,
@@ -475,6 +511,14 @@ public class AiCliSessionCenterActivityTest {
         assertEquals("再次打开最近本地记录", text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除最近本地记录", text(activity, R.id.ai_cli_center_delete_latest));
         assertEquals("清空本地记录", text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "还没有 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "不会删除 Claude/Codex 远端历史");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "没有本地启动记录可查看");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "没有本地启动记录可清空");
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog empty = ShadowAlertDialog.getLatestAlertDialog();
