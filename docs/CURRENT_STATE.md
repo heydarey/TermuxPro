@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-17T08:19:28Z
+- UTC：2026-09-17T08:38:44Z
 
 ## 当前目标
 
@@ -15,20 +15,22 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ## 代码状态
 
-- 当前分支：`dev`
-- 当前提交：`af70a244e69b`
-- 最近提交：chore(release): 发布0.10.1正式版
-- `origin/dev`：`af70a244e69b`
-- `origin/master`：`af70a244e69b`
+- 当前分支：`dev_dailyIteration`
+- 当前提交：`1c9adcb44c8f`
+- 最近提交：docs(release): 补齐0.10.1发布收尾记录
+- `origin/dev`：`1c9adcb44c8f`
+- `origin/master`：`28b8318985cb`
 - 版本源：`0.10.1` / `100102`
 
 ### 工作树
 
 ```text
- M .agents/skills/termuxpro-development/SKILL.md
- M README.md
+ M app/src/main/java/com/termux/app/AiCliSessionCenterActivity.java
+ M app/src/main/res/values-zh-rCN/strings.xml
+ M app/src/main/res/values/strings.xml
+ M app/src/test/java/com/termux/app/AiCliSessionCenterActivityTest.java
  M docs/PRODUCT_BACKLOG.md
- M test/reports/0.10.1-release-readiness.md
+?? test/reports/ai-launch-history-stale-visibility-20260917.md
 ```
 
 ## 额度与资源
@@ -38,9 +40,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-17T08:19:37.175Z",
-    "usedPercent": 61,
-    "remainingPercent": 39,
+    "timestamp": "2026-09-17T08:38:45.380Z",
+    "usedPercent": 62,
+    "remainingPercent": 38,
     "resetsAt": 1789805405,
     "windowMinutes": 10080
   },
@@ -54,9 +56,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：1.97
-可用内存：6237 MiB
-工作区可用磁盘：37824 MiB
+CPU：8 核，1 分钟负载：5.25
+可用内存：5795 MiB
+工作区可用磁盘：37804 MiB
 工作区磁盘使用率：81%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -73,7 +75,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-17T08:02:55Z","databaseId":35197601931,"displayTitle":"chore(release): 发布0.10.1正式版","headSha":"af70a244e69b43eb8f693360387ddb617cad7f41","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T07:55:34Z","databaseId":35196979067,"displayTitle":"chore(release): 发布0.10.1正式版","headSha":"3c31a560792f154f2d55947293feb1ceb92ea6e3","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T07:49:04Z","databaseId":35196435177,"displayTitle":"TermuxPro CI","headSha":"3c31a560792f154f2d55947293feb1ceb92ea6e3","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-17T08:20:32Z","databaseId":35199152044,"displayTitle":"docs(release): 同步0.10.1发布收尾记录","headSha":"1c9adcb44c8fbcea7a28049c28aeb534d8df94ee","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T08:20:17Z","databaseId":35199129716,"displayTitle":"docs(release): 补齐0.10.1发布收尾记录","headSha":"1c9adcb44c8fbcea7a28049c28aeb534d8df94ee","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T08:02:55Z","databaseId":35197601931,"displayTitle":"chore(release): 发布0.10.1正式版","headSha":"af70a244e69b43eb8f693360387ddb617cad7f41","status":"completed"}]
 ```
 
 ### 最近 Release

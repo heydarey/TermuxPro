@@ -363,11 +363,13 @@
     <string name="ai_cli_center_history_next_missing_workspace">Next: choose a target in Server and project, then start Claude or Codex.</string>
     <string name="ai_cli_center_history_next_empty">Next: tap New for a fresh task, or open the matching history picker and confirm the native CLI choice.</string>
     <string name="ai_cli_center_history_next_ready">Next: open the last %1$s · %2$s entry again if that is still your task. If it was accidental, delete only this local record; remote AI history is untouched.</string>
+    <string name="ai_cli_center_history_next_stale">Next: the last %1$s · %2$s target has changed. Check the workspace or delete this stale local record first.</string>
     <plurals name="ai_cli_center_history_count">
         <item quantity="one">Latest %1$d local entry record</item>
         <item quantity="other">Latest %1$d local entry records</item>
     </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s entry\nLocal record time: %6$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_stale_hint">Target changed: TermuxPro will not open this directly. Check the workspace or delete this stale local record.</string>
     <plurals name="ai_cli_center_history_more">
         <item quantity="one">%1$d more launch is collapsed and only stored as a local record for this workspace.</item>
         <item quantity="other">%1$d more launches are collapsed and only stored as local records for this workspace.</item>
@@ -385,6 +387,7 @@
     <string name="ai_cli_center_history_launch_action">Open history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
     <string name="ai_cli_center_repeat_last_target">Open again: %1$s · %2$s</string>
+    <string name="ai_cli_center_repeat_stale_target">Handle stale record: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_delete_latest_target">Delete local record: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">Delete this latest local launch record?</string>
