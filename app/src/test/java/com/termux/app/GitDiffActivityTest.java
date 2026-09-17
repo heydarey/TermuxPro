@@ -493,8 +493,11 @@ public final class GitDiffActivityTest {
         assertNotNull(apply);
         assertEquals(clean.getString(R.string.git_workbench_stash_apply_action),
             apply.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
-        assertTrue(((TextView) apply.findViewById(android.R.id.message)).getText()
-            .toString().contains("stash 会保留"));
+        String applyMessage = ((TextView) apply.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(applyMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(applyMessage.contains("当前分支：dev"));
+        assertTrue(applyMessage.contains("stash 会保留"));
         apply.dismiss();
 
         clean.confirmDropStash(entry);
@@ -505,8 +508,11 @@ public final class GitDiffActivityTest {
             drop.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         assertEquals(clean.getColor(R.color.tp_danger),
             drop.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
-        assertTrue(((TextView) drop.findViewById(android.R.id.message)).getText()
-            .toString().contains("不触碰工作树和远端仓库"));
+        String dropMessage = ((TextView) drop.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(dropMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(dropMessage.contains("当前分支：dev"));
+        assertTrue(dropMessage.contains("不触碰工作树和远端仓库"));
 
         clean.showStashActionsForTesting(entry);
         AlertDialog actions = ShadowAlertDialog.getLatestAlertDialog();

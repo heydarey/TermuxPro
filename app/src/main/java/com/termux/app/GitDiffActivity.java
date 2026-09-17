@@ -1256,10 +1256,12 @@ public final class GitDiffActivity extends AppCompatActivity {
                 mOverview.changedFiles), false);
             return;
         }
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_apply)
             .setMessage(getString(R.string.git_workbench_stash_apply_message,
-                stash.ref, stash.subject))
+                stash.ref, stash.subject, gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setPositiveButton(R.string.git_workbench_stash_apply_action,
                 (selectionDialog, which) -> applyStash(stash.ref))
             .setNegativeButton(android.R.string.cancel, null)
@@ -1272,10 +1274,12 @@ public final class GitDiffActivity extends AppCompatActivity {
             || !WorkspaceCommandBuilder.isSafeGitStashRef(stash.ref)) {
             return;
         }
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_drop)
             .setMessage(getString(R.string.git_workbench_stash_drop_message,
-                stash.ref, stash.subject))
+                stash.ref, stash.subject, gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setPositiveButton(R.string.git_workbench_stash_drop_action,
                 (selectionDialog, which) -> dropStash(stash.ref))
             .setNegativeButton(android.R.string.cancel, null)
@@ -1304,6 +1308,17 @@ public final class GitDiffActivity extends AppCompatActivity {
                     result.output.trim()), false);
             });
         });
+    }
+
+    @NonNull
+    private String gitTargetSummary(@NonNull ConnectionTarget target) {
+        return getString(R.string.git_workbench_target, target.host, target.port, target.path);
+    }
+
+    @NonNull
+    private String gitHeadSummary(@NonNull GitRepositoryOverview overview) {
+        return getString(overview.detached ? R.string.git_workbench_detached
+            : R.string.git_workbench_branch, overview.head);
     }
 
     private void applyStash(@NonNull String stashRef) {

@@ -700,9 +700,9 @@
     <string name="git_workbench_stash_item">%1$s · %2$s\n%3$s</string>
     <string name="git_workbench_stash_apply">Apply and keep</string>
     <string name="git_workbench_stash_drop">Delete this stash</string>
-    <string name="git_workbench_stash_apply_message">Apply %1$s to the current clean worktree?\n\n%2$s\n\nThe stash will remain in the list. TermuxPro does not use pop here.</string>
+    <string name="git_workbench_stash_apply_message">Apply %1$s to the current clean worktree?\n\n%2$s\n\nTarget: %3$s\n%4$s\n\nThe stash will remain in the list. TermuxPro does not use pop here.</string>
     <string name="git_workbench_stash_apply_action">Apply without deleting</string>
-    <string name="git_workbench_stash_drop_message">Delete %1$s?\n\n%2$s\n\nOnly this stash entry will be dropped. The worktree and remote repository are not touched.</string>
+    <string name="git_workbench_stash_drop_message">Delete %1$s?\n\n%2$s\n\nTarget: %3$s\n%4$s\n\nOnly this stash entry will be dropped. The worktree and remote repository are not touched.</string>
     <string name="git_workbench_stash_drop_action">Confirm delete</string>
     <string name="git_workbench_stash_apply_dirty_blocked">There are %1$d changed files in the worktree. Apply is blocked to avoid mixing changes.</string>
     <string name="git_workbench_stash_apply_dirty_remote_blocked">Remote Git still sees changed files, so stash apply was blocked. Refresh and verify the worktree first.</string>
