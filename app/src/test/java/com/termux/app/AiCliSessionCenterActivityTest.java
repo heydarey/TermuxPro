@@ -390,6 +390,11 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除本地记录：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空 2 条本地记录",
+            text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "远程开发");
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "2 条 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "不会删除 Claude/Codex 远端历史");
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
         AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
@@ -418,6 +423,8 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除本地记录：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空 1 条本地记录",
+            text(activity, R.id.ai_cli_center_clear_history));
 
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
         Intent repeated = shadowOf(activity).getNextStartedActivity();
