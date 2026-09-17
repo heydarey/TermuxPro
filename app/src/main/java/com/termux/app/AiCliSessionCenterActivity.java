@@ -202,7 +202,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         TextView repeat = findViewById(R.id.ai_cli_center_repeat_last);
         TextView deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
         View manageHistory = findViewById(R.id.ai_cli_center_manage_history);
-        View clear = findViewById(R.id.ai_cli_center_clear_history);
+        TextView clear = findViewById(R.id.ai_cli_center_clear_history);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || !workspace.isConfigured()) {
             mLaunchHistory = java.util.Collections.emptyList();
@@ -215,6 +215,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
             manageHistory.setEnabled(false);
             clear.setEnabled(false);
+            clear.setText(R.string.ai_cli_center_clear_history);
+            clear.setContentDescription(getString(R.string.ai_cli_center_clear_history));
             return;
         }
         scope.setText(getString(R.string.ai_cli_center_history_scope,
@@ -229,6 +231,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             deleteLatest.setText(R.string.ai_cli_center_delete_latest);
             manageHistory.setEnabled(false);
             clear.setEnabled(false);
+            clear.setText(R.string.ai_cli_center_clear_history);
+            clear.setContentDescription(getString(R.string.ai_cli_center_clear_history));
             return;
         }
         StringBuilder builder = new StringBuilder();
@@ -264,6 +268,12 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
         manageHistory.setEnabled(true);
         clear.setEnabled(true);
+        clear.setText(getResources().getQuantityString(
+            R.plurals.ai_cli_center_clear_history_target,
+            mLaunchHistory.size(), mLaunchHistory.size()));
+        clear.setContentDescription(getString(
+            R.string.ai_cli_center_clear_history_target_description,
+            workspace.name, mLaunchHistory.size()));
     }
 
     private String modeLabel(AiCliLaunchCommand.Mode mode) {
