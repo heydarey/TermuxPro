@@ -567,7 +567,7 @@
         <item quantity="other">查看当前仓库的 %1$d 条 stash；可选择应用但保留，或只删除选中的单条 stash。</item>
     </plurals>
     <string name="git_workbench_stash_hint">例如 切换任务前的 WIP</string>
-    <string name="git_workbench_stash_message">将 %1$d 个改动文件保存到 stash，其中已暂存 %2$d、未暂存 %3$d。不会提交，也不会推送。</string>
+    <string name="git_workbench_stash_message">将 %1$d 个改动文件保存到 stash，其中已暂存 %2$d、未暂存 %3$d。\n\n目标：%4$s\n%5$s\n\n不会提交，也不会推送。</string>
     <string name="git_workbench_stash_save_action">保存 Stash</string>
     <string name="git_workbench_stash_invalid">请输入 1 到 200 个字符的单行 stash 说明，不能包含控制字符。</string>
     <string name="git_workbench_no_stash_changes">当前没有可保存到 stash 的改动。</string>

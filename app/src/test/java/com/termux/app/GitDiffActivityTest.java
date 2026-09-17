@@ -460,8 +460,11 @@ public final class GitDiffActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertEquals(dirty.getString(R.string.git_workbench_stash_save_action),
             stash.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
-        assertTrue(((TextView) stash.findViewById(android.R.id.message)).getText().toString()
-            .contains("不会提交，也不会推送"));
+        String stashMessage = ((TextView) stash.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(stashMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(stashMessage.contains("当前分支：dev"));
+        assertTrue(stashMessage.contains("不会提交，也不会推送"));
         ((EditText) stash.findViewById(android.R.id.edit)).setText("bad\nstash");
         stash.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         assertNotNull(((EditText) stash.findViewById(android.R.id.edit)).getError());
