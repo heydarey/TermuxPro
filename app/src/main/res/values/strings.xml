@@ -508,7 +508,7 @@
     <string name="workspace_tools_scrollback_description">Open terminal tools. Finger swipes currently scroll terminal history.</string>
     <string name="workspace_tools_tui_scroll_description">Open terminal tools. Finger swipes currently control AI or TUI panels first.</string>
     <string name="workspace_git_status_action">Git workbench</string>
-    <string name="workspace_git_status_description">Open the Git workbench for the current workspace to review branches, changes, commits, and sync state.</string>
+    <string name="workspace_git_status_description">Safely open the current workspace Git workbench to review branches, changes, commits, and sync state; no git command is typed into the current terminal.</string>
     <string name="workspace_git_diff_action">Review Git diff</string>
     <string name="workspace_git_diff_description">Open Git diff review for the current workspace without committing, pulling, or pushing.</string>
     <string name="terminal_git_workbench_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
@@ -519,7 +519,7 @@
     <string name="terminal_connection_diagnostic_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="terminal_ssh_keys_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure a server and project directory first.</string>
     <string name="workspace_tmux_sessions_action">tmux manager</string>
-    <string name="workspace_tmux_sessions_description">Review and explicitly attach to tmux sessions; only current-workspace TermuxPro sessions can be renamed or stopped.</string>
+    <string name="workspace_tmux_sessions_description">Safely open tmux management and explicitly choose a session. Shared sessions are never auto-attached; only current-workspace TermuxPro sessions can be renamed or stopped.</string>
     <string name="terminal_task_sessions_invalid_workspace">No valid remote workspace is selected. Return to the workbench and configure the server, project directory, and tmux policy first.</string>
     <string name="workspace_interrupt_action">Interrupt (Ctrl+C)</string>
     <string name="workspace_interrupt_description">Send Ctrl+C to the current terminal to interrupt a running command or AI CLI action.</string>
@@ -1032,7 +1032,7 @@
     <string name="custom_commands_moved_down">Moved “%1$s” down.</string>
     <string name="custom_commands_deleted">Deleted “%1$s”. Only the local quick command was removed; no remote command ran.</string>
     <string name="custom_commands_invalid_workspace">No valid remote workspace is selected. Return to the workspace and configure a server and project directory first.</string>
-    <string name="terminal_tools_section_recommended">Recommended actions</string>
+    <string name="terminal_tools_section_recommended">Common workflows (safe open)</string>
     <string name="terminal_tools_section_context">Current terminal</string>
     <string name="terminal_tools_section_project">Project and Git</string>
     <string name="terminal_tools_section_connection">Connection and security</string>
@@ -1045,6 +1045,6 @@
     <string name="terminal_ai_launch_codex_description">Choose new or history mode first, then send the Codex CLI command to the terminal currently on screen.</string>
     <string name="terminal_tools_section_keyboard">Key rows</string>
     <string name="terminal_custom_commands_action">Quick commands</string>
-    <string name="terminal_custom_commands_description">Open quick commands for the current workspace without running a command automatically.</string>
+    <string name="terminal_custom_commands_description">Safely open quick commands for the current workspace. Entering the page will not run a command or type into the current terminal or AI TUI.</string>
 
 </resources>

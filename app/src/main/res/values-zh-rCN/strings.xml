@@ -385,7 +385,7 @@
     <string name="workspace_tools_scrollback_description">打开终端工具箱；当前手指上下滑动用于查看历史输出。</string>
     <string name="workspace_tools_tui_scroll_description">打开终端工具箱；当前手指上下滑动优先控制 AI 或 TUI 面板。</string>
     <string name="workspace_git_status_action">Git 工作台</string>
-    <string name="workspace_git_status_description">打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态。</string>
+    <string name="workspace_git_status_description">安全打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态；不会把 git 命令输入当前终端。</string>
     <string name="workspace_git_diff_action">审查 Git Diff</string>
     <string name="workspace_git_diff_description">打开当前工作区的 Git 改动审查，不直接提交、拉取或推送。</string>
     <string name="terminal_git_workbench_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
@@ -396,7 +396,7 @@
     <string name="terminal_connection_diagnostic_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="terminal_ssh_keys_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器和项目目录。</string>
     <string name="workspace_tmux_sessions_action">tmux 管理</string>
-    <string name="workspace_tmux_sessions_description">查看并显式进入 tmux 会话；只有当前工作区的 TermuxPro 会话可重命名或停止。</string>
+    <string name="workspace_tmux_sessions_description">安全打开 tmux 管理并显式选择会话；不会自动进入共享会话，只有当前工作区的 TermuxPro 会话可重命名或停止。</string>
     <string name="terminal_task_sessions_invalid_workspace">当前没有可用的远程工作区。请先回到工作台配置服务器、项目目录和 tmux 策略。</string>
     <string name="workspace_interrupt_action">中断（Ctrl+C）</string>
     <string name="workspace_interrupt_description">向当前终端发送 Ctrl+C，用于中断正在运行的命令或 AI CLI 操作。</string>
@@ -903,7 +903,7 @@
     <string name="custom_commands_moved_down">“%1$s”已下移。</string>
     <string name="custom_commands_deleted">已删除“%1$s”。只删除本地快捷指令，没有执行远端命令。</string>
     <string name="custom_commands_invalid_workspace">当前没有可用的远程工作区。请先返回工作台配置服务器和项目目录。</string>
-    <string name="terminal_tools_section_recommended">推荐操作</string>
+    <string name="terminal_tools_section_recommended">常用工作流（安全打开）</string>
     <string name="terminal_tools_section_context">当前终端</string>
     <string name="terminal_tools_section_project">项目与 Git</string>
     <string name="terminal_tools_section_connection">连接与安全</string>
@@ -916,5 +916,5 @@
     <string name="terminal_ai_launch_codex_description">先确认新建或历史选择，再把 Codex CLI 命令发送到当前正在显示的终端。</string>
     <string name="terminal_tools_section_keyboard">键区切换</string>
     <string name="terminal_custom_commands_action">快捷指令</string>
-    <string name="terminal_custom_commands_description">打开当前工作区快捷指令，不会自动执行命令。</string>
+    <string name="terminal_custom_commands_description">安全打开当前工作区快捷指令；进入页面不会执行命令，也不会输入当前终端或 AI TUI。</string>
 </resources>
