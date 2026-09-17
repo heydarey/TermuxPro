@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.view.View;
@@ -26,7 +29,11 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
@@ -57,7 +64,15 @@ public class CustomCommandsActivityTest {
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_action_feedback).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_backup).getVisibility());
+        assertEquals("导入备份", ((TextView) activity.findViewById(
+            R.id.custom_commands_backup)).getText().toString());
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_description),
+            activity.findViewById(R.id.custom_commands_backup).getContentDescription().toString());
         assertEquals("选用模板", ((TextView) activity.findViewById(
             R.id.custom_commands_templates)).getText().toString());
         assertEquals("新建指令", ((TextView) activity.findViewById(
@@ -86,11 +101,266 @@ public class CustomCommandsActivityTest {
         LinearLayout list = activity.findViewById(R.id.custom_commands_list);
         assertEquals(2, list.getChildCount());
         assertEquals("未分组 场景", ((TextView) list.getChildAt(0)).getText().toString());
+        String summary = ((TextView) list.getChildAt(1).findViewById(
+            R.id.custom_command_summary)).getText().toString();
+        assertTrue(summary.contains("未分组"));
+        assertTrue(summary.contains("工作区目录"));
+        assertTrue(summary.contains("hdr@192.168.1.153:22"));
         assertEquals(View.GONE, activity.findViewById(R.id.custom_commands_empty).getVisibility());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
         assertEquals(View.VISIBLE, activity.findViewById(
             R.id.custom_commands_scenario_hint).getVisibility());
+        assertEquals(View.VISIBLE, activity.findViewById(
+            R.id.custom_commands_backup).getVisibility());
+        assertEquals("备份与迁移", ((TextView) activity.findViewById(
+            R.id.custom_commands_backup)).getText().toString());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertEquals(View.VISIBLE, feedback.getVisibility());
+        assertTrue(feedback.getText().toString().contains("已保存“查看状态”"));
+        assertTrue(feedback.getText().toString().contains("查看并运行"));
+        assertEquals(feedback.getText().toString(), feedback.getContentDescription().toString());
+    }
+
+    @Test
+    public void exportsCurrentWorkspaceCommandsToClipboardWithoutExecuting() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("codex-resume", "Codex 历史",
+            "codex resume", "apps/mobile", "AI", true,
+            CustomCommand.Confirmation.ALWAYS));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        View backupButton = activity.findViewById(R.id.custom_commands_backup);
+        assertEquals(View.VISIBLE, backupButton.getVisibility());
+        assertEquals(activity.getString(R.string.custom_commands_backup_description),
+            backupButton.getContentDescription().toString());
+        backupButton.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog actionDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertEquals(activity.getString(R.string.custom_commands_backup_title),
+            shadowOf(actionDialog).getTitle());
+        ListView actionList = actionDialog.getListView();
+        assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        assertNotNull(clipboard);
+        assertNotNull(clipboard.getPrimaryClip());
+        String text = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity).toString();
+        JSONObject backup = new JSONObject(text);
+        assertEquals("termuxpro.customCommands.v1", backup.getString("schema"));
+        assertEquals("workspace-a", backup.getString("workspaceId"));
+        assertEquals("移动端", backup.getString("workspaceName"));
+        assertEquals("hdr@192.168.1.153", backup.getJSONObject("workspace").getString("host"));
+        assertEquals(22, backup.getJSONObject("workspace").getInt("port"));
+        assertEquals("~/project", backup.getJSONObject("workspace").getString("path"));
+        JSONArray commands = backup.getJSONArray("commands");
+        assertEquals(2, commands.length());
+        assertEquals("Git 状态", commands.getJSONObject(0).getString("name"));
+        assertEquals("git status --short", commands.getJSONObject(0).getString("command"));
+        assertEquals("DANGEROUS_ONLY", commands.getJSONObject(0).getString("confirmation"));
+        assertEquals("Codex 历史", commands.getJSONObject(1).getString("name"));
+        assertEquals("apps/mobile", commands.getJSONObject(1).getString("workingDirectory"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("已复制 2 条快捷指令 JSON"));
+        assertTrue(feedback.getText().toString().contains("不会执行远端命令"));
+    }
+
+    @Test
+    public void importsClipboardBackupAfterPreviewWithoutExecuting() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-existing", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            new CustomCommand("git-old", "Git 状态", "git status --short --branch", "",
+                "Git", true, CustomCommand.Confirmation.DANGEROUS_ONLY),
+            new CustomCommand("ai-old", "继续 Codex", "codex resume", "apps/mobile",
+                "AI", false, CustomCommand.Confirmation.ALWAYS)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(1, null, actionList), 1,
+            actionList.getAdapter().getItemId(1));
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(preview);
+        assertEquals(activity.getString(R.string.custom_commands_import_preview_title),
+            shadowOf(preview).getTitle());
+        String message = ((TextView) preview.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("旧项目"));
+        assertTrue(message.contains("移动端"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(message.contains("将导入：Git 状态、继续 Codex"));
+        assertTrue(message.contains("不会执行远端命令"));
+        assertEquals(1, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+
+        preview.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        List<CustomCommand> imported = new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a");
+        assertEquals(3, imported.size());
+        assertEquals("Git 状态", imported.get(0).name);
+        assertEquals("Git 状态（导入）", imported.get(1).name);
+        assertEquals("git status --short --branch", imported.get(1).command);
+        assertEquals("继续 Codex", imported.get(2).name);
+        assertFalse(imported.get(2).enabled);
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("已导入 2 条快捷指令"));
+    }
+
+    @Test
+    public void importPreviewShowsReadableBoundedCommandNamesBeforeSaving() throws Exception {
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            CustomCommand.create("运行测试", "pnpm test", "", "测试",
+                CustomCommand.Confirmation.ALWAYS),
+            CustomCommand.create("查看 Git", "git status --short", "", "Git",
+                CustomCommand.Confirmation.DANGEROUS_ONLY),
+            CustomCommand.create("继续 Codex", "codex resume", "", "AI",
+                CustomCommand.Confirmation.ALWAYS),
+            CustomCommand.create("查看日志", "tail -n 200 logs/app.log", "", "日志",
+                CustomCommand.Confirmation.DANGEROUS_ONLY)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        String message = ((TextView) preview.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(message.contains("将导入：运行测试、查看 Git、继续 Codex，另有 1 条"));
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void importClearsActiveSearchSoImportedCommandsAreVisible() throws Exception {
+        CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
+        store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
+            "git status --short", "", "Git", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        store.save("workspace-a", new CustomCommand("ai-resume", "继续 Codex",
+            "codex resume", "apps/mobile", "AI", true,
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("frontend-test", "前端检查",
+            "pnpm test", "apps/web", "测试", true,
+            CustomCommand.Confirmation.ALWAYS));
+        store.save("workspace-a", new CustomCommand("tmux-list", "查看 tmux",
+            "tmux list-sessions", "", "tmux", true,
+            CustomCommand.Confirmation.DANGEROUS_ONLY));
+        WorkspaceTarget source = new WorkspaceTarget("workspace-old", "旧项目",
+            "dev@example.com", 2222, "~/old");
+        String backup = CustomCommandsActivity.buildExportJson(source, Arrays.asList(
+            new CustomCommand("test-watch", "运行测试", "pnpm test -- --watch=false", "",
+                "测试", true, CustomCommand.Confirmation.ALWAYS),
+            new CustomCommand("log-tail", "查看日志", "tail -n 200 logs/app.log", "",
+                "日志", true, CustomCommand.Confirmation.DANGEROUS_ONLY)
+        )).toString();
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("backup", backup));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        EditText search = activity.findViewById(R.id.custom_commands_search_input);
+        search.setText("codex");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals("已显示 1 / 4 条快捷指令", ((TextView) activity.findViewById(
+            R.id.custom_commands_search_summary)).getText().toString());
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(1, null, actionList), 1,
+            actionList.getAdapter().getItemId(1));
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog preview = ShadowAlertDialog.getLatestAlertDialog();
+        preview.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals("", search.getText().toString());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_search_summary).getVisibility());
+        LinearLayout list = activity.findViewById(R.id.custom_commands_list);
+        assertTrue(listContainsCommandName(list, "运行测试"));
+        assertTrue(listContainsCommandName(list, "查看日志"));
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("清除筛选"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void rejectsInvalidOrSensitiveClipboardImport() {
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("bad",
+            "{\"schema\":\"termuxpro.customCommands.v1\",\"commands\":[{\"name\":\"危险\",\"command\":\"export TOKEN=abc\"}]}"));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_title),
+            shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle());
+        assertEquals(1, actionList.getAdapter().getCount());
+        assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(0).toString());
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("不是有效的 TermuxPro 快捷指令备份"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void importedDuplicateNamesRemainReadableAndBounded() {
+        HashSet<String> names = new HashSet<>();
+        names.add("运行测试");
+
+        assertEquals("运行测试（导入）",
+            CustomCommandsActivity.uniqueImportedName("运行测试", names));
+        assertTrue(names.contains("运行测试（导入）"));
     }
 
     @Test
@@ -105,11 +375,13 @@ public class CustomCommandsActivityTest {
         assertEquals(activity.getString(R.string.custom_commands_template_title),
             shadowOf(templateDialog).getTitle());
         ListView listView = templateDialog.getListView();
-        assertTrue(listView.getAdapter().getCount() >= 7);
-        assertTrue(listView.getAdapter().getItem(0).toString().contains("codex resume"));
-        assertTrue(listView.getAdapter().getItem(1).toString().contains("claude"));
-        assertFalse(listView.getAdapter().getItem(1).toString().contains("--continue"));
-        assertTrue(listView.getAdapter().getItem(2).toString().contains("claude --resume"));
+        assertTrue(listView.getAdapter().getCount() >= 8);
+        assertEquals("Codex：新建独立会话", listView.getAdapter().getItem(0).toString());
+        assertEquals("Codex：打开历史选择器", listView.getAdapter().getItem(1).toString());
+        assertEquals("Claude：新建独立会话", listView.getAdapter().getItem(2).toString());
+        assertEquals("Claude：打开历史选择器", listView.getAdapter().getItem(3).toString());
+        assertFalse(listView.getAdapter().getItem(0).toString().contains("\n"));
+        assertFalse(listView.getAdapter().getItem(3).toString().contains("claude --resume"));
         assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
             .list("workspace-a").size());
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
@@ -121,9 +393,9 @@ public class CustomCommandsActivityTest {
         assertNotNull(editor);
         assertEquals(activity.getString(R.string.custom_commands_create_title),
             shadowOf(editor).getTitle());
-        assertEquals("Codex：打开历史会话", ((EditText) editor.findViewById(
+        assertEquals("Codex：新建独立会话", ((EditText) editor.findViewById(
             R.id.custom_command_name_input)).getText().toString());
-        assertEquals("codex resume", ((EditText) editor.findViewById(
+        assertEquals("codex", ((EditText) editor.findViewById(
             R.id.custom_command_value_input)).getText().toString());
         assertEquals("AI", ((EditText) editor.findViewById(
             R.id.custom_command_group_input)).getText().toString());
@@ -176,8 +448,19 @@ public class CustomCommandsActivityTest {
         assertEquals("Git 场景", ((TextView) list.getChildAt(0)).getText().toString());
         assertEquals("git status --short", ((TextView) list.getChildAt(1)
             .findViewById(R.id.custom_command_value)).getText().toString());
+        assertEquals("Git · 工作区目录 · hdr@192.168.1.153:22",
+            ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_summary))
+                .getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
+        assertEquals("立即运行“查看状态”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+            list.getChildAt(1).findViewById(R.id.custom_command_run)
+                .getContentDescription().toString());
+        assertEquals("编辑/更多", ((TextView) list.getChildAt(1)
+            .findViewById(R.id.custom_command_manage)).getText().toString());
+        assertEquals("编辑、复制、排序、停用或删除“查看状态”。",
+            list.getChildAt(1).findViewById(R.id.custom_command_manage)
+                .getContentDescription().toString());
         list.getChildAt(1).findViewById(R.id.custom_command_run).performClick();
         shadowOf(Looper.getMainLooper()).idle();
 
@@ -247,6 +530,14 @@ public class CustomCommandsActivityTest {
     }
 
     @Test
+    public void managementCopyLabelExplainsThatItCreatesANewCommand() {
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        assertEquals("复制为新指令", activity.getString(R.string.custom_commands_copy));
+    }
+
+    @Test
     public void groupsCommandsByScenarioWithoutChangingStoredOrder() {
         CustomCommandStore store = new CustomCommandStore(RuntimeEnvironment.getApplication());
         store.save("workspace-a", new CustomCommand("git-status", "Git 状态",
@@ -269,6 +560,9 @@ public class CustomCommandsActivityTest {
         assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
         assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
             .findViewById(R.id.custom_command_name)).getText().toString());
+        assertEquals("查看并运行“Codex 历史”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+            list.getChildAt(4).findViewById(R.id.custom_command_run)
+                .getContentDescription().toString());
         assertEquals("Git 状态", store.list("workspace-a").get(0).name);
         assertEquals("Codex 历史", store.list("workspace-a").get(1).name);
         assertEquals("Git 提交", store.list("workspace-a").get(2).name);
@@ -287,5 +581,20 @@ public class CustomCommandsActivityTest {
             ((TextView) activity.findViewById(R.id.custom_commands_empty)).getText().toString());
         assertEquals(View.GONE, activity.findViewById(
             R.id.custom_commands_template_hint).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_action_feedback).getVisibility());
+        assertEquals(View.GONE, activity.findViewById(
+            R.id.custom_commands_backup).getVisibility());
+    }
+
+    private static boolean listContainsCommandName(LinearLayout list, String name) {
+        for (int index = 0; index < list.getChildCount(); index++) {
+            View item = list.getChildAt(index);
+            TextView label = item.findViewById(R.id.custom_command_name);
+            if (label != null && name.equals(label.getText().toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -25,6 +25,7 @@ product_dialog_files = {
     "SshKeysActivity.java",
     "TaskSessionsActivity.java",
     "WorkspaceActivity.java",
+    "TermuxTerminalViewClient.java",
 }
 
 for source_path in root.rglob("*.java"):

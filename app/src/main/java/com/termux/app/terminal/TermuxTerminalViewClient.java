@@ -718,19 +718,15 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             ShareUtils.copyTextToClipboard(mActivity, url, mActivity.getString(R.string.msg_select_url_copied_to_clipboard));
         }).setTitle(R.string.title_select_url_dialog).create();
 
-        // Long press to open URL:
-        dialog.setOnShowListener(di -> {
-            ListView lv = dialog.getListView(); // this is a ListView with your "buds" in it
+        TermuxProDialogStyle.show(mActivity, dialog, shownDialog -> {
+            ListView lv = shownDialog.getListView(); // this is a ListView with your "buds" in it
             lv.setOnItemLongClickListener((parent, view, position, id) -> {
-                dialog.dismiss();
+                shownDialog.dismiss();
                 String url = (String) urls[position];
                 ShareUtils.openUrl(mActivity, url);
                 return true;
             });
-            TermuxProDialogStyle.apply(mActivity, dialog);
         });
-
-        dialog.show();
     }
 
     public void reportIssueFromTranscript() {

@@ -104,15 +104,19 @@ public class CustomLayoutsSmokeTest {
             workbench.getText().toString());
         assertEquals(context.getString(R.string.workspace_open_workbench_description),
             workbench.getContentDescription().toString());
-        assertEquals(context.getString(R.string.workspace_open_sessions),
+        assertTrue(workbench.getText().toString().contains("工作台"));
+        assertTrue(workbench.getContentDescription().toString().contains("服务器"));
+        assertTrue(workbench.getContentDescription().toString().contains("AI"));
+        assertEquals(context.getString(R.string.workspace_open_sessions_description),
             sessions.getContentDescription().toString());
         assertEquals(context.getString(R.string.workspace_sessions_short),
             sessions.getText().toString());
         assertEquals(context.getString(R.string.terminal_ai_short), aiCenter.getText().toString());
-        assertEquals(context.getString(R.string.terminal_ai_cli_center_action),
+        assertEquals(context.getString(R.string.terminal_ai_cli_center_description),
             aiCenter.getContentDescription().toString());
-        assertEquals(context.getString(R.string.workspace_tools_action), tools.getText().toString());
-        assertEquals(context.getString(R.string.workspace_tools_action),
+        assertEquals(context.getString(R.string.workspace_tools_scrollback_action),
+            tools.getText().toString());
+        assertEquals(context.getString(R.string.workspace_tools_scrollback_description),
             tools.getContentDescription().toString());
         assertEquals(context.getString(R.string.action_close_session),
             closeSession.getText().toString());

@@ -25,18 +25,22 @@ final class AiSessionDialog {
 
     static void showChoice(Activity activity, AiCliLaunchCommand.Tool tool, String context,
                            SelectionListener listener) {
+        showChoice(activity, tool, context, false, listener);
+    }
+
+    static void showChoice(Activity activity, AiCliLaunchCommand.Tool tool, String context,
+                           boolean terminalEntrypoint, SelectionListener listener) {
         View content = activity.getLayoutInflater().inflate(R.layout.dialog_ai_session_choice,
             null, false);
         MaterialButton newSession = content.findViewById(R.id.ai_session_new_button);
         MaterialButton history = content.findViewById(R.id.ai_session_history_button);
         ((TextView) content.findViewById(R.id.ai_session_choice_context)).setText(context);
         newSession.setText(AiCliLaunchMessage.buttonLabel(activity, tool,
-            AiCliLaunchCommand.Mode.NEW_SESSION));
+            AiCliLaunchCommand.Mode.NEW_SESSION, terminalEntrypoint));
         history.setText(AiCliLaunchMessage.buttonLabel(activity, tool,
-            AiCliLaunchCommand.Mode.PICK_HISTORY));
+            AiCliLaunchCommand.Mode.PICK_HISTORY, terminalEntrypoint));
         AlertDialog dialog = new AlertDialog.Builder(activity)
-            .setTitle(activity.getString(R.string.ai_session_launch_title,
-                AiCliLaunchCommand.displayName(tool)))
+            .setTitle(AiCliLaunchMessage.title(activity, tool, terminalEntrypoint))
             .setView(content)
             .setNegativeButton(android.R.string.cancel, null)
             .create();

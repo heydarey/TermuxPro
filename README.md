@@ -10,7 +10,7 @@ TermuxPro 是面向 Android 手机的移动 AI 开发终端。它以官方
 
 ## 当前版本
 
-`0.8.0` 是 ARM64 正式版，面向 Android 7 及以上设备，优先验证 Android 14–16。当前阶段聚焦：
+`0.10.0` 是 ARM64 正式版，面向 Android 7 及以上设备，优先验证 Android 14–16。当前阶段聚焦：
 
 - 中文工作区与多 SSH 项目配置
 - Claude Code 与 Codex CLI 安全新建上下文，历史会话必须由用户显式选择
@@ -22,7 +22,7 @@ TermuxPro 是面向 Android 手机的移动 AI 开发终端。它以官方
 - 最近 1 MB 终端输出搜索，最多返回 100 条且不落盘
 - 完整本地 Termux Linux 环境
 
-远端文件写入、Mosh、增强远端代理以及应用内模型调用尚未作为 `0.8.0` 稳定能力承诺。
+远端文件写入、Mosh、增强远端代理以及应用内模型调用尚未作为 `0.10.0` 稳定能力承诺。
 
 ## 安装与使用
 
@@ -46,7 +46,7 @@ Git 工作台已支持状态概览、分支查看/切换/新建、提交历史�
 - Linux 或 macOS（Windows 建议 WSL2）
 - Git 2.40+、JDK 17
 - Android SDK Platform 36、Build Tools 35.0.0
-- Android NDK `29.0.14206865`
+- Android NDK `27.0.12077973`
 - Android API/屏幕/字体模拟器矩阵；触发厂商或硬件相关风险时使用 ARM64 实体设备或云真机
 
 Gradle Wrapper 已提交，无需单独安装 Gradle：
@@ -80,8 +80,11 @@ Android 标准测试位于各模块 `src/test` 和 `src/androidTest`；根目录
 ## 分支与交付流程
 
 - `dev`：日常产品开发和集成分支。
-- 功能分支从 `dev` 创建，使用 `dev_<englishCamelCase>_<YYYYMMDD>` 命名，完成后通过 PR 合回
-  `dev`；紧急修复使用 `hotfix_<englishCamelCase>_<YYYYMMDD>` 或关联 bug ID。
+- `dev_dailyIteration`：长期日常维护分支。普通体验优化、文档治理、流程治理和低风险小功能默认累计到
+  这个分支，形成一个可验收纵向切片后通过自动 PR 合回 `dev`，避免为每个小改动创建一次性分支。
+- 独立功能分支只用于候选发布列车、紧急 hotfix、高风险重构或需要隔离审查的工作；使用
+  `dev_<englishCamelCase>_<YYYYMMDD>` 命名。紧急修复使用 `hotfix_<englishCamelCase>_<YYYYMMDD>`
+  或关联 bug ID。
 - `master`：只接收通过自动化、Release 校验和风险匹配的 Android 运行时验收的发布候选。
 - 官方 Termux 更新通过只读 `upstream` 同步，不向上游推送 TermuxPro 代码。
 
@@ -89,10 +92,13 @@ Android 标准测试位于各模块 `src/test` 和 `src/androidTest`；根目录
 `dev → master` 发布 PR → `vX.Y.Z` 正式 Release → `dev` 快进对齐 `master`。手动 Actions 构建的
 Artifact 仅用于验证，不视为正式发布。
 
-项目每天迭代，但稳定版不按提交逐个发布：每个通过自动化与 UI 验收、可独立体验的纵向切片都会生成
-候选 Release；每个自然周至少进行一次发布评审。每个发布列车默认只有一个 `rc.1`，仅 P0/P1、门禁
-失败或产物不可安装才递增候选编号。发布范围冻结后，新 P2 需求进入下一版本；候选版全部门禁通过且
-没有 P0/P1 后，在同一维护周期合入 `master` 并创建稳定 Release，失败则记录 HOLD 原因和解除条件。
+项目持续迭代，但稳定版不按提交逐个发布：发布前先累计用户可明显感知、可独立体验且可回滚的纵向切片。
+每个自然周至少进行一次发布评审，评审结论可以是 `READY`、`HOLD` 或 `RELEASED`；没有达到质量或价值
+标准时记录 HOLD 原因、解除条件和下一次复评时间，不为了显示进度制造候选包。反过来，如果最近几天没有
+新增 P0/P1、`dev` 门禁和模拟器/发布回归稳定，且已累计真实用户可感知价值，就应推进候选/正式发布，
+不能长期只迭代不发稳定版。每个发布列车默认只有一个 `rc.1`，仅 P0/P1、门禁失败或产物不可安装才递增
+候选编号。发布范围冻结后，新 P2 需求进入下一版本；候选版全部门禁通过且没有 P0/P1 后，在同一维护周期
+合入 `master` 并创建稳定 Release。
 
 完整规范见 [贡献指南](CONTRIBUTING.md)、[架构说明](docs/ARCHITECTURE.md)和
 [发布与签名](docs/RELEASE_SIGNING.md)。Codex 与 Claude Code 应加载项目中的
@@ -127,4 +133,4 @@ test/                 跨模块测试计划、用例与验收记录
 
 - 上游源码：https://github.com/termux/termux-app
 - 上游软件包：https://github.com/termux/termux-packages
-- 本项目问题：https://github.com/dr1234-div/TermuxPro/issues
+- 本项目问题：https://github.com/heydarey/TermuxPro/issues

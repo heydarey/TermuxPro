@@ -39,10 +39,12 @@ if (( mem_available_kb < min_memory_kb )); then
 fi
 if (( disk_available_kb < min_disk_kb )); then
     echo "资源守卫拒绝：可用磁盘低于 $((min_disk_kb / 1024 / 1024)) GiB。" >&2
+    echo "可先运行 ./scripts/cleanup-generated-caches.sh 查看可清理的生成缓存；确认后再执行 --apply。若仍不足，再加 --include-user-caches 清理用户级 npm/Gradle 缓存。" >&2
     exit 4
 fi
 if [[ "$mode" == "heavy" ]] && (( disk_used_percent >= 85 )); then
     echo "资源守卫拒绝：重任务要求磁盘使用率低于 85%。" >&2
+    echo "可先运行 ./scripts/cleanup-generated-caches.sh 查看可清理的生成缓存；确认后再执行 --apply。若仍不足，再加 --include-user-caches 清理用户级 npm/Gradle 缓存。" >&2
     exit 5
 fi
 if [[ "$mode" == "heavy" ]] && ! awk -v load="$load_one" -v cpu="$cpu_count" 'BEGIN {exit !(load <= cpu * 0.75)}'; then

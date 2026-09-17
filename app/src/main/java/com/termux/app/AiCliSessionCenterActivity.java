@@ -1,7 +1,10 @@
 package com.termux.app;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.termux.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * AI CLI 会话中心。
  *
@@ -17,15 +25,18 @@ import com.termux.R;
  * 真正启动命令仍由工作台或终端中的显式安全弹窗完成。
  */
 public final class AiCliSessionCenterActivity extends AppCompatActivity {
+    private AiLaunchHistoryStore mLaunchHistoryStore;
+    private List<AiLaunchHistoryStore.Entry> mLaunchHistory;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ai_cli_session_center);
+        mLaunchHistoryStore = new AiLaunchHistoryStore(this);
 
         findViewById(R.id.ai_cli_center_back).setOnClickListener(view -> finish());
         findViewById(R.id.ai_cli_center_open_workspace).setOnClickListener(view ->
-            startActivity(new Intent(this, WorkspaceActivity.class)));
+            openWorkspaceWithBack());
         findViewById(R.id.ai_cli_center_open_templates).setOnClickListener(view ->
             startActivity(new Intent(this, CustomCommandsActivity.class)));
         findViewById(R.id.ai_cli_center_open_diagnostic).setOnClickListener(view ->
@@ -37,25 +48,72 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_claude_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_claude_history).setOnClickListener(view ->
-            launchAiCli(AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.PICK_HISTORY));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CLAUDE, null));
         findViewById(R.id.ai_cli_center_codex_new).setOnClickListener(view ->
             launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.NEW_SESSION));
         findViewById(R.id.ai_cli_center_codex_history).setOnClickListener(view ->
-            launchAiCli(AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY));
+            confirmHistoryLaunch(AiCliLaunchCommand.Tool.CODEX, null));
+        findViewById(R.id.ai_cli_center_repeat_last).setOnClickListener(view -> repeatLastAiLaunch());
+        findViewById(R.id.ai_cli_center_delete_latest).setOnClickListener(view ->
+            confirmDeleteLatestHistory());
+        findViewById(R.id.ai_cli_center_manage_history).setOnClickListener(view ->
+            showManageHistoryDialog());
+        findViewById(R.id.ai_cli_center_clear_history).setOnClickListener(view ->
+            confirmClearCurrentHistory());
 
         bindTarget();
         configureLargeFontHierarchy();
         bindCommands();
+        bindHistory();
     }
 
     /** 大字体优先保证四个 AI 核心操作可见，完整上下文和策略仍由可读控件保留。 */
     private void configureLargeFontHierarchy() {
         if (getResources().getConfiguration().fontScale < 1.5f) return;
+        reduceVerticalPadding(R.id.ai_cli_center_content, 12);
+        reduceVerticalPadding(R.id.ai_cli_center_target_card, 12);
+        reduceVerticalPadding(R.id.ai_cli_center_start_card, 12);
         findViewById(R.id.ai_cli_center_context_title).setVisibility(View.GONE);
         findViewById(R.id.ai_cli_center_target_label).setVisibility(View.GONE);
+        findViewById(R.id.ai_cli_center_target).setVisibility(View.GONE);
         TextView hint = findViewById(R.id.ai_cli_center_start_hint);
         hint.setText(R.string.ai_cli_center_start_hint_compact);
         hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
+        // 200% 字体下“开始 AI 工作”卡片已经有风险摘要、推荐/谨慎标签和四个核心按钮。
+        // 隐藏重复说明，确保四个启动入口仍在首屏可见；完整语义保留给辅助技术。
+        hint.setVisibility(View.GONE);
+        TextView risk = findViewById(R.id.ai_cli_center_ai_risk);
+        if (!getString(R.string.ai_cli_center_ai_risk_missing)
+            .contentEquals(risk.getText())) {
+            risk.setContentDescription(risk.getText());
+            risk.setText(R.string.ai_cli_center_ai_risk_compact);
+        }
+        ((TextView) findViewById(R.id.ai_cli_center_safe_default_label))
+            .setText(R.string.ai_cli_center_safe_default_label_compact);
+        ((TextView) findViewById(R.id.ai_cli_center_history_caution_label))
+            .setText(R.string.ai_cli_center_history_caution_label_compact);
+        TextView claudeNew = findViewById(R.id.ai_cli_center_claude_new);
+        TextView claudeHistory = findViewById(R.id.ai_cli_center_claude_history);
+        TextView codexNew = findViewById(R.id.ai_cli_center_codex_new);
+        TextView codexHistory = findViewById(R.id.ai_cli_center_codex_history);
+        claudeNew.setText(R.string.ai_cli_center_claude_new_compact);
+        claudeNew.setContentDescription(getString(R.string.ai_cli_center_claude_new)
+            + "。" + getString(R.string.ai_cli_center_claude_new_description));
+        claudeHistory.setText(R.string.ai_cli_center_claude_history_compact);
+        claudeHistory.setContentDescription(getString(R.string.ai_cli_center_claude_history)
+            + "。" + getString(R.string.ai_cli_center_claude_history_description));
+        codexNew.setText(R.string.ai_cli_center_codex_new_compact);
+        codexNew.setContentDescription(getString(R.string.ai_cli_center_codex_new)
+            + "。" + getString(R.string.ai_cli_center_codex_new_description));
+        codexHistory.setText(R.string.ai_cli_center_codex_history_compact);
+        codexHistory.setContentDescription(getString(R.string.ai_cli_center_codex_history)
+            + "。" + getString(R.string.ai_cli_center_codex_history_description));
+    }
+
+    private void reduceVerticalPadding(int viewId, int paddingDp) {
+        View view = findViewById(viewId);
+        int padding = Math.round(paddingDp * getResources().getDisplayMetrics().density);
+        view.setPadding(padding, padding, padding, padding);
     }
 
     private void bindTarget() {
@@ -137,10 +195,339 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                     AiCliLaunchCommand.Mode.PICK_HISTORY)));
     }
 
+    private void bindHistory() {
+        TextView scope = findViewById(R.id.ai_cli_center_history_scope);
+        TextView summary = findViewById(R.id.ai_cli_center_history_summary);
+        TextView nextStep = findViewById(R.id.ai_cli_center_history_next_step);
+        TextView repeat = findViewById(R.id.ai_cli_center_repeat_last);
+        TextView deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
+        View manageHistory = findViewById(R.id.ai_cli_center_manage_history);
+        View clear = findViewById(R.id.ai_cli_center_clear_history);
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            mLaunchHistory = java.util.Collections.emptyList();
+            scope.setText(R.string.ai_cli_center_history_scope_missing);
+            summary.setText(R.string.ai_cli_center_history_missing_workspace);
+            nextStep.setText(R.string.ai_cli_center_history_next_missing_workspace);
+            repeat.setEnabled(false);
+            repeat.setText(R.string.ai_cli_center_repeat_last);
+            deleteLatest.setEnabled(false);
+            deleteLatest.setText(R.string.ai_cli_center_delete_latest);
+            manageHistory.setEnabled(false);
+            clear.setEnabled(false);
+            return;
+        }
+        scope.setText(getString(R.string.ai_cli_center_history_scope,
+            workspace.name, workspace.host, workspace.port, workspace.path));
+        mLaunchHistory = mLaunchHistoryStore.readForWorkspace(workspace.id);
+        if (mLaunchHistory.isEmpty()) {
+            summary.setText(R.string.ai_cli_center_history_empty);
+            nextStep.setText(R.string.ai_cli_center_history_next_empty);
+            repeat.setEnabled(false);
+            repeat.setText(R.string.ai_cli_center_repeat_last);
+            deleteLatest.setEnabled(false);
+            deleteLatest.setText(R.string.ai_cli_center_delete_latest);
+            manageHistory.setEnabled(false);
+            clear.setEnabled(false);
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        int count = Math.min(3, mLaunchHistory.size());
+        builder.append(getResources().getQuantityString(R.plurals.ai_cli_center_history_count,
+            count, count));
+        for (int index = 0; index < count; index++) {
+            AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(index);
+            builder.append("\n\n");
+            builder.append(getString(R.string.ai_cli_center_history_item,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)));
+        }
+        int hiddenCount = mLaunchHistory.size() - count;
+        if (hiddenCount > 0) {
+            builder.append("\n\n");
+            builder.append(getResources().getQuantityString(
+                R.plurals.ai_cli_center_history_more, hiddenCount, hiddenCount));
+        }
+        summary.setText(builder.toString());
+        AiLaunchHistoryStore.Entry latest = mLaunchHistory.get(0);
+        nextStep.setText(getString(R.string.ai_cli_center_history_next_ready,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
+        repeat.setEnabled(true);
+        repeat.setText(getString(R.string.ai_cli_center_repeat_last_target,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
+        deleteLatest.setEnabled(true);
+        deleteLatest.setText(getString(R.string.ai_cli_center_delete_latest_target,
+            AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode)));
+        manageHistory.setEnabled(true);
+        clear.setEnabled(true);
+    }
+
+    private String modeLabel(AiCliLaunchCommand.Mode mode) {
+        return getString(mode == AiCliLaunchCommand.Mode.NEW_SESSION
+            ? R.string.ai_cli_center_history_mode_new
+            : R.string.ai_cli_center_history_mode_pick);
+    }
+
+    private void repeatLastAiLaunch() {
+        if (mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            openWorkspaceWithBack();
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        launchAiCliWithModeGuard(entry);
+    }
+
+    private void repeatHistoryEntry(AiLaunchHistoryStore.Entry entry) {
+        launchAiCliWithModeGuard(entry);
+    }
+
+    private void launchAiCliWithModeGuard(AiLaunchHistoryStore.Entry entry) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (!historyEntryMatchesWorkspace(entry, workspace)) {
+            showHistoryTargetChangedDialog(entry, workspace);
+            return;
+        }
+        if (entry.mode == AiCliLaunchCommand.Mode.PICK_HISTORY) {
+            confirmHistoryLaunch(entry.tool, entry);
+            return;
+        }
+        launchAiCli(entry.tool, entry.mode);
+    }
+
+    private void confirmHistoryLaunch(AiCliLaunchCommand.Tool tool,
+                                      @Nullable AiLaunchHistoryStore.Entry repeatedEntry) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !SshTargetValidator.isValid(workspace.host)
+            || workspace.port < 1 || workspace.port > 65535
+            || workspace.path == null || workspace.path.trim().isEmpty()) {
+            launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY);
+            return;
+        }
+        String message = repeatedEntry == null
+            ? getString(R.string.ai_cli_center_history_launch_message,
+                AiCliLaunchCommand.displayName(tool),
+                AiCliLaunchCommand.command(tool, AiCliLaunchCommand.Mode.PICK_HISTORY),
+                workspace.host,
+                workspace.port,
+                workspace.path)
+            : getString(R.string.ai_cli_center_history_repeat_launch_message,
+                AiCliLaunchCommand.displayName(tool),
+                AiCliLaunchCommand.command(tool, AiCliLaunchCommand.Mode.PICK_HISTORY),
+                workspace.host,
+                workspace.port,
+                workspace.path,
+                formatLaunchTime(repeatedEntry.launchedAtMillis));
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.ai_cli_center_history_launch_title,
+                AiCliLaunchCommand.displayName(tool)))
+            .setMessage(message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_history_launch_action,
+                (dialog, which) -> launchAiCli(tool, AiCliLaunchCommand.Mode.PICK_HISTORY))
+            .create());
+    }
+
+    private void deleteLatestHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()
+            || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        mLaunchHistoryStore.deleteEntry(workspace.id, entry.launchedAtMillis,
+            entry.tool, entry.mode);
+        bindHistory();
+    }
+
+    private void confirmDeleteLatestHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()
+            || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        AiLaunchHistoryStore.Entry entry = mLaunchHistory.get(0);
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_delete_latest_title)
+            .setMessage(getString(R.string.ai_cli_center_delete_latest_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> deleteLatestHistory())
+            .create());
+    }
+
+    private void showManageHistoryDialog() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()
+            || mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+                .setTitle(R.string.ai_cli_center_manage_history_empty_title)
+                .setMessage(R.string.ai_cli_center_manage_history_empty)
+                .setPositiveButton(android.R.string.ok, null)
+                .create());
+            bindHistory();
+            return;
+        }
+        String[] labels = new String[mLaunchHistory.size()];
+        for (int index = 0; index < mLaunchHistory.size(); index++) {
+            labels[index] = historyDialogLabel(mLaunchHistory.get(index));
+        }
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.ai_cli_center_manage_history_title, workspace.name))
+            .setItems(labels, (dialog, which) -> confirmHistoryEntryAction(mLaunchHistory.get(which)))
+            .setNegativeButton(android.R.string.cancel, null)
+            .create());
+    }
+
+    private String historyDialogLabel(AiLaunchHistoryStore.Entry entry) {
+        return getString(R.string.ai_cli_center_history_item,
+            AiCliLaunchCommand.displayName(entry.tool),
+            modeLabel(entry.mode),
+            entry.host,
+            entry.port,
+            entry.path,
+            formatLaunchTime(entry.launchedAtMillis));
+    }
+
+    private String formatLaunchTime(long launchedAtMillis) {
+        if (launchedAtMillis <= 0L) {
+            return getString(R.string.ai_cli_center_history_time_unknown);
+        }
+        return new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+            .format(new Date(launchedAtMillis));
+    }
+
+    private void confirmHistoryEntryAction(AiLaunchHistoryStore.Entry entry) {
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_history_action_title)
+            .setMessage(getString(R.string.ai_cli_center_history_action_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_history_action_repeat,
+                (dialog, which) -> repeatHistoryEntry(entry))
+            .setNeutralButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> new Handler(Looper.getMainLooper())
+                    .post(() -> confirmDeleteHistoryEntry(entry)))
+            .create());
+    }
+
+    private boolean historyEntryMatchesWorkspace(AiLaunchHistoryStore.Entry entry,
+                                                 @Nullable WorkspaceTarget workspace) {
+        if (workspace == null || !workspace.isConfigured()) return false;
+        return safeEquals(entry.workspaceId, workspace.id)
+            && safeEquals(entry.host, workspace.host)
+            && entry.port == workspace.port
+            && safeEquals(normalizePath(entry.path), normalizePath(workspace.path));
+    }
+
+    private boolean safeEquals(@Nullable String left, @Nullable String right) {
+        if (left == null) return right == null;
+        return left.equals(right);
+    }
+
+    private String normalizePath(@Nullable String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private void showHistoryTargetChangedDialog(AiLaunchHistoryStore.Entry entry,
+                                                @Nullable WorkspaceTarget workspace) {
+        String currentTarget = workspace == null || !workspace.isConfigured()
+            ? getString(R.string.ai_cli_center_target_missing)
+            : getString(R.string.ai_cli_center_history_target,
+                workspace.host, workspace.port, workspace.path);
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_history_target_changed_title)
+            .setMessage(getString(R.string.ai_cli_center_history_target_changed_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                getString(R.string.ai_cli_center_history_target,
+                    entry.host, entry.port, entry.path),
+                currentTarget))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_history_target_changed_workspace_action,
+                (dialog, which) -> openWorkspaceWithBack())
+            .setNeutralButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> deleteHistoryEntry(entry))
+            .create());
+    }
+
+    private void confirmDeleteHistoryEntry(AiLaunchHistoryStore.Entry entry) {
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_delete_entry_title)
+            .setMessage(getString(R.string.ai_cli_center_delete_latest_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                entry.host,
+                entry.port,
+                entry.path,
+                formatLaunchTime(entry.launchedAtMillis)))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> deleteHistoryEntry(entry))
+            .create());
+    }
+
+    private void deleteHistoryEntry(AiLaunchHistoryStore.Entry entry) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            bindHistory();
+            return;
+        }
+        mLaunchHistoryStore.deleteEntry(workspace.id, entry.launchedAtMillis,
+            entry.tool, entry.mode);
+        bindHistory();
+    }
+
+    private void confirmClearCurrentHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            bindHistory();
+            return;
+        }
+        if (mLaunchHistory == null || mLaunchHistory.isEmpty()) {
+            bindHistory();
+            return;
+        }
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_clear_history_title)
+            .setMessage(getString(R.string.ai_cli_center_clear_history_message,
+                workspace.name, mLaunchHistory.size()))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_clear_history_action,
+                (dialog, which) -> clearCurrentHistory())
+            .create());
+    }
+
+    private void clearCurrentHistory() {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !workspace.isConfigured()) {
+            bindHistory();
+            return;
+        }
+        mLaunchHistoryStore.clearWorkspace(workspace.id);
+        bindHistory();
+    }
+
     private void openTmuxSessions() {
         Intent intent = TaskSessionsNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -149,7 +536,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openGitWorkbench() {
         Intent intent = GitWorkbenchNavigation.newIntentForActiveWorkspace(this, false);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -158,7 +545,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openProjectTasks() {
         Intent intent = ProjectTasksNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -167,7 +554,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     private void openEnvironmentPreflight() {
         Intent intent = ConnectionDiagnosticNavigation.newIntentForActiveWorkspace(this);
         if (intent == null) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         startActivity(intent);
@@ -178,15 +565,22 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         if (workspace == null || !SshTargetValidator.isValid(workspace.host)
             || workspace.port < 1 || workspace.port > 65535
             || workspace.path == null || workspace.path.trim().isEmpty()) {
-            startActivity(new Intent(this, WorkspaceActivity.class));
+            openWorkspaceWithBack();
             return;
         }
         String command = WorkspaceCommandBuilder.buildSshCommand(
             workspace.host, workspace.port, workspace.path,
             AiCliLaunchCommand.command(tool, mode),
             WorkspaceCommandBuilder.POLICY_SSH_ONLY, "");
+        mLaunchHistoryStore.record(workspace, tool, mode);
+        bindHistory();
         startActivity(new Intent(this, TermuxActivity.class)
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, command)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true));
+    }
+
+    private void openWorkspaceWithBack() {
+        startActivity(new Intent(this, WorkspaceActivity.class)
+            .putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true));
     }
 }

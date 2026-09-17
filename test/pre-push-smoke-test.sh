@@ -60,6 +60,8 @@ require_contains "$source_text" "SshKeysNavigationTest" \
     "SSH 密钥入口变更必须触发 SSH 密钥导航测试。"
 require_contains "$source_text" "scripts/validate-skills.sh" \
     "推送前冒烟必须包含 Skill 校验，避免规则漂移。"
+require_contains "$source_text" "android-string-resource-parity-test.sh" \
+    "推送前冒烟必须包含 Android 字符串资源中英文 key 对齐校验，避免默认资源缺失。"
 require_contains "$source_text" "scripts/resource-guard.sh normal" \
     "真实 Gradle 冒烟前必须执行资源守卫。"
 require_contains "$source_text" "scripts/resolve-jdk17.sh" \

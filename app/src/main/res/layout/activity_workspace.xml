@@ -25,14 +25,37 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/workspace_home_title"
-            android:textColor="#F5F8FA"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/workspace_back_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/workspace_back_action"
+                android:textAllCaps="false"
+                android:textColor="#B8C8D4"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/workspace_home_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/workspace_home_title"
+                android:textColor="#F5F8FA"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/workspace_subtitle"
@@ -98,6 +121,7 @@
                     android:id="@+id/workspace_manage_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/workspace_manage_description"
                     android:minHeight="48dp"
                     android:text="@string/workspace_manage_action"
                     android:textAllCaps="false"
@@ -186,6 +210,14 @@
                     android:layout_marginTop="4dp"
                     android:textColor="#9EB1C2"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/workspace_summary_policy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="#B8C8D4"
+                    android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/workspace_edit_button"
@@ -390,6 +422,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="@string/workspace_start_claude_description"
                 android:minHeight="56dp"
                 android:text="@string/workspace_start_claude"
                 android:textAllCaps="false"
@@ -405,6 +438,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="@string/workspace_start_codex_description"
                 android:minHeight="56dp"
                 android:text="@string/workspace_start_codex"
                 android:textAllCaps="false"
@@ -412,11 +446,23 @@
                 android:backgroundTint="#25384A" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/workspace_toolbox_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:contentDescription="@string/workspace_toolbox_description"
+            android:text="@string/workspace_toolbox_show_action"
+            android:textAllCaps="false"
+            android:textColor="#D8E4EC"
+            android:backgroundTint="#24394A"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/workspace_development_tools_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/workspace_card_background"
             android:orientation="vertical"
             android:visibility="gone">
@@ -437,11 +483,24 @@
                 android:textColor="#8FA3B5"
                 android:textSize="13sp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/workspace_custom_commands_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minWidth="0dp"
+                android:minHeight="52dp"
+                android:text="@string/workspace_custom_commands_action"
+                android:textAllCaps="false"
+                android:textColor="#D8E4EC"
+                android:textSize="13sp"
+                android:backgroundTint="#24394A" />
+
             <LinearLayout
                 android:id="@+id/workspace_tools_row_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/workspace_review_diff_button"

@@ -14,6 +14,12 @@ final class ProjectTasksNavigation {
     static Intent newIntentForActiveWorkspace(@NonNull Context context) {
         WorkspaceTarget target = WorkspaceTargetStore.readActive(context);
         if (target == null || !target.isConfigured()) return null;
+        return newIntentForWorkspace(context, target);
+    }
+
+    @Nullable
+    static Intent newIntentForWorkspace(@NonNull Context context, @NonNull WorkspaceTarget target) {
+        if (!target.isConfigured()) return null;
         String ownerToken = new WorkspaceOwnershipStore(context).getOrCreate(target.id);
         if (!WorkspaceOwnershipStore.isValid(ownerToken)) return null;
         return ProjectTasksActivity.newIntent(context, target.host, target.port, target.path, ownerToken);

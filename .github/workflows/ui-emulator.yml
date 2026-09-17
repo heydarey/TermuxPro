@@ -11,7 +11,7 @@ on:
   schedule:
     - cron: '30 2 * * *'
   push:
-    branches: ['dev_*', 'hotfix_*']
+    branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']
     paths:
       - 'app/src/main/**'
       - 'app/src/androidTest/**'
@@ -51,12 +51,14 @@ jobs:
           java-version: '17'
           cache: gradle
       - name: 安装模拟器、系统镜像与 NDK
+        timeout-minutes: 10
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
             'platform-tools' 'emulator' 'platforms;android-36' 'build-tools;36.0.0' \
-            'system-images;android-35;google_apis;x86_64' 'ndk;29.0.14206865'
+            'system-images;android-35;google_apis;x86_64' 'ndk;27.0.12077973'
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
       - name: 创建并启动隔离模拟器
+        timeout-minutes: 8
         run: |
           export ANDROID_AVD_HOME="$RUNNER_TEMP/android-avd"
           if [[ -e /dev/kvm ]]; then
@@ -89,12 +91,14 @@ jobs:
           cat "$RUNNER_TEMP/termuxpro-emulator.log" >&2
           exit 1
       - name: 配置 360dp 深色测试设备
+        timeout-minutes: 2
         run: |
           adb shell wm size 720x1600
           adb shell wm density 320
           adb shell cmd uimode night yes
           adb shell settings put system font_scale 1.0
       - name: 默认字体页面截图
+        timeout-minutes: 12
         run: |
           ./gradlew --no-daemon --max-workers=2 :app:connectedDebugAndroidTest \
             -Pandroid.testInstrumentationRunnerArguments.screenshotSuffix=default
@@ -104,6 +108,7 @@ jobs:
           ./scripts/verify-ui-screenshots.sh test-artifacts/emulator-ui/default default
           adb shell rm -f /sdcard/Pictures/termuxpro-ui-screenshots/'*.png'
       - name: 200% 字体页面截图
+        timeout-minutes: 12
         run: |
           adb shell settings put system font_scale 2.0
           adb shell am force-stop com.termux
@@ -115,6 +120,7 @@ jobs:
           ./scripts/verify-ui-screenshots.sh test-artifacts/emulator-ui/font200 font200
       - name: 正式签名 Release APK 覆盖升级与启动冒烟
         if: github.event_name == 'workflow_dispatch' && inputs.verifyReleaseUpgrade
+        timeout-minutes: 15
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -139,6 +145,7 @@ jobs:
             "$candidate_name" "$candidate_code" test-artifacts/emulator-ui/release-apk
       - name: 收集截图与 UI 层级
         if: always()
+        timeout-minutes: 3
         run: |
           mkdir -p test-artifacts/emulator-ui
           adb shell uiautomator dump /sdcard/window.xml || true
@@ -156,4 +163,5 @@ jobs:
           retention-days: 30
       - name: 关闭模拟器
         if: always()
+        timeout-minutes: 2
         run: adb emu kill || true

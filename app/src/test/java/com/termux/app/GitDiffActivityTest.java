@@ -2,15 +2,19 @@ package com.termux.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -131,8 +135,15 @@ public final class GitDiffActivityTest {
 
         TextView index = activity.findViewById(R.id.git_overview_index_state);
         TextView sync = activity.findViewById(R.id.git_overview_sync);
+        TextView stateSummary = activity.findViewById(R.id.git_overview_state_summary);
         assertEquals("hdr@192.168.1.153:22 · ~/repo",
             ((TextView) activity.findViewById(R.id.git_overview_path)).getText().toString());
+        assertTrue(stateSummary.getText().toString().contains("共 3 个改动文件"));
+        assertTrue(stateSummary.getText().toString().contains("已暂存 2、未暂存 1"));
+        assertTrue(stateSummary.getText().toString().contains("已跟踪 origin/dev"));
+        assertTrue(stateSummary.getText().toString().contains("推荐动作"));
+        assertEquals(stateSummary.getText().toString(),
+            stateSummary.getContentDescription().toString());
         assertTrue(index.getText().toString().contains("已暂存 2"));
         assertTrue(index.getText().toString().contains("未暂存 1"));
         assertTrue(sync.getText().toString().contains("跟踪 origin/dev"));
@@ -200,6 +211,41 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void overviewToolboxGroupsGitActionsForMobileInsteadOfHorizontalScrolling() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t3\t1\t2\t1\t0\t1\torigin/dev\n"
+                + "TP_LOCAL\tdev\n"
+                + "TP_LOCAL\tmobile-ui\n"
+                + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n"
+                + "TP_STASH\tstash@{0}\t1 hour ago\tWIP mobile\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        assertEquals("Git 工具箱", ((TextView) activity.findViewById(
+            R.id.git_overview_toolbox_title)).getText().toString());
+        assertEquals("分支管理", ((TextView) activity.findViewById(
+            R.id.git_workbench_branch_tools_title)).getText().toString());
+        assertEquals("远端同步", ((TextView) activity.findViewById(
+            R.id.git_workbench_sync_tools_title)).getText().toString());
+        assertEquals("改动处理", ((TextView) activity.findViewById(
+            R.id.git_workbench_change_tools_title)).getText().toString());
+        assertEquals("历史与临时保存", ((TextView) activity.findViewById(
+            R.id.git_workbench_history_tools_title)).getText().toString());
+
+        Button branches = activity.findViewById(R.id.git_overview_branches_button);
+        Button createBranch = activity.findViewById(R.id.git_overview_create_branch_button);
+        Button deleteBranch = activity.findViewById(R.id.git_overview_delete_branch_button);
+        Button commits = activity.findViewById(R.id.git_overview_commits_button);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, branches.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, createBranch.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, deleteBranch.getLayoutParams().width);
+        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, commits.getLayoutParams().width);
+        assertTrue(((TextView) activity.findViewById(R.id.git_overview_toolbox_title))
+            .getContentDescription() == null);
+    }
+
+    @Test
     public void commitHistoryUsesReadableSelectionAndExplainsReadOnlyDetails() {
         Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")
@@ -215,11 +261,27 @@ public final class GitDiffActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertEquals(activity.getColor(R.color.tp_text_secondary),
             commits.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
-        assertTrue(((TextView) commits.findViewById(android.R.id.message)).getText().toString()
-            .contains("只读"));
-        assertEquals(2, commits.getListView().getAdapter().getCount());
-        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("abc1234"));
-        assertTrue(commits.getListView().getAdapter().getItem(0).toString().contains("修复滚动"));
+        String message = ((TextView) commits.findViewById(R.id.git_commit_history_message)).getText()
+            .toString();
+        assertTrue(message.contains("当前分支：dev"));
+        assertTrue(message.contains("当前目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(message.contains("只读"));
+        ListView list = commits.findViewById(R.id.git_commit_history_list);
+        assertNotNull(list);
+        assertEquals(2, list.getAdapter().getCount());
+        assertTrue(list.getAdapter().getItem(0).toString().contains("abc1234"));
+        assertTrue(list.getAdapter().getItem(0).toString().contains("修复滚动"));
+        EditText filter = commits.findViewById(R.id.git_commit_history_filter);
+        assertNotNull(filter);
+        filter.setText("Git");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(1, list.getAdapter().getCount());
+        assertTrue(list.getAdapter().getItem(0).toString().contains("def5678"));
+        filter.setText("missing");
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(0, list.getAdapter().getCount());
+        assertTrue(((TextView) commits.findViewById(R.id.git_commit_history_empty)).getText()
+            .toString().contains("missing"));
     }
 
     @Test
@@ -256,6 +318,119 @@ public final class GitDiffActivityTest {
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
         assertTrue(nextStep.getText().toString().contains("工作树干净"));
         assertTrue(nextStep.getText().toString().contains("启动 Claude/Codex"));
+    }
+
+    @Test
+    public void primaryActionMapsRecommendationToSafeExistingGitFlow() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t2\t0\t2\t\t\t0\n"
+                + "TP_STATUS_Z\000"
+                + " M app/src/main/java/App.java\000"
+                + "?? README.md\000");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+        Button primary = activity.findViewById(R.id.git_overview_primary_action_button);
+
+        assertEquals("推荐：按文件审查", primary.getText().toString());
+        assertTrue(primary.getContentDescription().toString().contains("不提交、不推送、不丢弃"));
+        primary.performClick();
+        assertEquals("按文件", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t2\t2\t0\t\t\t0\n");
+        assertEquals("推荐：提交已暂存修改", primary.getText().toString());
+        primary.performClick();
+        assertEquals("提交", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t2\t1\torigin/dev\n");
+        assertEquals("推荐：快进拉取", primary.getText().toString());
+        primary.performClick();
+        assertEquals("快进拉取", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n");
+        assertEquals("推荐：普通推送", primary.getText().toString());
+        primary.performClick();
+        assertEquals("推送", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
+        assertEquals("推荐：新建分支", primary.getText().toString());
+        primary.performClick();
+        assertEquals("新建分支", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tabc1234\t1\t0\t0\t0\t\t\t0\n"
+            + "TP_LOCAL\tdev\n");
+        assertEquals("推荐：选择分支", primary.getText().toString());
+        primary.performClick();
+        assertEquals("切换分支", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+
+        activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n"
+            + "TP_LOG\tabc1234\t2 minutes ago\tfix: 修复滚动\n");
+        assertEquals("推荐：查看提交记录", primary.getText().toString());
+        primary.performClick();
+        assertEquals("提交记录", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
+            .toString());
+        ShadowAlertDialog.getLatestAlertDialog().dismiss();
+    }
+
+    @Test
+    public void overviewOpensProjectTasksForSameWorkspaceAfterGitReview() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/repo\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        WorkspaceTarget target = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/repo");
+        Intent intent = GitDiffActivity.newIntentForWorkspace(RuntimeEnvironment.getApplication(),
+                target)
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW,
+                "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        Button tasks = activity.findViewById(R.id.git_overview_project_tasks_button);
+        assertEquals("项目任务 / 测试", tasks.getText().toString());
+        assertTrue(tasks.getContentDescription().toString().contains("先展示命令并确认"));
+        tasks.performClick();
+
+        Intent next = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(next);
+        assertEquals(ProjectTasksActivity.class.getName(), next.getComponent().getClassName());
+    }
+
+    @Test
+    public void overviewBlocksProjectTasksWhenLegacyGitTargetDiffersFromActiveWorkspace() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-b\",\"name\":\"其他项目\",\"host\":\"hdr@192.168.1.154\",\"port\":\"22\",\"path\":\"~/other\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-b")
+            .commit();
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW,
+                "TP_OVERVIEW\tdev\t0\t0\t0\t0\t0\t0\t1\torigin/dev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        activity.findViewById(R.id.git_overview_project_tasks_button).performClick();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        assertTrue(((TextView) activity.findViewById(R.id.git_diff_status_message)).getText()
+            .toString().contains("当前 Git 目标与已选工作区不一致"));
     }
 
     @Test

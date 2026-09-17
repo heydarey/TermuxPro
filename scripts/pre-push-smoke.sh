@@ -128,9 +128,15 @@ static_checks=(
     "./scripts/validate-skills.sh"
     "./test/version-metadata-test.sh"
     "./test/workflow-trigger-policy-test.sh"
+    "./test/release-notification-format-test.sh"
+    "./test/github-noise-audit-test.sh"
     "./test/github-cli-wrapper-test.sh"
     "./test/github-check-suites-test.sh"
     "./test/context-checkpoint-test.sh"
+    "./test/goal-lifecycle-policy-test.sh"
+    "./test/generated-cache-cleanup-test.sh"
+    "./test/android-sdk-bootstrap-test.sh"
+    "./test/android-string-resource-parity-test.sh"
 )
 
 for check in "${static_checks[@]}"; do

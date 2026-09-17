@@ -50,6 +50,9 @@ import java.util.UUID;
 public final class WorkspaceActivity extends AppCompatActivity {
 
     static final String EXTRA_UI_TEST_SSH_READY = "com.termux.app.extra.UI_TEST_SSH_READY";
+    static final String EXTRA_SHOW_BACK = "com.termux.app.extra.SHOW_BACK";
+    /** 旧终端入口兼容字段，新入口统一使用 {@link #EXTRA_SHOW_BACK}。 */
+    static final String EXTRA_SHOW_BACK_TO_TERMINAL = "com.termux.app.extra.SHOW_BACK_TO_TERMINAL";
 
     private static final int REQUEST_NOTIFICATIONS = 1001;
     private static final int MANAGE_COPY = 1;
@@ -79,6 +82,9 @@ public final class WorkspaceActivity extends AppCompatActivity {
     private boolean mHasUnsavedChanges;
     private boolean mEditingProfile;
     private boolean mAdvancedEditing;
+    private boolean mHasSavedProfiles;
+    private boolean mShowBack;
+    private boolean mToolboxExpanded;
     private WorkspaceConnectionStateStore mConnectionStateStore;
     private WorkspaceOwnershipStore mOwnershipStore;
 
@@ -101,6 +107,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mConnectionPolicySelector = findViewById(R.id.workspace_connection_policy_selector);
         mConnectionStateStore = new WorkspaceConnectionStateStore(this);
         mOwnershipStore = new WorkspaceOwnershipStore(this);
+        mShowBack = shouldShowBackFromIntent(getIntent());
 
         ArrayAdapter<CharSequence> policyAdapter = ArrayAdapter.createFromResource(this,
             R.array.workspace_connection_policy_labels, R.layout.item_workspace_spinner);
@@ -136,7 +143,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mRemotePortInput.addTextChangedListener(dirtyWatcher);
         mLocalPortInput.addTextChangedListener(dirtyWatcher);
 
-        findViewById(R.id.workspace_connect_button).setOnClickListener(view -> launchRemote(null));
+        findViewById(R.id.workspace_connect_button).setOnClickListener(view ->
+            launchRemote(null, null, null));
         findViewById(R.id.workspace_connection_diagnostic_primary).setOnClickListener(
             view -> openConnectionDiagnostic());
         findViewById(R.id.workspace_claude_button).setOnClickListener(view ->
@@ -154,11 +162,17 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_edit_button).setOnClickListener(view -> {
             mEditingProfile = true;
             mAdvancedEditing = false;
+            mToolboxExpanded = false;
             refreshHomeState();
             mHostInput.requestFocus();
         });
+        findViewById(R.id.workspace_back_button).setOnClickListener(view -> handleWorkspaceBack());
         findViewById(R.id.workspace_advanced_button).setOnClickListener(view -> {
             mAdvancedEditing = !mAdvancedEditing;
+            refreshHomeState();
+        });
+        findViewById(R.id.workspace_toolbox_button).setOnClickListener(view -> {
+            mToolboxExpanded = !mToolboxExpanded;
             refreshHomeState();
         });
         findViewById(R.id.workspace_save_button).setOnClickListener(view -> saveCurrentWorkspace());
@@ -166,6 +180,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_delete_button).setOnClickListener(view -> confirmDeleteWorkspace());
         findViewById(R.id.workspace_start_preview_button).setOnClickListener(view -> startPreviewTunnel());
         findViewById(R.id.workspace_open_preview_button).setOnClickListener(view -> openPreviewInBrowser());
+        findViewById(R.id.workspace_custom_commands_button).setOnClickListener(view -> openCustomCommands());
         findViewById(R.id.workspace_review_diff_button).setOnClickListener(view -> openGitDiffReview());
         findViewById(R.id.workspace_remote_files_button).setOnClickListener(view -> openRemoteFiles());
         findViewById(R.id.workspace_project_tasks_button).setOnClickListener(view -> openProjectTasks());
@@ -213,13 +228,80 @@ public final class WorkspaceActivity extends AppCompatActivity {
         findViewById(R.id.workspace_subtitle).setVisibility(View.GONE);
         findViewById(R.id.workspace_remote_description).setVisibility(View.GONE);
         findViewById(R.id.workspace_security_footer).setVisibility(View.GONE);
-        stackButtonRow(R.id.workspace_ai_actions);
+        compactText(R.id.workspace_home_title, 22, 1);
+        compactText(R.id.workspace_remote_card_title, 18, 1);
+        compactText(R.id.workspace_summary_target, 17, 2);
+        compactText(R.id.workspace_summary_details, 15, 2);
+        compactText(R.id.workspace_summary_policy, 14, 2);
+        compactText(R.id.workspace_ai_title, 16, 1);
+        mHostInput.setHint(R.string.workspace_host_hint_compact);
+        compactManagementActionsForLargeFont();
+        ((TextView) findViewById(R.id.workspace_ai_title))
+            .setText(R.string.workspace_ai_quick_title_compact);
+        ((android.widget.Button) findViewById(R.id.workspace_claude_button))
+            .setText(R.string.workspace_start_claude_compact);
+        ((android.widget.Button) findViewById(R.id.workspace_codex_button))
+            .setText(R.string.workspace_start_codex_compact);
+        compactButton(R.id.workspace_claude_button, 48);
+        compactButton(R.id.workspace_codex_button, 48);
+        compactButton(R.id.workspace_toolbox_button, 48);
         stackButtonRow(R.id.workspace_tools_row_one);
         stackButtonRow(R.id.workspace_tools_row_two);
         stackButtonRow(R.id.workspace_tools_row_three);
     }
 
-    /** 大字体下取消双列，避免按钮文字被横向省略或固定高度裁切。 */
+    /** 大字体模式优先保证关键动作露出，保留完整信息到无障碍描述。 */
+    private void compactText(int viewId, float textSizeSp, int maxLines) {
+        TextView view = findViewById(viewId);
+        view.setTextSize(textSizeSp);
+        view.setMaxLines(maxLines);
+    }
+
+    /** 大字体模式保持 48dp 触控底线，同时减少低价值垂直占用。 */
+    private void compactButton(int viewId, int minHeightDp) {
+        View view = findViewById(viewId);
+        int minHeight = dp(minHeightDp);
+        view.setMinimumHeight(minHeight);
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params != null && params.height > minHeight) {
+            params.height = minHeight;
+            view.setLayoutParams(params);
+        }
+        if (view instanceof TextView) {
+            ((TextView) view).setTextSize(16);
+        }
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * 已配置首页的大字体场景里，连接管理和新建工作区是低频入口。
+     * 改成横向短按钮，避免它们挤压“远程终端 / AI CLI / 工具箱”的主路径。
+     */
+    private void compactManagementActionsForLargeFont() {
+        LinearLayout row = findViewById(R.id.workspace_management_actions);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        compactInlineButton(R.id.workspace_manage_button,
+            R.string.workspace_manage_action_compact, 0);
+        compactInlineButton(R.id.workspace_new_button, R.string.workspace_new_action_compact, 8);
+    }
+
+    private void compactInlineButton(int viewId, int textResId, int marginStartDp) {
+        View view = findViewById(viewId);
+        if (view instanceof TextView) {
+            ((TextView) view).setText(textResId);
+            ((TextView) view).setTextSize(16);
+        }
+        view.setMinimumHeight(dp(48));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        params.setMarginStart(dp(marginStartDp));
+        view.setLayoutParams(params);
+    }
+
+    /** 大字体下仅把工具箱内部低频工具行改为纵向，避免按钮文字被横向省略。 */
     private void stackButtonRow(int rowId) {
         LinearLayout row = findViewById(rowId);
         row.setOrientation(LinearLayout.VERTICAL);
@@ -248,6 +330,10 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (isEditingConfiguredProfile()) {
+            handleWorkspaceBack();
+            return;
+        }
         runAfterDiscardConfirmation(super::onBackPressed);
     }
 
@@ -294,17 +380,20 @@ public final class WorkspaceActivity extends AppCompatActivity {
                         item.optString("connectionPolicy", WorkspaceCommandBuilder.POLICY_SSH_ONLY),
                         item.optString("sessionName", defaultSessionName(item.optString("id", "")))));
                 }
+                mHasSavedProfiles = !mProfiles.isEmpty();
             } catch (JSONException ignored) {
                 // 配置损坏时保留应用可用性，下面会创建默认工作区。
             }
         }
 
         if (mProfiles.isEmpty()) {
+            String legacyHost = preferences.getString(KEY_HOST, "");
             mProfiles.add(new WorkspaceProfile(UUID.randomUUID().toString(),
                 preferences.getString(KEY_NAME, getString(R.string.workspace_default_name)),
-                preferences.getString(KEY_HOST, ""), preferences.getString(KEY_PORT, "22"),
+                legacyHost, preferences.getString(KEY_PORT, "22"),
                 preferences.getString(KEY_PATH, "~/"), "5173", "5173",
                 WorkspaceCommandBuilder.POLICY_SSH_ONLY, ""));
+            mHasSavedProfiles = !TextUtils.isEmpty(legacyHost);
         }
         mActiveProfileId = preferences.getString(KEY_ACTIVE_PROFILE, mProfiles.get(0).id);
         refreshWorkspaceSelector();
@@ -398,6 +487,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         setWorkspaceDirty(false);
         mEditingProfile = TextUtils.isEmpty(profile.host);
         mAdvancedEditing = false;
+        mToolboxExpanded = false;
         refreshConnectionState();
     }
 
@@ -469,6 +559,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mProfiles.add(profile);
         mActiveProfileId = profile.id;
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mHostInput.requestFocus();
     }
@@ -485,6 +576,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         mProfiles.add(copy);
         mActiveProfileId = copy.id;
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mNameInput.requestFocus();
         mNameInput.selectAll();
@@ -517,6 +609,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         profile.localPort = mLocalPortInput.getText().toString().trim();
         if (connectionIdentityChanged) mConnectionStateStore.clear(profile.id);
         persistProfiles();
+        mHasSavedProfiles = true;
         refreshWorkspaceSelector();
         mEditingProfile = TextUtils.isEmpty(profile.host);
         refreshHomeState();
@@ -542,12 +635,28 @@ public final class WorkspaceActivity extends AppCompatActivity {
                     mProfiles.add(new WorkspaceProfile(UUID.randomUUID().toString(),
                         getString(R.string.workspace_default_name), "", "22", "~/", "5173", "5173",
                         WorkspaceCommandBuilder.POLICY_SSH_ONLY, ""));
+                    mHasSavedProfiles = false;
+                    mActiveProfileId = mProfiles.get(0).id;
+                    clearPersistedProfiles();
+                } else {
+                    mHasSavedProfiles = true;
+                    mActiveProfileId = mProfiles.get(0).id;
+                    persistProfiles();
                 }
-                mActiveProfileId = mProfiles.get(0).id;
-                persistProfiles();
                 refreshWorkspaceSelector();
             })
             .create());
+    }
+
+    private void clearPersistedProfiles() {
+        getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE).edit()
+            .remove(KEY_PROFILES)
+            .remove(KEY_ACTIVE_PROFILE)
+            .remove(KEY_NAME)
+            .remove(KEY_HOST)
+            .remove(KEY_PORT)
+            .remove(KEY_PATH)
+            .apply();
     }
 
     private void persistProfiles() {
@@ -575,7 +684,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
             .apply();
     }
 
-    private void launchRemote(String cli) {
+    private void launchRemote(String cli, AiCliLaunchCommand.Tool tool,
+                              AiCliLaunchCommand.Mode mode) {
         if (!isSshClientInstalled()) {
             installSshClient();
             return;
@@ -607,6 +717,9 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
         persistExtraKeysPreset(cli == null ? TermuxTerminalExtraKeys.PRESET_SHELL :
             TermuxTerminalExtraKeys.PRESET_AI);
+        if (cli != null && tool != null && mode != null) {
+            AiLaunchRecorder.recordActiveIfConfigured(this, tool, mode);
+        }
         // 远程连接必须进入独立本地终端会话，避免命令被写入正在运行任务的旧 Shell。
         openTerminal(WorkspaceCommandBuilder.buildSshCommand(
             host, port, path, cli, policy, sessionName,
@@ -615,7 +728,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
 
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
         AiSessionDialog.showChoice(this, tool, aiLaunchMessage(tool),
-            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode)));
+            mode -> launchRemote(AiCliLaunchCommand.command(tool, mode), tool, mode));
     }
 
     private String aiLaunchMessage(AiCliLaunchCommand.Tool tool) {
@@ -660,6 +773,19 @@ public final class WorkspaceActivity extends AppCompatActivity {
         refreshHomeState();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        mShowBack = shouldShowBackFromIntent(intent);
+        refreshHomeState();
+    }
+
+    private boolean shouldShowBackFromIntent(Intent intent) {
+        return intent != null && (intent.getBooleanExtra(EXTRA_SHOW_BACK, false)
+            || intent.getBooleanExtra(EXTRA_SHOW_BACK_TO_TERMINAL, false));
+    }
+
     /** 首页只展示当前任务所需信息；连接参数仅在首次配置或主动编辑时出现。 */
     private void refreshHomeState() {
         if (mProfiles.isEmpty()) return;
@@ -693,17 +819,42 @@ public final class WorkspaceActivity extends AppCompatActivity {
             showEditor ? View.GONE : View.VISIBLE);
         findViewById(R.id.workspace_new_button).setVisibility(
             configured && !showEditor ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_delete_button).setVisibility(
+            shouldShowDeleteWorkspace(showEditor) ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_back_button).setVisibility(
+            shouldShowWorkspaceBack(showEditor, configured) ? View.VISIBLE : View.GONE);
         if (configured) {
-            ((TextView) findViewById(R.id.workspace_summary_target)).setText(profile.name);
+            boolean largeFont = getResources().getConfiguration().fontScale >= 1.5f;
+            ((TextView) findViewById(R.id.workspace_remote_card_title)).setText(
+                largeFont ? R.string.workspace_remote_card_title_compact
+                    : R.string.workspace_remote_card_title);
             WorkspaceConnectionState state = mConnectionStateStore.read(profile.id);
             boolean fresh = state != null && state.isVerificationFresh(System.currentTimeMillis());
             String status = fresh ? getString(R.string.workspace_status_recently_verified) :
                 state != null && state.hasVerifiedFact()
                     ? getString(R.string.workspace_status_verification_expired)
                     : getString(R.string.workspace_status_unverified);
-            ((TextView) findViewById(R.id.workspace_summary_details)).setText(getString(
-                R.string.workspace_summary_details, profile.host, profile.port, profile.path,
-                status));
+            TextView target = findViewById(R.id.workspace_summary_target);
+            TextView details = findViewById(R.id.workspace_summary_details);
+            if (largeFont) {
+                target.setText(getString(R.string.workspace_summary_target_large_font,
+                    profile.name));
+                details.setText(getString(R.string.workspace_summary_details_large_font,
+                    compactHostPort(profile), profile.path));
+                target.setContentDescription(getString(R.string.workspace_summary_target_compact,
+                    profile.name, profile.host, profile.port));
+                details.setContentDescription(getString(R.string.workspace_summary_details,
+                    profile.host, profile.port, profile.path, status));
+            } else {
+                target.setText(profile.name);
+                details.setText(getString(R.string.workspace_summary_details, profile.host,
+                    profile.port, profile.path, status));
+                target.setContentDescription(target.getText());
+                details.setContentDescription(details.getText());
+            }
+            TextView policy = findViewById(R.id.workspace_summary_policy);
+            policy.setText(workspacePolicySummary(profile));
+            policy.setContentDescription(policy.getText());
         }
 
         WorkspaceConnectionState currentState = mConnectionStateStore.read(profile.id);
@@ -711,6 +862,8 @@ public final class WorkspaceActivity extends AppCompatActivity {
             && currentState.hasVerifiedFact();
         boolean freshVerification = verifiedBefore
             && currentState.isVerificationFresh(System.currentTimeMillis());
+        boolean canShowToolbox = configured && !showEditor;
+        boolean showToolboxContent = canShowToolbox && mToolboxExpanded;
         findViewById(R.id.workspace_connection_feedback).setVisibility(
             configured && !showEditor && !freshVerification ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_connection_diagnostic_primary).setVisibility(
@@ -725,6 +878,47 @@ public final class WorkspaceActivity extends AppCompatActivity {
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
         findViewById(R.id.workspace_ai_actions).setVisibility(
             verifiedBefore && !showEditor ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_toolbox_button).setVisibility(
+            canShowToolbox ? View.VISIBLE : View.GONE);
+        boolean largeFont = getResources().getConfiguration().fontScale >= 1.5f;
+        ((android.widget.Button) findViewById(R.id.workspace_toolbox_button)).setText(
+            mToolboxExpanded
+                ? (largeFont ? R.string.workspace_toolbox_hide_action_compact
+                    : R.string.workspace_toolbox_hide_action)
+                : (largeFont ? R.string.workspace_toolbox_show_action_compact
+                    : R.string.workspace_toolbox_show_action));
+        findViewById(R.id.workspace_development_tools_card).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_preview_card).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
+        findViewById(R.id.workspace_local_terminal_button).setVisibility(
+            showToolboxContent ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean shouldShowWorkspaceBack(boolean showEditor, boolean configured) {
+        return mShowBack || showEditor;
+    }
+
+    private boolean shouldShowDeleteWorkspace(boolean showEditor) {
+        return showEditor && mHasSavedProfiles && !mProfiles.isEmpty();
+    }
+
+    private boolean isEditingConfiguredProfile() {
+        if (mProfiles.isEmpty() || !mEditingProfile) return false;
+        return !TextUtils.isEmpty(mProfiles.get(findActiveProfileIndex()).host);
+    }
+
+    private void handleWorkspaceBack() {
+        if (isEditingConfiguredProfile()) {
+            runAfterDiscardConfirmation(() -> {
+                mEditingProfile = false;
+                mAdvancedEditing = false;
+                bindProfile(mProfiles.get(findActiveProfileIndex()));
+                refreshHomeState();
+            });
+            return;
+        }
+        finish();
     }
 
     private int stageLabel(SshDiagnosticStages.Stage stage) {
@@ -761,6 +955,43 @@ public final class WorkspaceActivity extends AppCompatActivity {
         if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(policy)) return 2;
         if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(policy)) return 3;
         return 0;
+    }
+
+    private String workspacePolicySummary(WorkspaceProfile profile) {
+        String sessionName = TextUtils.isEmpty(profile.sessionName)
+            ? defaultSessionName(profile.id) : profile.sessionName;
+        if (WorkspaceCommandBuilder.POLICY_LIST_SESSIONS.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_list_sessions_compact);
+            }
+            return getString(R.string.workspace_summary_policy_list_sessions);
+        }
+        if (WorkspaceCommandBuilder.POLICY_ATTACH_SESSION.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_attach_session_compact,
+                    sessionName);
+            }
+            return getString(R.string.workspace_summary_policy_attach_session, sessionName);
+        }
+        if (WorkspaceCommandBuilder.POLICY_CREATE_OR_ATTACH.equals(profile.connectionPolicy)) {
+            if (getResources().getConfiguration().fontScale >= 1.5f) {
+                return getString(R.string.workspace_summary_policy_create_or_attach_compact,
+                    sessionName);
+            }
+            return getString(R.string.workspace_summary_policy_create_or_attach, sessionName);
+        }
+        if (!WorkspaceCommandBuilder.POLICY_SSH_ONLY.equals(profile.connectionPolicy)) {
+            return getString(R.string.workspace_summary_policy_unknown);
+        }
+        if (getResources().getConfiguration().fontScale >= 1.5f) {
+            return getString(R.string.workspace_summary_policy_ssh_only_compact);
+        }
+        return getString(R.string.workspace_summary_policy_ssh_only);
+    }
+
+    private String compactHostPort(WorkspaceProfile profile) {
+        if ("22".equals(profile.port)) return profile.host;
+        return profile.host + ":" + profile.port;
     }
 
     private static String defaultSessionName(String id) {
@@ -850,6 +1081,11 @@ public final class WorkspaceActivity extends AppCompatActivity {
         WorkspaceProfile profile = mProfiles.get(findActiveProfileIndex());
         startActivity(ProjectTasksActivity.newIntent(this, host, sshPort, path,
             mOwnershipStore.getOrCreate(profile.id)));
+    }
+
+    private void openCustomCommands() {
+        if (!saveCurrentWorkspace()) return;
+        startActivity(new Intent(this, CustomCommandsActivity.class));
     }
 
     private void openConnectionDiagnostic() {

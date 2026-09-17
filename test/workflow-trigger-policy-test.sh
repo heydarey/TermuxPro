@@ -21,12 +21,18 @@ for workflow in ci ui-emulator; do
     fi
 done
 
-if ! grep -Fq "branches: [dev, master, 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ci.yml"; then
-    echo "CI push 门禁必须覆盖 dev、master、dev_* 和 hotfix_*。" >&2
+if ! grep -Fq "branches: [dev, master, dev_dailyIteration, 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ci.yml"; then
+    echo "CI push 门禁必须覆盖 dev、master、dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1
 fi
-if ! grep -Fq "branches: ['dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ui-emulator.yml"; then
-    echo "UI push 门禁必须覆盖 dev_* 和 hotfix_*。" >&2
+if ! grep -Fq 'is_dev_target_branch()' "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq 'git rev-list --count origin/dev..HEAD' "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq '相对 dev 没有待合并提交，视为分支对齐操作，仅运行静态门禁' "$project_dir/.github/workflows/ci.yml"; then
+    echo "CI 必须识别 dev_dailyIteration/dev_*/hotfix_* 对齐 dev 的空差异 push，避免无意义 Android 重门禁和邮件噪声。" >&2
+    exit 1
+fi
+if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$project_dir/.github/workflows/ui-emulator.yml"; then
+    echo "UI push 门禁必须覆盖 dev_dailyIteration、dev_* 和 hotfix_*。" >&2
     exit 1
 fi
 if ! grep -Fq "androidRuntime" "$project_dir/.github/workflows/ci.yml"; then
@@ -39,6 +45,27 @@ if ! grep -Fq "is_static_only_file" "$project_dir/.github/workflows/ci.yml"; the
 fi
 if ! grep -Fq "if: steps.changes.outputs.android_runtime == 'true'" "$project_dir/.github/workflows/ci.yml"; then
     echo "CI Android 重步骤必须受变更类型门禁控制。" >&2
+    exit 1
+fi
+if ! grep -Fq "timeout-minutes: 20" "$project_dir/.github/workflows/ci.yml" \
+    || ! grep -Fq "timeout-minutes: 12" "$project_dir/.github/workflows/ui-emulator.yml"; then
+    echo "CI 和模拟器重步骤必须设置步骤级超时，避免单个 Gradle/截图阶段挂住导致 PR 长时间 pending。" >&2
+    exit 1
+fi
+release_file="$project_dir/.github/workflows/release.yml"
+for release_step_timeout in \
+    "timeout-minutes: 35" \
+    "timeout-minutes: 20" \
+    "timeout-minutes: 10" \
+    "timeout-minutes: 8"; do
+    if ! grep -Fq "$release_step_timeout" "$release_file"; then
+        echo "Release workflow 的构建、模拟器安装/启动和覆盖升级重步骤必须设置步骤级超时，避免正式包发布长时间 pending。" >&2
+        exit 1
+    fi
+done
+if ! grep -Fq "timeout-minutes: 3" "$release_file" \
+    || ! grep -Fq "timeout-minutes: 2" "$release_file"; then
+    echo "Release workflow 的轻步骤也必须设置短超时，避免 GitHub/API/签名恢复异常时整条流水线空等。" >&2
     exit 1
 fi
 if ! grep -Fq -- '--stacktrace lint' "$project_dir/.github/workflows/ci.yml" \
@@ -112,8 +139,13 @@ if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ci.yml' '完整 CI'; th
     echo "自动研发 PR 工作流必须显式处理预合并 CI 失败，不能让 set -e 直接把自动 PR 标成失败。" >&2
     exit 1
 fi
-if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI'; then" "$auto_dev_pr_file"; then
-    echo "自动研发 PR 工作流必须显式处理预合并模拟器失败，不能重复制造失败通知。" >&2
+if ! grep -Fq "if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI' \"\$emulator_target_sha\"; then" "$auto_dev_pr_file"; then
+    echo "自动研发 PR 工作流必须显式处理预合并模拟器失败，并按最后一个 UI 影响提交等待门禁，不能重复制造失败通知。" >&2
+    exit 1
+fi
+if ! grep -Fq 'resolve_latest_emulator_ui_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq '复用最后一个 UI 影响提交' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须在后续只改测试/文档时复用 PR 内最后一个 UI 影响提交的模拟器门禁，避免等待不存在的当前 SHA UI run。" >&2
     exit 1
 fi
 if ! grep -Fq 'GH_COMMAND_TIMEOUT_SECONDS: 45' "$auto_dev_pr_file"; then
@@ -142,6 +174,19 @@ if ! grep -Fq 'gh_retry api --method POST "repos/$REPOSITORY/pulls"' "$auto_dev_
 fi
 if ! grep -Fq '查询 GitHub Actions 超时或失败' "$auto_dev_pr_file"; then
     echo "自动研发 PR 工作流等待 CI 时必须容忍短暂查询失败，不能把 GitHub API 抖动误判成项目失败。" >&2
+    exit 1
+fi
+if grep -Fq 'pulls/$pr_number/merge" \' "$auto_dev_pr_file" \
+    && grep -Fq -- '--jq' <(grep -A6 'pulls/$pr_number/merge" \\' "$auto_dev_pr_file"); then
+    echo "自动研发 PR 合并不能直接对 Pulls merge API 响应使用 --jq，空响应会误报失败。" >&2
+    exit 1
+fi
+if ! grep -Fq 'merge_pr_and_resolve_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq 'resolve_pr_merge_sha()' "$auto_dev_pr_file" \
+    || ! grep -Fq 'Pulls merge API 返回空响应或缺少 sha，开始核验 PR 是否已合并。' "$auto_dev_pr_file" \
+    || ! grep -Fq '.mergeCommit.oid // empty' "$auto_dev_pr_file" \
+    || ! grep -Fq '.merge_commit_sha // empty' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 合并必须容忍 GitHub merge API 空响应，并通过 PR 状态二次解析 merge commit。" >&2
     exit 1
 fi
 if grep -Fq -- '--commit "$target_sha"' "$auto_dev_pr_file"; then
@@ -173,6 +218,11 @@ if ! grep -Fq '限定时间内创建 PR' "$project_dir/AGENTS.md" || ! grep -Fq 
     echo "项目规则必须说明自动 PR 失效后的人工接管条件，不能在工作流仍运行时重复接管同一分支。" >&2
     exit 1
 fi
+if ! grep -Fq '等待对应 `auto-dev-pr.yml` 控制器自身完成' "$project_dir/AGENTS.md" \
+    || ! grep -Fq '等待对应 `auto-dev-pr.yml` 控制器自身完成' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目规则必须要求长期分支对齐前等待自动 PR 控制器完成，避免 concurrency 取消旧 run 制造噪声。" >&2
+    exit 1
+fi
 if ! grep -Fq 'wait_for_candidate_release()' "$auto_dev_pr_file"; then
     echo "候选发布等待必须有 Release 页面兜底，避免 Release 已成功但 run list 查询延迟导致自动 PR 空等。" >&2
     exit 1
@@ -183,6 +233,24 @@ if ! grep -Fq 'gh_safe release view "$tag"' "$auto_dev_pr_file"; then
 fi
 if ! grep -Fq 'APK_SIGNATURE.txt' "$auto_dev_pr_file" || ! grep -Fq 'SHA256SUMS' "$auto_dev_pr_file"; then
     echo "候选发布 Release 兜底必须核验 APK、SHA256SUMS 和签名报告附件齐全。" >&2
+    exit 1
+fi
+if ! grep -Fq "branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']" "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须支持长期研发分支 dev_dailyIteration，避免为小切片持续创建新分支。" >&2
+    exit 1
+fi
+if ! grep -Fq 'compare/dev...$HEAD_BRANCH' "$auto_dev_pr_file" \
+    || ! grep -Fq '相对 dev 没有待合并提交' "$auto_dev_pr_file"; then
+    echo "自动研发 PR 必须在长期分支与 dev 无差异时成功退出，避免对齐分支触发 422 失败提醒。" >&2
+    exit 1
+fi
+if ! grep -Fq 'dev_dailyIteration' "$project_dir/AGENTS.md" \
+    || ! grep -Fq 'dev_dailyIteration' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目规则必须明确长期研发分支 dev_dailyIteration，避免无节制创建一次性业务分支。" >&2
+    exit 1
+fi
+if ! grep -Fq '结构化发布通知' "$project_dir/.agents/skills/termuxpro-development/SKILL.md"; then
+    echo "项目 skill 必须约束候选/稳定 Release 的飞书通知结构，避免只发送笼统上架消息。" >&2
     exit 1
 fi
 

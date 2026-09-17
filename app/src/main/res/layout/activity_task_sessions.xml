@@ -33,6 +33,7 @@
             android:paddingHorizontal="8dp"
             >
             <TextView
+                android:id="@+id/task_sessions_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"

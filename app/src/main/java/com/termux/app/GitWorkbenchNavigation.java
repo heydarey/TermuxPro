@@ -14,7 +14,7 @@ final class GitWorkbenchNavigation {
     static Intent newIntentForActiveWorkspace(@NonNull Context context, boolean startInDiff) {
         WorkspaceTarget target = WorkspaceTargetStore.readActive(context);
         if (target == null || !target.isConfigured()) return null;
-        return GitDiffActivity.newIntent(context, target.host, target.port, target.path)
+        return GitDiffActivity.newIntentForWorkspace(context, target)
             .putExtra(GitDiffActivity.EXTRA_START_IN_DIFF, startInDiff);
     }
 }

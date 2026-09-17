@@ -23,7 +23,7 @@ fi
 check_file "$sdk_root/platforms/android-36/android.jar"
 check_file "$sdk_root/build-tools/35.0.0/aapt"
 check_file "$sdk_root/platform-tools/adb"
-check_file "$sdk_root/ndk/29.0.14206865/source.properties"
+check_file "$sdk_root/ndk/27.0.12077973/source.properties"
 check_file "$project_dir/gradlew"
 
 if (( failed != 0 )); then

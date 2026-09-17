@@ -154,6 +154,8 @@ public final class UiRenderingInstrumentedTest {
             assertNotNull(terminal);
             TextView workbench = terminal.findViewById(com.termux.R.id.workspace_home_button);
             assertTrue(workbench.getText().toString().contains("工作台"));
+            assertTrue(workbench.getContentDescription().toString().contains("服务器"));
+            assertTrue(workbench.getContentDescription().toString().contains("AI"));
             assertTrue(!terminal.findViewById(com.termux.R.id.workspace_drawer_button)
                 .getContentDescription().toString().isEmpty());
             assertViewHasVisibleBounds(terminal.findViewById(
@@ -209,7 +211,7 @@ public final class UiRenderingInstrumentedTest {
                 } else {
                     assertTrue("大字体隐藏重复就绪说明时，安全结论仍须保留给辅助技术",
                         safetyHint.getContentDescription().toString().contains("重命名或停止"));
-                    assertTrue(safetyHint.getContentDescription().toString().contains("只允许进入"));
+                    assertTrue(safetyHint.getContentDescription().toString().contains("确认后"));
                 }
                 assertTrue(create.getVisibility() == View.VISIBLE);
                 assertTrue(create.getText().length() > 0);

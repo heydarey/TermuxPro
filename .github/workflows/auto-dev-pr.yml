@@ -2,7 +2,7 @@ name: 自动创建研发 PR
 
 on:
   push:
-    branches: ['dev_*', 'hotfix_*']
+    branches: ['dev_dailyIteration', 'dev_*', 'hotfix_*']
 
 concurrency:
   group: auto-dev-pr-${{ github.ref }}
@@ -53,6 +53,17 @@ jobs:
           }
 
           title="${COMMIT_TITLE%%$'\n'*}"
+          compare_json="$(gh_retry api "repos/$REPOSITORY/compare/dev...$HEAD_BRANCH" \
+            --jq '{status: .status, ahead_by: .ahead_by, behind_by: .behind_by}')"
+          compare_status="$(jq -r '.status' <<<"$compare_json")"
+          ahead_by="$(jq -r '.ahead_by' <<<"$compare_json")"
+          behind_by="$(jq -r '.behind_by' <<<"$compare_json")"
+          echo "分支差异：status=$compare_status，ahead_by=$ahead_by，behind_by=$behind_by。"
+          if [[ "$ahead_by" == "0" ]]; then
+            echo "分支 $HEAD_BRANCH 相对 dev 没有待合并提交，按长期研发分支对齐操作成功退出，不创建 PR。"
+            exit 0
+          fi
+
           existing="$(gh_retry pr list --repo "$REPOSITORY" --base dev --head "$HEAD_BRANCH" \
             --state open --json number --jq '.[0].number // empty')"
           if [[ -n "$existing" ]]; then
@@ -103,6 +114,30 @@ jobs:
             fi
           done
           echo "Android 运行时门禁：$requires_android_ci；模拟器 UI 门禁：$requires_emulator_ui。"
+
+          resolve_latest_emulator_ui_sha() {
+            local commit_sha
+            local file
+            local commit_files
+            mapfile -t compare_commits < <(gh_retry api "repos/$REPOSITORY/compare/dev...$HEAD_BRANCH" \
+              --jq '.commits[].sha')
+            for ((index=${#compare_commits[@]} - 1; index >= 0; index--)); do
+              commit_sha="${compare_commits[$index]}"
+              if ! commit_files="$(gh_retry api "repos/$REPOSITORY/commits/$commit_sha" \
+                --jq '.files[].filename')"; then
+                echo "查询提交 $commit_sha 文件列表失败，回退等待当前提交 $COMMIT_SHA 的模拟器 UI。" >&2
+                echo "$COMMIT_SHA"
+                return 0
+              fi
+              while IFS= read -r file; do
+                if is_emulator_ui_file "$file"; then
+                  echo "$commit_sha"
+                  return 0
+                fi
+              done <<<"$commit_files"
+            done
+            echo "$COMMIT_SHA"
+          }
 
           wait_for_workflow() {
             workflow="$1"
@@ -185,12 +220,82 @@ jobs:
             return 1
           }
 
+          resolve_pr_merge_sha() {
+            local pr_state_json
+            local api_state_json
+            local resolved_sha
+            local attempt
+            for attempt in $(seq 1 12); do
+              if pr_state_json="$(gh_safe pr view "$pr_number" --repo "$REPOSITORY" \
+                --json state,mergeCommit 2>/dev/null)"; then
+                resolved_sha="$(jq -r 'select(.state == "MERGED") | .mergeCommit.oid // empty' \
+                  <<<"$pr_state_json")"
+                if [[ -n "$resolved_sha" ]]; then
+                  echo "$resolved_sha"
+                  return 0
+                fi
+              fi
+
+              if api_state_json="$(gh_safe api "repos/$REPOSITORY/pulls/$pr_number" 2>/dev/null)"; then
+                resolved_sha="$(jq -r 'select(.merged == true) | .merge_commit_sha // empty' \
+                  <<<"$api_state_json")"
+                if [[ -n "$resolved_sha" ]]; then
+                  echo "$resolved_sha"
+                  return 0
+                fi
+              fi
+
+              sleep 5
+            done
+            return 1
+          }
+
+          merge_pr_and_resolve_sha() {
+            local attempt
+            local merge_response
+            local resolved_sha
+            for attempt in $(seq 1 3); do
+              if merge_response="$(gh_safe api --method PUT "repos/$REPOSITORY/pulls/$pr_number/merge" \
+                -f commit_title="Merge pull request #$pr_number from ${{ github.repository_owner }}/$HEAD_BRANCH" \
+                -f commit_message="$title" \
+                -f merge_method=merge)"; then
+                resolved_sha="$(jq -r '.sha // empty' <<<"$merge_response" 2>/dev/null || true)"
+                if [[ -n "$resolved_sha" ]]; then
+                  echo "$resolved_sha"
+                  return 0
+                fi
+
+                echo "Pulls merge API 返回空响应或缺少 sha，开始核验 PR 是否已合并。" >&2
+                if resolved_sha="$(resolve_pr_merge_sha)"; then
+                  echo "$resolved_sha"
+                  return 0
+                fi
+              else
+                echo "Pulls merge API 调用失败或超时，先核验 PR 是否已在服务端合并。" >&2
+                if resolved_sha="$(resolve_pr_merge_sha)"; then
+                  echo "$resolved_sha"
+                  return 0
+                fi
+              fi
+
+              echo "Pulls merge API 未返回可用 merge sha；第 $attempt/3 次。" >&2
+              sleep $((attempt * 5))
+            done
+
+            echo "Pulls merge API 连续无法解析 merge sha，且 PR 未显示已合并；保留 PR #$pr_number。" >&2
+            return 1
+          }
+
           if ! wait_for_workflow '.github/workflows/ci.yml' '完整 CI'; then
             echo "预合并完整 CI 未通过；PR #$pr_number 已保留等待后续提交修复，自动 PR 工作流不再重复上报失败。"
             exit 0
           fi
           if [[ "$requires_emulator_ui" == true ]]; then
-            if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI'; then
+            emulator_target_sha="$(resolve_latest_emulator_ui_sha)"
+            if [[ "$emulator_target_sha" != "$COMMIT_SHA" ]]; then
+              echo "最新提交未改动 UI 运行时文件，复用最后一个 UI 影响提交 $emulator_target_sha 的模拟器 UI 门禁。"
+            fi
+            if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI' "$emulator_target_sha"; then
               echo "预合并模拟器 UI 未通过；PR #$pr_number 已保留等待后续提交修复，自动 PR 工作流不再重复上报失败。"
               exit 0
             fi
@@ -219,11 +324,7 @@ jobs:
 
           # gh pr merge 会把本 job 自己也纳入 PR checks 等待，容易形成“自动合并等待自身完成”的死锁。
           # 这里在完整 CI/模拟器 UI 明确通过后直接调用 Pulls merge API，避免普通研发 PR 反复卡住或超时发失败邮件。
-          merge_sha="$(gh_retry api --method PUT "repos/$REPOSITORY/pulls/$pr_number/merge" \
-            -f commit_title="Merge pull request #$pr_number from ${{ github.repository_owner }}/$HEAD_BRANCH" \
-            -f commit_message="$title" \
-            -f merge_method=merge \
-            --jq '.sha')"
+          merge_sha="$(merge_pr_and_resolve_sha)"
           if [[ "$requires_android_ci" == true ]]; then
             gh_retry workflow run '.github/workflows/ci.yml' --repo "$REPOSITORY" --ref dev
           else

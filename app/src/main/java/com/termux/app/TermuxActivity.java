@@ -687,7 +687,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private void setWorkspaceHeaderView() {
         findViewById(R.id.workspace_drawer_button).setOnClickListener(view -> getDrawer().openDrawer(Gravity.LEFT));
         findViewById(R.id.workspace_home_button).setOnClickListener(view -> {
-            Intent intent = new Intent(this, WorkspaceActivity.class);
+            Intent intent = new Intent(this, WorkspaceActivity.class)
+                .putExtra(WorkspaceActivity.EXTRA_SHOW_BACK, true);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
@@ -697,15 +698,32 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         updateTerminalToolsButtonState();
     }
 
+    private boolean isCurrentTerminalTuiTouchScrollMode() {
+        String currentMode = mTerminalView != null ? mTerminalView.getTouchScrollMode() :
+            mPreferences.getTerminalTouchScrollMode();
+        return TerminalView.TOUCH_SCROLL_MODE_TUI.equals(currentMode);
+    }
+
     /** 在 TermuxPro 增值工具入口直接暴露当前触摸滚动语义，避免用户误以为滑动失效。 */
     private void updateTerminalToolsButtonState() {
         TextView tools = findViewById(R.id.terminal_tools_button);
         if (tools == null || mPreferences == null) return;
-        boolean tuiMode = TerminalView.TOUCH_SCROLL_MODE_TUI.equals(
-            mPreferences.getTerminalTouchScrollMode());
-        int description = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
-        tools.setText(R.string.workspace_tools_action);
-        tools.setContentDescription(getString(description));
+        boolean tuiMode = isCurrentTerminalTuiTouchScrollMode();
+        int touchModeLabel = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
+        int touchModeDescription = TerminalProjectToolsMenu.toolsButtonDescription(tuiMode);
+        tools.setText(touchModeLabel);
+        tools.setContentDescription(getString(touchModeDescription));
+        updateTouchScrollModeBanner(tuiMode);
+    }
+
+    /** TUI 滚动模式会改变手机手指上下滑动的含义，必须保留持久状态提示和回切线索。 */
+    private void updateTouchScrollModeBanner(boolean tuiMode) {
+        if (mFeedbackController == null) return;
+        if (tuiMode) {
+            mFeedbackController.showPersistent(getString(R.string.terminal_touch_scroll_tui_active_hint));
+        } else {
+            mFeedbackController.hidePersistent();
+        }
     }
 
     private void startAiCli(String command) {
@@ -716,13 +734,17 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private void showAiLaunchDialog(AiCliLaunchCommand.Tool tool) {
         AiSessionDialog.showChoice(this, tool, AiCliLaunchMessage.forTerminalTarget(this, tool,
             WorkspaceTargetStore.readActive(this)),
-            mode -> startAiCli(AiCliLaunchCommand.command(tool, mode)));
+            true,
+            mode -> {
+                AiLaunchRecorder.recordActiveIfConfigured(this, tool, mode);
+                startAiCli(AiCliLaunchCommand.command(tool, mode));
+            });
     }
 
     private void showProjectTools(View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
         TerminalProjectToolsMenu.populate(this, popup.getMenu(),
-            TerminalView.TOUCH_SCROLL_MODE_TUI.equals(mPreferences.getTerminalTouchScrollMode()));
+            isCurrentTerminalTuiTouchScrollMode());
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case TerminalProjectToolsMenu.TOOL_PROMPT_COMPOSER:
@@ -874,11 +896,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     private void toggleTouchScrollMode() {
-        boolean tuiMode = TerminalView.TOUCH_SCROLL_MODE_TUI.equals(
-            mPreferences.getTerminalTouchScrollMode());
+        boolean tuiMode = isCurrentTerminalTuiTouchScrollMode();
         String nextMode = tuiMode ? TerminalView.TOUCH_SCROLL_MODE_SCROLLBACK :
             TerminalView.TOUCH_SCROLL_MODE_TUI;
-        mPreferences.setTerminalTouchScrollMode(nextMode);
         mTerminalView.setTouchScrollMode(nextMode);
         updateTerminalToolsButtonState();
         showToast(getString(tuiMode ?

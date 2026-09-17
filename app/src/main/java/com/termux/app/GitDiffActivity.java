@@ -7,13 +7,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import com.termux.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,6 +39,7 @@ public final class GitDiffActivity extends AppCompatActivity {
     private static final String EXTRA_HOST = "host";
     private static final String EXTRA_PORT = "port";
     private static final String EXTRA_PATH = "path";
+    private static final String EXTRA_WORKSPACE_ID = "workspace_id";
     static final String EXTRA_START_IN_DIFF = "start_in_diff";
     static final String EXTRA_UI_TEST_OVERVIEW = "ui_test_overview";
     private static final int MAX_OUTPUT_BYTES = 1_500_000;
@@ -60,6 +65,12 @@ public final class GitDiffActivity extends AppCompatActivity {
             .putExtra(EXTRA_HOST, host)
             .putExtra(EXTRA_PORT, port)
             .putExtra(EXTRA_PATH, path);
+    }
+
+    @NonNull
+    static Intent newIntentForWorkspace(@NonNull Context context, @NonNull WorkspaceTarget target) {
+        return newIntent(context, target.host, target.port, target.path)
+            .putExtra(EXTRA_WORKSPACE_ID, target.id);
     }
 
     @Override
@@ -94,6 +105,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         findViewById(R.id.git_overview_commit_button).setOnClickListener(
             view -> showCommitDialog());
         findViewById(R.id.git_overview_commits_button).setOnClickListener(view -> showCommits());
+        findViewById(R.id.git_overview_project_tasks_button).setOnClickListener(
+            view -> openProjectTasks());
         mReturnWorkspace.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -173,6 +186,46 @@ public final class GitDiffActivity extends AppCompatActivity {
         return new ConnectionTarget(host, port, path);
     }
 
+    private void openProjectTasks() {
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
+        String workspaceId = getIntent().getStringExtra(EXTRA_WORKSPACE_ID);
+        if (workspaceId != null && !workspaceId.trim().isEmpty()) {
+            try {
+                Intent intent = ProjectTasksNavigation.newIntentForWorkspace(this,
+                    new WorkspaceTarget(workspaceId, workspaceId, target.host, target.port, target.path));
+                if (intent != null) {
+                    startActivity(intent);
+                    return;
+                }
+            } catch (IllegalArgumentException ignored) {
+                // 继续走 active workspace 校验兜底，避免因旧数据让用户误进错误目标。
+            }
+        }
+
+        WorkspaceTarget active = WorkspaceTargetStore.readActive(this);
+        if (active == null || !active.isConfigured()) {
+            showStatus(getString(R.string.terminal_project_tasks_invalid_workspace), true);
+            return;
+        }
+        if (!sameTarget(active, target)) {
+            showStatus(getString(R.string.git_workbench_project_tasks_target_mismatch), true);
+            return;
+        }
+        Intent fallback = ProjectTasksNavigation.newIntentForWorkspace(this, active);
+        if (fallback == null) {
+            showStatus(getString(R.string.terminal_project_tasks_invalid_workspace), true);
+            return;
+        }
+        startActivity(fallback);
+    }
+
+    private static boolean sameTarget(@NonNull WorkspaceTarget workspace,
+                                      @NonNull ConnectionTarget target) {
+        return workspace.port == target.port && workspace.host.equals(target.host)
+            && workspace.path.equals(target.path);
+    }
+
     @NonNull
     private CommandResult runGitDiff(@NonNull String host, int port, @NonNull String path) {
         RemoteCommandRunner.Result result = mRunner.run(host, port,
@@ -226,6 +279,9 @@ public final class GitDiffActivity extends AppCompatActivity {
             overview.head));
         ((TextView) findViewById(R.id.git_overview_path)).setText(getString(
             R.string.git_workbench_target, target.host, target.port, target.path));
+        TextView stateSummaryView = findViewById(R.id.git_overview_state_summary);
+        stateSummaryView.setText(stateSummary(overview));
+        stateSummaryView.setContentDescription(stateSummaryView.getText());
         ((TextView) findViewById(R.id.git_overview_changes)).setText(getResources().getQuantityString(
             R.plurals.git_workbench_changed_files, overview.changedFiles, overview.changedFiles));
         ((TextView) findViewById(R.id.git_overview_index_state)).setText(getString(
@@ -266,6 +322,7 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         ((TextView) findViewById(R.id.git_overview_next_step)).setText(
             nextStepGuidance(overview));
+        bindPrimaryAction(overview);
         ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
             recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
@@ -281,6 +338,69 @@ public final class GitDiffActivity extends AppCompatActivity {
         Button push = findViewById(R.id.git_overview_push_button);
         push.setEnabled(canPush);
         push.setAlpha(canPush ? 1f : 0.48f);
+    }
+
+    /** 将“下一步建议”落实为首屏主操作，避免手机上在横向按钮长条中寻找动作。 */
+    private void bindPrimaryAction(@NonNull GitRepositoryOverview overview) {
+        Button action = findViewById(R.id.git_overview_primary_action_button);
+        action.setVisibility(View.VISIBLE);
+        action.setEnabled(true);
+        action.setAlpha(1f);
+        if (overview.detached) {
+            action.setText(R.string.git_workbench_primary_branch);
+            action.setContentDescription(getString(R.string.git_workbench_primary_branch_description));
+            action.setOnClickListener(view -> showBranches());
+            return;
+        }
+        if (overview.changedFiles > 0) {
+            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
+                action.setText(R.string.git_workbench_primary_commit);
+                action.setContentDescription(getString(R.string.git_workbench_primary_commit_description));
+                action.setOnClickListener(view -> showCommitDialog());
+                return;
+            }
+            if (!overview.fileChanges.isEmpty()) {
+                action.setText(R.string.git_workbench_primary_review_files);
+                action.setContentDescription(getString(
+                    R.string.git_workbench_primary_review_files_description));
+                action.setOnClickListener(view -> showChangedFiles());
+                return;
+            }
+            action.setText(R.string.git_workbench_primary_review_diff);
+            action.setContentDescription(getString(
+                R.string.git_workbench_primary_review_diff_description));
+            action.setOnClickListener(view -> loadDiff());
+            return;
+        }
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            action.setText(R.string.git_workbench_primary_create_branch);
+            action.setContentDescription(getString(
+                R.string.git_workbench_primary_create_branch_description));
+            action.setOnClickListener(view -> showCreateBranchDialog());
+            return;
+        }
+        if (overview.behind > 0) {
+            action.setText(R.string.git_workbench_primary_pull);
+            action.setContentDescription(getString(R.string.git_workbench_primary_pull_description));
+            action.setOnClickListener(view -> confirmPullFastForward());
+            return;
+        }
+        if (overview.ahead > 0) {
+            action.setText(R.string.git_workbench_primary_push);
+            action.setContentDescription(getString(R.string.git_workbench_primary_push_description));
+            action.setOnClickListener(view -> confirmPushUpstream());
+            return;
+        }
+        if (!overview.commits.isEmpty()) {
+            action.setText(R.string.git_workbench_primary_commits);
+            action.setContentDescription(getString(R.string.git_workbench_primary_commits_description));
+            action.setOnClickListener(view -> showCommits());
+            return;
+        }
+        action.setText(R.string.git_workbench_primary_create_branch);
+        action.setContentDescription(getString(
+            R.string.git_workbench_primary_create_branch_description));
+        action.setOnClickListener(view -> showCreateBranchDialog());
     }
 
     @NonNull
@@ -306,6 +426,62 @@ public final class GitDiffActivity extends AppCompatActivity {
                 overview.ahead);
         }
         return getString(R.string.git_workbench_next_clean);
+    }
+
+    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话，降低手机上扫读成本。 */
+    @NonNull
+    private String stateSummary(@NonNull GitRepositoryOverview overview) {
+        return getString(R.string.git_workbench_state_summary, changeState(overview),
+            syncState(overview), recommendedAction(overview));
+    }
+
+    @NonNull
+    private String changeState(@NonNull GitRepositoryOverview overview) {
+        if (overview.detached) return getString(R.string.git_workbench_state_detached);
+        if (overview.changedFiles == 0) return getString(R.string.git_workbench_state_clean);
+        return getString(R.string.git_workbench_state_dirty, overview.changedFiles,
+            overview.stagedFiles, overview.unstagedFiles);
+    }
+
+    @NonNull
+    private String syncState(@NonNull GitRepositoryOverview overview) {
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            return getString(R.string.git_workbench_state_no_upstream);
+        }
+        if (overview.ahead > 0 && overview.behind > 0) {
+            return getString(R.string.git_workbench_state_diverged, overview.upstream,
+                overview.ahead, overview.behind);
+        }
+        if (overview.behind > 0) {
+            return getString(R.string.git_workbench_state_behind, overview.upstream,
+                overview.behind);
+        }
+        if (overview.ahead > 0) {
+            return getString(R.string.git_workbench_state_ahead, overview.upstream,
+                overview.ahead);
+        }
+        return getString(R.string.git_workbench_state_synced, overview.upstream);
+    }
+
+    @NonNull
+    private String recommendedAction(@NonNull GitRepositoryOverview overview) {
+        if (overview.detached) return getString(R.string.git_workbench_recommend_switch_branch);
+        if (overview.changedFiles > 0) {
+            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
+                return getString(R.string.git_workbench_recommend_commit);
+            }
+            if (!overview.fileChanges.isEmpty()) {
+                return getString(R.string.git_workbench_recommend_review_files);
+            }
+            return getString(R.string.git_workbench_recommend_review_diff);
+        }
+        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
+            return getString(R.string.git_workbench_recommend_create_branch);
+        }
+        if (overview.behind > 0) return getString(R.string.git_workbench_recommend_pull);
+        if (overview.ahead > 0) return getString(R.string.git_workbench_recommend_push);
+        if (!overview.commits.isEmpty()) return getString(R.string.git_workbench_recommend_commits);
+        return getString(R.string.git_workbench_recommend_create_branch);
     }
 
     @NonNull
@@ -349,19 +525,92 @@ public final class GitDiffActivity extends AppCompatActivity {
     @Nullable
     AlertDialog createCommitsDialog() {
         if (mOverview == null || mOverview.commits.isEmpty()) return null;
-        String[] labels = new String[mOverview.commits.size()];
-        for (int index = 0; index < mOverview.commits.size(); index++) {
-            GitRepositoryOverview.Commit commit = mOverview.commits.get(index);
-            labels[index] = getString(R.string.git_workbench_commit_item, commit.shortHash,
-                commit.relativeTime, commit.subject);
-        }
-        return new AlertDialog.Builder(this)
+        View content = getLayoutInflater().inflate(R.layout.dialog_git_commits_filter, null);
+        TextView message = content.findViewById(R.id.git_commit_history_message);
+        message.setText(commitHistoryMessage());
+        EditText filter = content.findViewById(R.id.git_commit_history_filter);
+        ListView list = content.findViewById(R.id.git_commit_history_list);
+        TextView empty = content.findViewById(R.id.git_commit_history_empty);
+        list.setEmptyView(empty);
+
+        ArrayList<GitRepositoryOverview.Commit> visibleCommits = new ArrayList<>(mOverview.commits);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_termuxpro_list,
+            commitLabels(visibleCommits));
+        list.setAdapter(adapter);
+        filter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence text, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                visibleCommits.clear();
+                visibleCommits.addAll(filterCommits(mOverview.commits,
+                    text == null ? "" : text.toString()));
+                adapter.clear();
+                adapter.addAll(commitLabels(visibleCommits));
+                adapter.notifyDataSetChanged();
+                empty.setText(getString(R.string.git_workbench_commit_filter_empty,
+                    text == null ? "" : text.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable text) {}
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_commits)
-            .setMessage(R.string.git_workbench_commit_detail_hint)
-            .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list, labels),
-                (selectionDialog, which) -> loadCommitDetails(mOverview.commits.get(which).shortHash))
+            .setView(content)
             .setNegativeButton(android.R.string.cancel, null)
             .create();
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            GitRepositoryOverview.Commit commit = visibleCommits.get(position);
+            dialog.dismiss();
+            loadCommitDetails(commit.shortHash);
+        });
+        return dialog;
+    }
+
+    @NonNull
+    private List<String> commitLabels(@NonNull List<GitRepositoryOverview.Commit> commits) {
+        List<String> labels = new ArrayList<>(commits.size());
+        for (GitRepositoryOverview.Commit commit : commits) {
+            labels.add(getString(R.string.git_workbench_commit_item, commit.shortHash,
+                commit.relativeTime, commit.subject));
+        }
+        return labels;
+    }
+
+    @NonNull
+    static List<GitRepositoryOverview.Commit> filterCommits(
+        @NonNull List<GitRepositoryOverview.Commit> commits, @NonNull String query) {
+        String normalized = query.trim().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) return new ArrayList<>(commits);
+        List<GitRepositoryOverview.Commit> result = new ArrayList<>();
+        for (GitRepositoryOverview.Commit commit : commits) {
+            String haystack = (commit.shortHash + " " + commit.relativeTime + " " + commit.subject)
+                .toLowerCase(Locale.ROOT);
+            if (haystack.contains(normalized)) result.add(commit);
+        }
+        return result;
+    }
+
+    @NonNull
+    private String commitHistoryMessage() {
+        if (mOverview == null) return getString(R.string.git_workbench_commit_detail_hint);
+        ConnectionTarget target = currentTargetWithoutSideEffects();
+        String targetLabel = target == null ? getString(R.string.git_workbench_unknown_target)
+            : getString(R.string.git_workbench_target, target.host, target.port, target.path);
+        return getString(R.string.git_workbench_commit_detail_hint_with_context,
+            mOverview.head, targetLabel);
+    }
+
+    @Nullable
+    private ConnectionTarget currentTargetWithoutSideEffects() {
+        String host = getIntent().getStringExtra(EXTRA_HOST);
+        String path = getIntent().getStringExtra(EXTRA_PATH);
+        int port = getIntent().getIntExtra(EXTRA_PORT, 22);
+        if (host == null || path == null || port < 1 || port > 65535) return null;
+        return new ConnectionTarget(host, port, path);
     }
 
     private void loadCommitDetails(@NonNull String shortHash) {
