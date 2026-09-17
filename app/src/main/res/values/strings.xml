@@ -365,8 +365,8 @@
     <string name="ai_cli_center_history_next_ready">Next: open the last %1$s · %2$s entry again if that is still your task. If it was accidental, delete only this local record; remote AI history is untouched.</string>
     <string name="ai_cli_center_history_next_stale">Next: the last %1$s · %2$s target has changed. Check the workspace or delete this stale local record first.</string>
     <plurals name="ai_cli_center_history_count">
-        <item quantity="one">Latest %1$d local entry record</item>
-        <item quantity="other">Latest %1$d local entry records</item>
+        <item quantity="one">Latest %1$d local launch record</item>
+        <item quantity="other">Latest %1$d local launch records</item>
     </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s entry\nLocal record time: %6$s\n%3$s:%4$d · %5$s</string>
     <string name="ai_cli_center_history_stale_hint">Target changed: TermuxPro will not open this directly. Check the workspace or delete this stale local record.</string>
@@ -385,13 +385,13 @@
     <string name="ai_cli_center_history_target_changed_message">This local record was created for %1$s · %2$s, but the workspace target is no longer the same.\nLocal record time: %5$s\n\nRecord target:\n%3$s\n\nCurrent target:\n%4$s\n\nTermuxPro will not replay this record into a different server or project. Check Server and project settings, or delete only this stale local record.</string>
     <string name="ai_cli_center_history_target_changed_workspace_action">Check workspace</string>
     <string name="ai_cli_center_history_launch_action">Open history picker</string>
-    <string name="ai_cli_center_repeat_last">Repeat last</string>
+    <string name="ai_cli_center_repeat_last">Open latest local record</string>
     <string name="ai_cli_center_repeat_last_target">Open again: %1$s · %2$s</string>
     <string name="ai_cli_center_repeat_stale_target">Handle stale record: %1$s · %2$s</string>
     <string name="ai_cli_center_repeat_launch_title">Open %1$s again?</string>
     <string name="ai_cli_center_repeat_launch_message">This opens a local TermuxPro launch record again: %1$s · %2$s\nLocal record time: %7$s\nTarget: %4$s:%5$d · %6$s\n\nCommand: %3$s\n\nA new SSH terminal will be opened. TermuxPro will not auto-attach tmux or delete Claude/Codex remote history. On shared accounts, confirm this is still your task.</string>
     <string name="ai_cli_center_repeat_launch_action">Open again</string>
-    <string name="ai_cli_center_delete_latest">Delete latest</string>
+    <string name="ai_cli_center_delete_latest">Delete latest local record</string>
     <string name="ai_cli_center_delete_latest_target">Delete local record: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">Delete this latest local launch record?</string>
     <string name="ai_cli_center_delete_entry_title">Delete this local launch record?</string>
@@ -405,7 +405,7 @@
     <string name="ai_cli_center_history_action_title">Open again or delete local record</string>
     <string name="ai_cli_center_history_action_message">%1$s · %2$s\nLocal record time: %6$s\n%3$s:%4$d · %5$s\n\nOpen the same entry again, or delete only the local TermuxPro record. Claude/Codex remote history, tmux sessions, and terminal output are not deleted.</string>
     <string name="ai_cli_center_history_action_repeat">Open entry again</string>
-    <string name="ai_cli_center_clear_history">Clear records</string>
+    <string name="ai_cli_center_clear_history">Clear local records</string>
     <plurals name="ai_cli_center_clear_history_target">
         <item quantity="one">Clear 1 local record</item>
         <item quantity="other">Clear %1$d local records</item>

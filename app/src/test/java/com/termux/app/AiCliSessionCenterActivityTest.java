@@ -472,7 +472,9 @@ public class AiCliSessionCenterActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 TermuxPro 本地启动记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
-        assertEquals("重复上次", text(activity, R.id.ai_cli_center_repeat_last));
+        assertEquals("再次打开最近本地记录", text(activity, R.id.ai_cli_center_repeat_last));
+        assertEquals("删除最近本地记录", text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空本地记录", text(activity, R.id.ai_cli_center_clear_history));
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog empty = ShadowAlertDialog.getLatestAlertDialog();

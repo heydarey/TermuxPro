@@ -263,13 +263,13 @@
     <string name="ai_cli_center_history_target_changed_message">这条本地记录创建时对应 %1$s · %2$s，但当前工作区的服务器或目录已经不同。\n本地记录时间：%5$s\n\n记录目标：\n%3$s\n\n当前目标：\n%4$s\n\nTermuxPro 不会把旧记录重放到另一个服务器或项目。请检查“服务器与项目”，或只删除这条过期的本地记录。</string>
     <string name="ai_cli_center_history_target_changed_workspace_action">检查工作区</string>
     <string name="ai_cli_center_history_launch_action">打开历史选择</string>
-    <string name="ai_cli_center_repeat_last">重复上次</string>
+    <string name="ai_cli_center_repeat_last">再次打开最近本地记录</string>
     <string name="ai_cli_center_repeat_last_target">再次打开：%1$s · %2$s</string>
     <string name="ai_cli_center_repeat_stale_target">处理过期记录：%1$s · %2$s</string>
     <string name="ai_cli_center_repeat_launch_title">再次打开 %1$s？</string>
     <string name="ai_cli_center_repeat_launch_message">将再次打开这条 TermuxPro 本地启动记录：%1$s · %2$s\n本地记录时间：%7$s\n目标：%4$s:%5$d · %6$s\n\n执行命令：%3$s\n\n这会新开 SSH 终端，不会自动进入 tmux，也不会删除 Claude/Codex 远端历史。共享账号下请确认这仍然是你的任务。</string>
     <string name="ai_cli_center_repeat_launch_action">确认打开</string>
-    <string name="ai_cli_center_delete_latest">删除最近</string>
+    <string name="ai_cli_center_delete_latest">删除最近本地记录</string>
     <string name="ai_cli_center_delete_latest_target">删除本地记录：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条本地启动记录？</string>
     <string name="ai_cli_center_delete_entry_title">删除这条本地启动记录？</string>
@@ -283,7 +283,7 @@
     <string name="ai_cli_center_history_action_title">再次打开或删除本地记录</string>
     <string name="ai_cli_center_history_action_message">%1$s · %2$s\n本地记录时间：%6$s\n%3$s:%4$d · %5$s\n\n可再次打开相同入口，或只删除 TermuxPro 本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_history_action_repeat">再次打开入口</string>
-    <string name="ai_cli_center_clear_history">清空记录</string>
+    <string name="ai_cli_center_clear_history">清空本地记录</string>
     <plurals name="ai_cli_center_clear_history_target">
         <item quantity="other">清空 %1$d 条本地记录</item>
     </plurals>
