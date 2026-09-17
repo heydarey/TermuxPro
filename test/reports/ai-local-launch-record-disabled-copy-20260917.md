@@ -52,3 +52,8 @@
   进入 `:app:testDebugUnitTest --tests com.termux.app.AiCliSessionCenterActivityTest --tests com.termux.app.CustomLayoutsSmokeTest --tests com.termux.app.WorkspaceActivitySmokeTest`
   后本地 Gradle 超过 10 分钟无输出但仍占用 CPU，按共享服务器资源策略手动中断，未作为本地通过证据。
   本轮代码变更仅涉及字符串资源、静态测试和文档，最终 Android 单测门禁保留给 GitHub CI。
+- GitHub CI 首次运行暴露 `AiCliSessionCenterActivityTest#repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory`
+  仍断言旧空态文案 `重复上次`；已同步更新为 `再次打开最近本地记录`，并补充删除/清空空态按钮断言。
+- 修复断言后尝试本地最小 Robolectric：
+  `timeout 300 ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.AiCliSessionCenterActivityTest.repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory`；
+  本地 300 秒无测试输出后 timeout 退出码 124，未作为通过证据，继续以 GitHub CI 复跑为准。
