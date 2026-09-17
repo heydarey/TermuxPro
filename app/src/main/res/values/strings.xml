@@ -676,6 +676,15 @@
     <string name="git_workbench_unstage_file_failed">Git did not unstage this file. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_stash_save">Save stash</string>
     <string name="git_workbench_stashes">Stashes</string>
+    <plurals name="git_workbench_stashes_count">
+        <item quantity="one">1 stash</item>
+        <item quantity="other">%1$d stashes</item>
+    </plurals>
+    <string name="git_workbench_stashes_empty_description">This repository has no stash records.</string>
+    <plurals name="git_workbench_stashes_count_description">
+        <item quantity="one">View 1 stash in the current repository. You can apply it while keeping it, or delete only the selected stash.</item>
+        <item quantity="other">View %1$d stashes in the current repository. You can apply one while keeping it, or delete only the selected stash.</item>
+    </plurals>
     <string name="git_workbench_stash_hint">For example WIP before switching task</string>
     <string name="git_workbench_stash_message">Save %1$d changed files to a stash, including %2$d staged and %3$d unstaged files. This does not commit or push.</string>
     <string name="git_workbench_stash_save_action">Save stash</string>

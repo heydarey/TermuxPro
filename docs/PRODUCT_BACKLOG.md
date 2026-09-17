@@ -227,7 +227,10 @@ shell、基础会话、基础快捷键或基础文件能力，不进入产品主
   丢弃文件路径，证据见 `test/reports/git-workbench-grouped-toolbox-20260910.md`。
   本轮主动发现 Git 首屏状态仍需要用户从多行文本拼接判断，已新增一句话状态摘要，把工作树、暂存拆分、
   上游同步状态和推荐动作合并展示，并同步无障碍说明；证据见
-  `test/reports/git-workbench-state-summary-20260911.md`。
+  `test/reports/git-workbench-state-summary-20260911.md`。本轮继续补强 stash 入口可见性：`Stash 列表`
+  有记录时直接显示数量，并在无障碍说明中强调可“应用但保留”或只删除选中单条 stash，避免用户点开后
+  才知道临时保存范围或误以为会执行 `pop` / `clear`；不新增 Git 写路径，不触碰远端仓库，证据见
+  `test/reports/git-stash-entry-count-20260917.md`。
 - 项目任务入口增值化：终端工具箱“项目任务”不得再向当前 shell 注入启发式检测/测试命令，应复用活动
   工作区打开结构化项目任务页，由页面完成元数据识别、任务确认、独立持久会话启动和失败恢复；原始
   shell 仍允许用户手动运行任意项目命令。

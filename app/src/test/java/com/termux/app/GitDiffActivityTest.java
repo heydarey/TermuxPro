@@ -160,7 +160,11 @@ public final class GitDiffActivityTest {
             .getVisibility());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_stash_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_stashes_button)).isEnabled());
+        Button stashesButton = activity.findViewById(R.id.git_overview_stashes_button);
+        assertTrue(!stashesButton.isEnabled());
+        assertEquals("Stash 列表", stashesButton.getText().toString());
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("没有 stash 记录"));
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n"
             + "TP_LOCAL\tdev\n"
@@ -170,7 +174,14 @@ public final class GitDiffActivityTest {
         assertTrue(((Button) activity.findViewById(R.id.git_overview_push_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_stash_button)).isEnabled());
-        assertTrue(((Button) activity.findViewById(R.id.git_overview_stashes_button)).isEnabled());
+        assertTrue(stashesButton.isEnabled());
+        assertEquals("1 条 Stash", stashesButton.getText().toString());
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("查看当前仓库的 1 条 stash"));
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("应用但保留"));
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("只删除选中的单条 stash"));
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_fetch_button)).isEnabled());

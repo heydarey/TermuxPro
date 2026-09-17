@@ -307,6 +307,17 @@ public final class GitDiffActivity extends AppCompatActivity {
         Button stashes = findViewById(R.id.git_overview_stashes_button);
         stashes.setEnabled(!overview.stashes.isEmpty());
         stashes.setAlpha(!overview.stashes.isEmpty() ? 1f : 0.48f);
+        if (overview.stashes.isEmpty()) {
+            stashes.setText(R.string.git_workbench_stashes);
+            stashes.setContentDescription(getString(R.string.git_workbench_stashes_empty_description));
+        } else {
+            stashes.setText(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_count,
+                overview.stashes.size(), overview.stashes.size()));
+            stashes.setContentDescription(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_count_description,
+                overview.stashes.size(), overview.stashes.size()));
+        }
         Button deleteBranch = findViewById(R.id.git_overview_delete_branch_button);
         boolean canDeleteBranch = !deletableLocalBranches(overview).isEmpty();
         deleteBranch.setEnabled(canDeleteBranch);
