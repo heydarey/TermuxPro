@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -287,23 +288,28 @@ public final class GitDiffActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.git_overview_index_state)).setText(getString(
             R.string.git_workbench_index_state, overview.stagedFiles, overview.unstagedFiles));
         Button stageAll = findViewById(R.id.git_overview_stage_all_button);
-        stageAll.setEnabled(overview.unstagedFiles > 0);
-        stageAll.setAlpha(overview.unstagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(stageAll, overview.unstagedFiles > 0,
+            R.string.git_workbench_stage_all_enabled_description,
+            R.string.git_workbench_stage_all_disabled_description);
         Button unstageAll = findViewById(R.id.git_overview_unstage_all_button);
-        unstageAll.setEnabled(overview.stagedFiles > 0);
-        unstageAll.setAlpha(overview.stagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(unstageAll, overview.stagedFiles > 0,
+            R.string.git_workbench_unstage_all_enabled_description,
+            R.string.git_workbench_unstage_all_disabled_description);
         Button commit = findViewById(R.id.git_overview_commit_button);
-        commit.setEnabled(overview.stagedFiles > 0);
-        commit.setAlpha(overview.stagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(commit, overview.stagedFiles > 0,
+            R.string.git_workbench_commit_enabled_description,
+            R.string.git_workbench_commit_disabled_description);
         Button files = findViewById(R.id.git_overview_files_button);
         boolean hasFileChanges = !overview.fileChanges.isEmpty();
-        files.setEnabled(hasFileChanges);
-        files.setAlpha(hasFileChanges ? 1f : 0.48f);
+        setButtonAvailability(files, hasFileChanges,
+            R.string.git_workbench_files_enabled_description,
+            R.string.git_workbench_files_disabled_description);
         findViewById(R.id.git_overview_review_actions).setVisibility(
             hasFileChanges ? View.VISIBLE : View.GONE);
         Button stash = findViewById(R.id.git_overview_stash_button);
-        stash.setEnabled(overview.changedFiles > 0);
-        stash.setAlpha(overview.changedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(stash, overview.changedFiles > 0,
+            R.string.git_workbench_stash_enabled_description,
+            R.string.git_workbench_stash_disabled_description);
         Button stashes = findViewById(R.id.git_overview_stashes_button);
         stashes.setEnabled(!overview.stashes.isEmpty());
         stashes.setAlpha(!overview.stashes.isEmpty() ? 1f : 0.48f);
@@ -320,8 +326,9 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         Button deleteBranch = findViewById(R.id.git_overview_delete_branch_button);
         boolean canDeleteBranch = !deletableLocalBranches(overview).isEmpty();
-        deleteBranch.setEnabled(canDeleteBranch);
-        deleteBranch.setAlpha(canDeleteBranch ? 1f : 0.48f);
+        setButtonAvailability(deleteBranch, canDeleteBranch,
+            R.string.git_workbench_delete_branch_enabled_description,
+            R.string.git_workbench_delete_branch_disabled_description);
         TextView sync = findViewById(R.id.git_overview_sync);
         if (overview.ahead == null || overview.behind == null) {
             sync.setText(R.string.git_workbench_no_upstream);
@@ -337,18 +344,29 @@ public final class GitDiffActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
             recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
-        fetch.setEnabled(overview.upstream != null);
-        fetch.setAlpha(overview.upstream != null ? 1f : 0.48f);
+        setButtonAvailability(fetch, overview.upstream != null,
+            R.string.git_workbench_fetch_enabled_description,
+            R.string.git_workbench_fetch_disabled_description);
         boolean canPull = overview.upstream != null && overview.behind != null && overview.behind > 0;
         Button pull = findViewById(R.id.git_overview_pull_button);
-        pull.setEnabled(canPull);
-        pull.setAlpha(canPull ? 1f : 0.48f);
+        setButtonAvailability(pull, canPull,
+            R.string.git_workbench_pull_enabled_description,
+            R.string.git_workbench_pull_disabled_description);
         boolean canPush = overview.upstream != null && overview.ahead != null
             && overview.ahead > 0 && (overview.behind == null || overview.behind == 0)
             && !overview.detached;
         Button push = findViewById(R.id.git_overview_push_button);
-        push.setEnabled(canPush);
-        push.setAlpha(canPush ? 1f : 0.48f);
+        setButtonAvailability(push, canPush,
+            R.string.git_workbench_push_enabled_description,
+            R.string.git_workbench_push_disabled_description);
+    }
+
+    private void setButtonAvailability(@NonNull Button button, boolean enabled,
+                                       @StringRes int enabledDescription,
+                                       @StringRes int disabledDescription) {
+        button.setEnabled(enabled);
+        button.setAlpha(enabled ? 1f : 0.48f);
+        button.setContentDescription(getString(enabled ? enabledDescription : disabledDescription));
     }
 
     /** 将“下一步建议”落实为首屏主操作，避免手机上在横向按钮长条中寻找动作。 */

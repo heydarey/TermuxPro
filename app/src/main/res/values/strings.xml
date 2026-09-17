@@ -626,9 +626,13 @@
     <string name="git_workbench_history_tools">History and stash</string>
     <string name="git_workbench_branches">Branches</string>
     <string name="git_workbench_fetch">Fetch</string>
+    <string name="git_workbench_fetch_enabled_description">Fetch upstream status without merging or changing the working tree.</string>
+    <string name="git_workbench_fetch_disabled_description">Fetch is unavailable because this branch has no configured upstream.</string>
     <string name="git_workbench_fetching">Fetching %1$s without merging…</string>
     <string name="git_workbench_fetch_failed">Git did not fetch the upstream remote. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_pull">Pull FF</string>
+    <string name="git_workbench_pull_enabled_description">Fast-forward from upstream after confirmation. No merge or rebase is run.</string>
+    <string name="git_workbench_pull_disabled_description">Fast-forward pull is unavailable until the branch is behind a configured upstream.</string>
     <string name="git_workbench_pull_message">Fast-forward %1$d commit(s) from %2$s? This will not merge or rebase, and it only runs when the working tree is clean.</string>
     <string name="git_workbench_pull_action">Fast-forward</string>
     <string name="git_workbench_pulling">Fast-forwarding from %1$s…</string>
@@ -637,6 +641,8 @@
     <string name="git_workbench_pull_dirty_remote_blocked">Pull is blocked because remote Git still reports uncommitted files. Refresh and handle the working tree first.</string>
     <string name="git_workbench_pull_failed">Git did not fast-forward. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_push">Push</string>
+    <string name="git_workbench_push_enabled_description">Push local commits to the configured upstream after confirmation. Force push is unavailable.</string>
+    <string name="git_workbench_push_disabled_description">Push is unavailable until this branch has upstream tracking, local commits, no pending upstream commits, and is not detached HEAD.</string>
     <string name="git_workbench_push_message">Push %1$d local commit(s) to %2$s? This uses a normal non-force push to the configured upstream branch.</string>
     <string name="git_workbench_push_dirty_message">Push %1$d local commit(s) to %2$s? %3$d uncommitted file(s) stay only in the working tree and will not be pushed.</string>
     <string name="git_workbench_push_action">Push commits</string>
@@ -650,9 +656,15 @@
     <string name="git_workbench_review_files">Review by file</string>
     <string name="git_workbench_review_diff">View full diff</string>
     <string name="git_workbench_files">Files</string>
+    <string name="git_workbench_files_enabled_description">Review changed files and adjust index state. Nothing is committed, pushed, discarded, or reset.</string>
+    <string name="git_workbench_files_disabled_description">File review is unavailable because Git did not report file-level changes. Refresh after editing files.</string>
     <string name="git_workbench_index_state">Staged %1$d · unstaged %2$d</string>
     <string name="git_workbench_stage_all">Stage all</string>
+    <string name="git_workbench_stage_all_enabled_description">Stage all unstaged or untracked files after confirmation. Nothing is committed or pushed.</string>
+    <string name="git_workbench_stage_all_disabled_description">Stage all is unavailable because there are no unstaged or untracked files.</string>
     <string name="git_workbench_unstage_all">Unstage all</string>
+    <string name="git_workbench_unstage_all_enabled_description">Move all staged files back to the working tree after confirmation. File contents are preserved.</string>
+    <string name="git_workbench_unstage_all_disabled_description">Unstage all is unavailable because there are no staged files.</string>
     <string name="git_workbench_stage_all_message">Stage %1$d unstaged or untracked files. Nothing is committed, pushed, or discarded from the working tree.</string>
     <string name="git_workbench_unstage_all_message">Move %1$d staged files out of the index. File contents stay in the working tree and no hard reset is run.</string>
     <string name="git_workbench_stage_all_action">Stage changes</string>
@@ -678,6 +690,8 @@
     <string name="git_workbench_stage_file_failed">Git did not stage this file. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_unstage_file_failed">Git did not unstage this file. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_stash_save">Save stash</string>
+    <string name="git_workbench_stash_enabled_description">Save changed files to a stash after confirmation. Nothing is committed or pushed.</string>
+    <string name="git_workbench_stash_disabled_description">Save stash is unavailable because the working tree has no changed files.</string>
     <string name="git_workbench_stashes">Stashes</string>
     <plurals name="git_workbench_stashes_title_count">
         <item quantity="one">Stashes (1)</item>
@@ -715,6 +729,8 @@
     <string name="git_workbench_stash_apply_failed">Git did not apply the stash. Worktree state should be checked before retrying.\n\n%1$s</string>
     <string name="git_workbench_stash_drop_failed">Git did not delete the stash.\n\n%1$s</string>
     <string name="git_workbench_commit">Commit</string>
+    <string name="git_workbench_commit_enabled_description">Commit staged files after confirmation. Nothing is pushed automatically.</string>
+    <string name="git_workbench_commit_disabled_description">Commit is unavailable because no files are staged.</string>
     <string name="git_workbench_commit_hint">For example fix: improve mobile terminal UX</string>
     <string name="git_workbench_commit_message">Commit %1$d staged file(s) to branch %3$s.\n\nTarget: %4$s:%5$d · %6$s\n\n%2$d unstaged file(s) will stay outside this commit. Nothing is pushed.</string>
     <string name="git_workbench_commit_action">Commit staged</string>
@@ -746,6 +762,8 @@
     <string name="git_workbench_create_branch_conflict">Branch was not created: local branch %1$s already exists. Refresh, then switch from the local branch list.</string>
     <string name="git_workbench_create_branch_failed">Git did not create the branch. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_delete_branch">Delete local branch</string>
+    <string name="git_workbench_delete_branch_enabled_description">Delete a non-current local branch safely after confirmation. Remote branches are not deleted.</string>
+    <string name="git_workbench_delete_branch_disabled_description">Delete local branch is unavailable because only the current branch is present or no safe local branch can be deleted.</string>
     <string name="git_workbench_delete_branch_message">Delete local branch %1$s? This only runs safe deletion: it will not delete the current branch, will not delete any remote branch, and will not force. If Git sees the branch as unmerged, it will refuse.</string>
     <string name="git_workbench_delete_branch_action">Delete branch</string>
     <string name="git_workbench_deleting_branch">Safely deleting local branch %1$s…</string>
