@@ -440,6 +440,9 @@ public class CustomCommandsActivityTest {
             .getText().toString();
         assertTrue(message.contains("hdr@192.168.1.153:22"));
         assertTrue(message.contains("~/project"));
+        assertTrue(message.contains("新开独立 SSH 会话"));
+        assertTrue(message.contains("不会把命令输入当前终端、Claude Code 或 Codex CLI"));
+        assertTrue(message.contains("不会自动进入 tmux"));
         assertTrue(message.contains("git status --short"));
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
 
@@ -469,7 +472,7 @@ public class CustomCommandsActivityTest {
                 .getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
-        assertEquals("立即运行“查看状态”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+        assertEquals("立即运行“查看状态”；将在目标 hdr@192.168.1.153:22 的 ~/project 中新开独立 SSH 会话，不会输入当前终端或 AI TUI。",
             list.getChildAt(1).findViewById(R.id.custom_command_run)
                 .getContentDescription().toString());
         assertEquals("编辑/更多", ((TextView) list.getChildAt(1)
@@ -576,7 +579,7 @@ public class CustomCommandsActivityTest {
         assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
         assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
             .findViewById(R.id.custom_command_name)).getText().toString());
-        assertEquals("查看并运行“Codex 历史”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+        assertEquals("查看并运行“Codex 历史”；将在目标 hdr@192.168.1.153:22 的 ~/project 中新开独立 SSH 会话，不会输入当前终端或 AI TUI。",
             list.getChildAt(4).findViewById(R.id.custom_command_run)
                 .getContentDescription().toString());
         assertEquals("Git 状态", store.list("workspace-a").get(0).name);

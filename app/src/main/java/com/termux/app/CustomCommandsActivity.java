@@ -223,8 +223,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
         ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
             ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
-        String directory = TextUtils.isEmpty(command.workingDirectory)
-            ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
+        String directory = displayDirectory(command);
+        String executionDirectory = executionDirectory(command);
         String targetSummary = getString(R.string.custom_commands_summary, group, directory,
             mTarget.host, mTarget.port);
         ((TextView) row.findViewById(R.id.custom_command_summary)).setText(targetSummary);
@@ -236,7 +236,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         row.findViewById(R.id.custom_command_run).setContentDescription(getString(
             requiresPreview ? R.string.custom_commands_run_description
                 : R.string.custom_commands_run_now_description,
-            command.name, mTarget.host, mTarget.port, directory));
+            command.name, mTarget.host, mTarget.port, executionDirectory));
         row.findViewById(R.id.custom_command_manage).setContentDescription(getString(
             R.string.custom_commands_manage_description, command.name));
         row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
@@ -642,8 +642,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 .create());
             return;
         }
-        String directory = TextUtils.isEmpty(command.workingDirectory)
-            ? mTarget.path : command.workingDirectory;
+        String directory = executionDirectory(command);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(getString(R.string.custom_commands_preview_title, command.name))
             .setMessage(getString(R.string.custom_commands_preview_message, mTarget.host,
@@ -662,6 +661,18 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, startup)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true);
         startActivity(intent);
+    }
+
+    @NonNull
+    private String displayDirectory(@NonNull CustomCommand command) {
+        return TextUtils.isEmpty(command.workingDirectory)
+            ? getString(R.string.custom_commands_default_directory)
+            : command.workingDirectory;
+    }
+
+    @NonNull
+    private String executionDirectory(@NonNull CustomCommand command) {
+        return TextUtils.isEmpty(command.workingDirectory) ? mTarget.path : command.workingDirectory;
     }
 
     private void confirmDelete(CustomCommand command) {
