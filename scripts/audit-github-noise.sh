@@ -7,6 +7,12 @@ cd "$project_dir"
 branch_file="${TERMUXPRO_AUDIT_BRANCHES_FILE:-}"
 open_pr_file="${TERMUXPRO_AUDIT_OPEN_PRS_FILE:-}"
 release_file="${TERMUXPRO_AUDIT_RELEASES_FILE:-}"
+candidate_limit="${TERMUXPRO_AUDIT_CANDIDATE_LIMIT:-50}"
+
+if ! [[ "$candidate_limit" =~ ^[0-9]+$ ]]; then
+    echo "TERMUXPRO_AUDIT_CANDIDATE_LIMIT 必须是非负整数。" >&2
+    exit 64
+fi
 
 load_remote_branches() {
     if [[ -n "$branch_file" ]]; then
@@ -177,6 +183,7 @@ cat <<'EOF'
 - 永远排除 master、dev、dev_dailyIteration 和打开 PR 的 head 分支。
 - “已合并陈旧分支候选”只代表可进入人工/自治清理复核，不代表可直接删除。
 - 删除远端分支前必须再次确认分支已合入 origin/dev，且无打开 PR、无候选/稳定发布风险。
+- 默认最多展示 50 个候选，避免审计报告本身制造噪声；设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 可显示全部。
 
 ## 已合并陈旧分支候选
 EOF
@@ -186,5 +193,17 @@ if [[ "${#cleanup_candidates[@]}" -eq 0 ]]; then
     echo "当前没有可列出的候选。"
 else
     printf '\n'
-    printf -- '- %s\n' "${cleanup_candidates[@]}"
+    displayed=0
+    for candidate in "${cleanup_candidates[@]}"; do
+        if (( candidate_limit > 0 && displayed >= candidate_limit )); then
+            break
+        fi
+        printf -- '- %s\n' "$candidate"
+        ((displayed += 1))
+    done
+    remaining=$(( ${#cleanup_candidates[@]} - displayed ))
+    if (( remaining > 0 )); then
+        printf '\n'
+        printf '……另有 %d 个候选未显示；如需完整清单，设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 后重跑。\n' "$remaining"
+    fi
 fi

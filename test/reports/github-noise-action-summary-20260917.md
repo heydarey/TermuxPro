@@ -50,7 +50,10 @@ status=NOISE_HIGH action=plan_cleanup_review
 - 高噪声时输出 `status=NOISE_HIGH action=plan_cleanup_review` 和命中原因。
 - 明确下一步只能先生成清理复核清单，不直接删除远端分支、标签或 Release。
 - 明确历史 Release 和附件默认保留，不删除用户可下载产物；后续靠发布窗口守卫减少无价值预发布。
+- 默认最多展示 50 个已合并陈旧分支候选，避免审计报告本身变成新的噪声；需要完整清单时设置
+  `TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0` 后重跑。
 - `test/github-noise-audit-test.sh` 补充低噪声与高噪声 fixture。
+- `test/github-noise-audit-test.sh` 补充候选清单限量与完整清单开关回归。
 
 ## 验证
 
@@ -59,7 +62,8 @@ status=NOISE_HIGH action=plan_cleanup_review
 ./scripts/audit-github-noise.sh | sed -n '1,90p'
 ```
 
-验证结论：通过。真实仓库当前输出 `NOISE_HIGH`，但本轮没有执行任何删除动作。
+验证结论：通过。真实仓库当前输出 `NOISE_HIGH`，默认只展示前 50 个候选，并提示另有 124 个候选未显示；
+本轮没有执行任何删除动作。
 
 ## 下一步
 
