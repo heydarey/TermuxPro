@@ -483,7 +483,8 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
                 modeLabel(entry.mode),
                 getString(R.string.ai_cli_center_history_target,
                     entry.host, entry.port, entry.path),
-                currentTarget))
+                currentTarget,
+                formatLaunchTime(entry.launchedAtMillis)))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_history_target_changed_workspace_action,
                 (dialog, which) -> openWorkspaceWithBack())
