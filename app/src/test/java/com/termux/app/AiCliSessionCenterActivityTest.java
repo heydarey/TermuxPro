@@ -331,6 +331,7 @@ public class AiCliSessionCenterActivityTest {
             changed.getButton(AlertDialog.BUTTON_NEUTRAL).getText().toString());
 
         changed.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         assertNextActivity(activity, WorkspaceActivity.class);
 
         activity = Robolectric.buildActivity(AiCliSessionCenterActivity.class).setup().get();
@@ -692,6 +693,7 @@ public class AiCliSessionCenterActivityTest {
     private static void assertNextActivity(AiCliSessionCenterActivity activity,
                                            Class<?> expectedClass) {
         Intent intent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull("预期打开 " + expectedClass.getSimpleName() + "，但没有启动任何页面", intent);
         assertEquals(expectedClass.getName(), intent.getComponent().getClassName());
         if (expectedClass == WorkspaceActivity.class) {
             assertTrue("从 AI 会话中心进入工作区必须显示上一页返回入口",
