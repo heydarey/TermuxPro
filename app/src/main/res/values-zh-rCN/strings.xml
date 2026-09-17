@@ -894,7 +894,7 @@
     <string name="terminal_ai_cli_center_action">AI CLI 会话中心</string>
     <string name="terminal_ai_launch_claude_action">启动 Claude Code</string>
     <string name="terminal_ai_launch_codex_action">启动 Codex CLI</string>
-    <string name="terminal_ai_cli_center_description">打开当前工作区的 Claude/Codex 会话中心，选择新建或历史入口。</string>
+    <string name="terminal_ai_cli_center_description">打开当前工作区的 Claude/Codex 会话中心，先选择新建或历史入口；不会立即发送命令、自动恢复历史或进入 tmux。</string>
     <string name="terminal_ai_launch_claude_description">先确认新建或历史选择，再把 Claude Code 命令发送到当前正在显示的终端。</string>
     <string name="terminal_ai_launch_codex_description">先确认新建或历史选择，再把 Codex CLI 命令发送到当前正在显示的终端。</string>
     <string name="terminal_tools_section_keyboard">键区切换</string>

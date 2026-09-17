@@ -1019,7 +1019,7 @@
     <string name="terminal_ai_cli_center_action">AI CLI session center</string>
     <string name="terminal_ai_launch_claude_action">Start Claude Code</string>
     <string name="terminal_ai_launch_codex_action">Start Codex CLI</string>
-    <string name="terminal_ai_cli_center_description">Open the current workspace Claude/Codex center to choose a new or history entry.</string>
+    <string name="terminal_ai_cli_center_description">Open the current workspace Claude/Codex center to choose a new or history entry first; it will not send a command, auto-resume history, or enter tmux immediately.</string>
     <string name="terminal_ai_launch_claude_description">Choose new or history mode first, then send the Claude Code command to the terminal currently on screen.</string>
     <string name="terminal_ai_launch_codex_description">Choose new or history mode first, then send the Codex CLI command to the terminal currently on screen.</string>
     <string name="terminal_tools_section_keyboard">Key rows</string>
