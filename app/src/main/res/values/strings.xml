@@ -378,6 +378,10 @@
     <string name="ai_cli_center_history_launch_title">Open %1$s history picker?</string>
     <string name="ai_cli_center_history_launch_message">A new SSH terminal will connect to:\n%3$s:%4$d · %5$s\n\nCommand: %2$s\n\nTermuxPro only opens the native CLI picker. It will not choose a history entry or auto-attach tmux. On shared accounts, confirm session ownership before continuing.</string>
     <string name="ai_cli_center_history_repeat_launch_message">This opens a local TermuxPro launch record again: %1$s · history picker\nLocal record time: %6$s\n%3$s:%4$d · %5$s\n\nCommand: %2$s\n\nTermuxPro only opens the native CLI picker. It will not choose a history entry or auto-attach tmux. On shared accounts, confirm session ownership before continuing.</string>
+    <string name="ai_cli_center_history_target">%1$s:%2$d · %3$s</string>
+    <string name="ai_cli_center_history_target_changed_title">Workspace target changed</string>
+    <string name="ai_cli_center_history_target_changed_message">This local record was created for %1$s · %2$s, but the workspace target is no longer the same.\n\nRecord target:\n%3$s\n\nCurrent target:\n%4$s\n\nTermuxPro will not replay this record into a different server or project. Check Server and project settings, or delete only this stale local record.</string>
+    <string name="ai_cli_center_history_target_changed_workspace_action">Check workspace</string>
     <string name="ai_cli_center_history_launch_action">Open history picker</string>
     <string name="ai_cli_center_repeat_last">Repeat last</string>
     <string name="ai_cli_center_repeat_last_target">Open again: %1$s · %2$s</string>

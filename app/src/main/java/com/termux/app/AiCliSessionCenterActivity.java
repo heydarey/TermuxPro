@@ -286,6 +286,11 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
     }
 
     private void launchAiCliWithModeGuard(AiLaunchHistoryStore.Entry entry) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (!historyEntryMatchesWorkspace(entry, workspace)) {
+            showHistoryTargetChangedDialog(entry, workspace);
+            return;
+        }
         if (entry.mode == AiCliLaunchCommand.Mode.PICK_HISTORY) {
             confirmHistoryLaunch(entry.tool, entry);
             return;
@@ -419,6 +424,46 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             .setNeutralButton(R.string.ai_cli_center_delete_latest_action,
                 (dialog, which) -> new Handler(Looper.getMainLooper())
                     .post(() -> confirmDeleteHistoryEntry(entry)))
+            .create());
+    }
+
+    private boolean historyEntryMatchesWorkspace(AiLaunchHistoryStore.Entry entry,
+                                                 @Nullable WorkspaceTarget workspace) {
+        if (workspace == null || !workspace.isConfigured()) return false;
+        return safeEquals(entry.workspaceId, workspace.id)
+            && safeEquals(entry.host, workspace.host)
+            && entry.port == workspace.port
+            && safeEquals(normalizePath(entry.path), normalizePath(workspace.path));
+    }
+
+    private boolean safeEquals(@Nullable String left, @Nullable String right) {
+        if (left == null) return right == null;
+        return left.equals(right);
+    }
+
+    private String normalizePath(@Nullable String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private void showHistoryTargetChangedDialog(AiLaunchHistoryStore.Entry entry,
+                                                @Nullable WorkspaceTarget workspace) {
+        String currentTarget = workspace == null || !workspace.isConfigured()
+            ? getString(R.string.ai_cli_center_target_missing)
+            : getString(R.string.ai_cli_center_history_target,
+                workspace.host, workspace.port, workspace.path);
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(R.string.ai_cli_center_history_target_changed_title)
+            .setMessage(getString(R.string.ai_cli_center_history_target_changed_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                getString(R.string.ai_cli_center_history_target,
+                    entry.host, entry.port, entry.path),
+                currentTarget))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_history_target_changed_workspace_action,
+                (dialog, which) -> openWorkspaceWithBack())
+            .setNeutralButton(R.string.ai_cli_center_delete_latest_action,
+                (dialog, which) -> deleteHistoryEntry(entry))
             .create());
     }
 
