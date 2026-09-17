@@ -93,6 +93,13 @@ if release_output="$(./scripts/github-cli.sh release list --limit 5 2>/dev/null)
     latest_release="$release_output"
 fi
 
+release_window="GitHub CLI 不可用或网络不可用，恢复后需重新查询。"
+if release_window_output="$(./scripts/release-window-guard.sh 2>&1)"; then
+    release_window="$release_window_output"
+else
+    release_window="$release_window_output"
+fi
+
 checkpoint="$(
 cat <<EOF
 # TermuxPro 当前迭代检查点
@@ -159,13 +166,21 @@ $latest_dev_ci
 $latest_release
 \`\`\`
 
+### 稳定版发布窗口
+
+\`\`\`text
+$release_window
+\`\`\`
+
 ## 恢复步骤
 
 1. 读取 \`AGENTS.md\` 和 \`.agents/skills/termuxpro-development/SKILL.md\`。
 2. 运行 \`./scripts/codex-quota-guard.sh\`，只有总剩余额度低于 15% 才暂停主动迭代。
 3. 运行 \`./scripts/resource-guard.sh\`，共享服务器上保持单个重任务，Gradle 使用 \`--max-workers=2\`。
 4. 检查 \`git status --short --branch\`、打开 PR、最近 CI 和 Release 状态。
-5. 从 \`docs/PRODUCT_BACKLOG.md\` 中最高优先级的 TermuxPro 增值服务切片继续。
+5. 运行或读取 \`./scripts/release-window-guard.sh\` 结果；若稳定版已满 7 天，先发布正式版或落盘 HOLD，
+   不继续普通 P2/P3 切片。
+6. 从 \`docs/PRODUCT_BACKLOG.md\` 中最高优先级的 TermuxPro 增值服务切片继续。
 
 ## 安全红线
 

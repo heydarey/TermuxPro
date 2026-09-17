@@ -18,6 +18,7 @@ for required in \
     "scripts/codex-quota-guard.sh" \
     "scripts/resource-guard.sh" \
     "scripts/github-cli.sh" \
+    "scripts/release-window-guard.sh" \
     "docs/CURRENT_STATE.md" \
     "tmux kill-server" \
     "origin/dev"; do
@@ -34,6 +35,7 @@ for required in \
     "代码状态" \
     "额度与资源" \
     "GitHub 状态" \
+    "稳定版发布窗口" \
     "恢复步骤" \
     "安全红线" \
     "总剩余额度低于 15%"; do
