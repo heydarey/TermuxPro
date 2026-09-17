@@ -311,6 +311,25 @@ public class AiCliSessionCenterActivityTest {
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary)
+            .contains("目标已变化：不会直接再次打开"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step)
+            .contains("目标已变化，请先检查工作区"));
+        assertEquals("处理过期记录：Claude Code · 新建会话",
+            text(activity, R.id.ai_cli_center_repeat_last));
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
+        assertTrue(list.getListView().getAdapter().getItem(0).toString()
+            .contains("目标已变化：不会直接再次打开"));
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        AlertDialog changedFromList = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(changedFromList);
+        assertEquals("工作区目标已变化", shadowOf(changedFromList).getTitle());
+        changedFromList.dismiss();
+
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
 
         assertNull(shadowOf(activity).getNextStartedActivity());

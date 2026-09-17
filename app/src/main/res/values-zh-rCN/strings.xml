@@ -243,10 +243,12 @@
     <string name="ai_cli_center_history_next_missing_workspace">下一步：先回到“服务器与项目”选择目标，再启动 Claude 或 Codex。</string>
     <string name="ai_cli_center_history_next_empty">下一步：如果要开始新任务，点“新建”；如果要继续已有上下文，点对应工具的“历史选择器”，由 CLI 原生选择器确认。</string>
     <string name="ai_cli_center_history_next_ready">下一步：可再次打开上次 %1$s · %2$s 入口；如果是误触，只删除本地记录，不会删除远端 AI 历史。</string>
+    <string name="ai_cli_center_history_next_stale">下一步：上次 %1$s · %2$s 的目标已变化，请先检查工作区或删除这条过期本地记录。</string>
     <plurals name="ai_cli_center_history_count">
         <item quantity="other">本地最近 %1$d 条入口记录</item>
     </plurals>
     <string name="ai_cli_center_history_item">%1$s · %2$s 入口\n本地记录时间：%6$s\n%3$s:%4$d · %5$s</string>
+    <string name="ai_cli_center_history_stale_hint">目标已变化：不会直接再次打开，请检查工作区或删除这条过期本地记录。</string>
     <plurals name="ai_cli_center_history_more">
         <item quantity="other">还有 %1$d 条已折叠，仅保存在当前工作区本地记录中。</item>
     </plurals>
@@ -263,6 +265,7 @@
     <string name="ai_cli_center_history_launch_action">打开历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_repeat_last_target">再次打开：%1$s · %2$s</string>
+    <string name="ai_cli_center_repeat_stale_target">处理过期记录：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest">删除最近</string>
     <string name="ai_cli_center_delete_latest_target">删除本地记录：%1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条本地启动记录？</string>
