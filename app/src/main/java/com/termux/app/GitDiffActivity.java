@@ -959,6 +959,8 @@ public final class GitDiffActivity extends AppCompatActivity {
     @Nullable
     AlertDialog createStashDialog() {
         if (mOverview == null) return null;
+        ConnectionTarget target = readTarget();
+        if (target == null) return null;
         if (mOverview.changedFiles <= 0) {
             showStatus(getString(R.string.git_workbench_no_stash_changes), false);
             return null;
@@ -974,7 +976,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_save)
             .setMessage(getString(R.string.git_workbench_stash_message,
-                mOverview.changedFiles, mOverview.stagedFiles, mOverview.unstagedFiles))
+                mOverview.changedFiles, mOverview.stagedFiles, mOverview.unstagedFiles,
+                gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setView(input)
             .setPositiveButton(R.string.git_workbench_stash_save_action, null)
             .setNegativeButton(android.R.string.cancel, null)
