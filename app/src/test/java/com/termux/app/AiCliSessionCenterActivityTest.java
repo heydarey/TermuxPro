@@ -297,6 +297,52 @@ public class AiCliSessionCenterActivityTest {
     }
 
     @Test
+    public void blocksRepeatingLocalRecordWhenWorkspaceTargetChanged() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.154\",\"port\":\"22\",\"path\":\"~/other-project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
+            AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog changed = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(changed);
+        assertEquals("工作区目标已变化", shadowOf(changed).getTitle());
+        String message = ((TextView) changed.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("记录目标："));
+        assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(message.contains("当前目标："));
+        assertTrue(message.contains("hdr@192.168.1.154:22 · ~/other-project"));
+        assertTrue(message.contains("不会把旧记录重放到另一个服务器或项目"));
+        assertEquals("检查工作区",
+            changed.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        assertEquals("删除本地记录",
+            changed.getButton(AlertDialog.BUTTON_NEUTRAL).getText().toString());
+
+        changed.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        assertNextActivity(activity, WorkspaceActivity.class);
+
+        activity = Robolectric.buildActivity(AiCliSessionCenterActivity.class).setup().get();
+        activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+        changed = ShadowAlertDialog.getLatestAlertDialog();
+        changed.getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary)
+            .contains("还没有 TermuxPro 本地启动记录"));
+    }
+
+    @Test
     public void repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()

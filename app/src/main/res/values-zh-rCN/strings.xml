@@ -256,6 +256,10 @@
     <string name="ai_cli_center_history_launch_title">打开 %1$s 历史选择？</string>
     <string name="ai_cli_center_history_launch_message">将新开 SSH 终端连接到：\n%3$s:%4$d · %5$s\n\n执行命令：%2$s\n\nTermuxPro 只打开 CLI 原生选择器，不会自动选择历史，也不会自动进入 tmux。共享账号下请确认会话归属后再继续。</string>
     <string name="ai_cli_center_history_repeat_launch_message">将再次打开这条 TermuxPro 本地启动记录：%1$s · 历史选择\n本地记录时间：%6$s\n%3$s:%4$d · %5$s\n\n执行命令：%2$s\n\nTermuxPro 只打开 CLI 原生选择器，不会自动选择历史，也不会自动进入 tmux。共享账号下请确认会话归属后再继续。</string>
+    <string name="ai_cli_center_history_target">%1$s:%2$d · %3$s</string>
+    <string name="ai_cli_center_history_target_changed_title">工作区目标已变化</string>
+    <string name="ai_cli_center_history_target_changed_message">这条本地记录创建时对应 %1$s · %2$s，但当前工作区的服务器或目录已经不同。\n\n记录目标：\n%3$s\n\n当前目标：\n%4$s\n\nTermuxPro 不会把旧记录重放到另一个服务器或项目。请检查“服务器与项目”，或只删除这条过期的本地记录。</string>
+    <string name="ai_cli_center_history_target_changed_workspace_action">检查工作区</string>
     <string name="ai_cli_center_history_launch_action">打开历史选择</string>
     <string name="ai_cli_center_repeat_last">重复上次</string>
     <string name="ai_cli_center_repeat_last_target">再次打开：%1$s · %2$s</string>
