@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-17T10:49:52Z
+- UTC：2026-09-17T13:53:33Z
 
 ## 当前目标
 
@@ -16,9 +16,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`cc95d2fdc790`
-- 最近提交：Merge pull request #376 from heydarey/dev_dailyIteration
-- `origin/dev`：`cc95d2fdc790`
+- 当前提交：`684a560a382b`
+- 最近提交：Merge pull request #385 from heydarey/dev_dailyIteration
+- `origin/dev`：`684a560a382b`
 - `origin/master`：`28b8318985cb`
 - 版本源：`0.10.1` / `100102`
 
@@ -35,9 +35,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ```json
 {
   "latest": {
-    "timestamp": "2026-09-17T10:49:42.505Z",
-    "usedPercent": 67,
-    "remainingPercent": 33,
+    "timestamp": "2026-09-17T13:53:26.651Z",
+    "usedPercent": 74,
+    "remainingPercent": 26,
     "resetsAt": 1789805405,
     "windowMinutes": 10080
   },
@@ -51,9 +51,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：1.17
-可用内存：7729 MiB
-工作区可用磁盘：37424 MiB
+CPU：8 核，1 分钟负载：0.53
+可用内存：14014 MiB
+工作区可用磁盘：37539 MiB
 工作区磁盘使用率：81%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -70,7 +70,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-17T10:45:05Z","databaseId":35212106181,"displayTitle":"TermuxPro CI","headSha":"cc95d2fdc790dbb0b93431d0de6e7de874f5587c","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T10:32:01Z","databaseId":35210981267,"displayTitle":"TermuxPro CI","headSha":"a0869358c680517c1e6f2090a3f765dcf2b77740","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T09:58:55Z","databaseId":35208042127,"displayTitle":"TermuxPro CI","headSha":"3da0c134bc8f9e73870ac1be08cddc32acddf4fe","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-17T13:45:07Z","databaseId":35229066586,"displayTitle":"TermuxPro CI","headSha":"684a560a382b7424b62acdeab5789bf572146677","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T13:22:54Z","databaseId":35226707287,"displayTitle":"TermuxPro CI","headSha":"300a8d1782f2db7cbf4e4c8439ba6763e37f270a","status":"completed"},{"conclusion":"success","createdAt":"2026-09-17T13:02:21Z","databaseId":35224608055,"displayTitle":"Merge pull request #383 from heydarey/dev_dailyIteration","headSha":"1cc53124f34c0fc9ed59d31f235e0c4d2cc2e453","status":"completed"}]
 ```
 
 ### 最近 Release
@@ -83,13 +83,21 @@ TermuxPro v0.10.0-rc.1	Pre-release	v0.10.0-rc.1	2026-09-09T04:16:32Z
 TermuxPro v0.9.9-rc.1	Pre-release	v0.9.9-rc.1	2026-09-08T06:32:09Z
 ```
 
+### 稳定版发布窗口
+
+```text
+status=OK action=continue_daily_iteration latestTag=v0.10.1 publishedAt=2026-09-17T08:17:31Z ageDays=0 ageHours=5 reviewAfter=2026-09-22T08:17:31Z deadline=2026-09-24T08:17:31Z
+```
+
 ## 恢复步骤
 
 1. 读取 `AGENTS.md` 和 `.agents/skills/termuxpro-development/SKILL.md`。
 2. 运行 `./scripts/codex-quota-guard.sh`，只有总剩余额度低于 15% 才暂停主动迭代。
 3. 运行 `./scripts/resource-guard.sh`，共享服务器上保持单个重任务，Gradle 使用 `--max-workers=2`。
 4. 检查 `git status --short --branch`、打开 PR、最近 CI 和 Release 状态。
-5. 从 `docs/PRODUCT_BACKLOG.md` 中最高优先级的 TermuxPro 增值服务切片继续。
+5. 运行或读取 `./scripts/release-window-guard.sh` 结果；若稳定版已满 7 天，先发布正式版或落盘 HOLD，
+   不继续普通 P2/P3 切片。
+6. 从 `docs/PRODUCT_BACKLOG.md` 中最高优先级的 TermuxPro 增值服务切片继续。
 
 ## 安全红线
 

@@ -308,7 +308,32 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             confirmHistoryLaunch(entry.tool, entry);
             return;
         }
-        launchAiCli(entry.tool, entry.mode);
+        confirmRepeatLaunch(entry);
+    }
+
+    private void confirmRepeatLaunch(AiLaunchHistoryStore.Entry entry) {
+        WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
+        if (workspace == null || !SshTargetValidator.isValid(workspace.host)
+            || workspace.port < 1 || workspace.port > 65535
+            || workspace.path == null || workspace.path.trim().isEmpty()) {
+            openWorkspaceWithBack();
+            return;
+        }
+        TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.ai_cli_center_repeat_launch_title,
+                AiCliLaunchCommand.displayName(entry.tool)))
+            .setMessage(getString(R.string.ai_cli_center_repeat_launch_message,
+                AiCliLaunchCommand.displayName(entry.tool),
+                modeLabel(entry.mode),
+                AiCliLaunchCommand.command(entry.tool, entry.mode),
+                workspace.host,
+                workspace.port,
+                workspace.path,
+                formatLaunchTime(entry.launchedAtMillis)))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ai_cli_center_repeat_launch_action,
+                (dialog, which) -> launchAiCli(entry.tool, entry.mode))
+            .create());
     }
 
     private void confirmHistoryLaunch(AiCliLaunchCommand.Tool tool,

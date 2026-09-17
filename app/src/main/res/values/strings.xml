@@ -388,6 +388,9 @@
     <string name="ai_cli_center_repeat_last">Repeat last</string>
     <string name="ai_cli_center_repeat_last_target">Open again: %1$s · %2$s</string>
     <string name="ai_cli_center_repeat_stale_target">Handle stale record: %1$s · %2$s</string>
+    <string name="ai_cli_center_repeat_launch_title">Open %1$s again?</string>
+    <string name="ai_cli_center_repeat_launch_message">This opens a local TermuxPro launch record again: %1$s · %2$s\nLocal record time: %7$s\nTarget: %4$s:%5$d · %6$s\n\nCommand: %3$s\n\nA new SSH terminal will be opened. TermuxPro will not auto-attach tmux or delete Claude/Codex remote history. On shared accounts, confirm this is still your task.</string>
+    <string name="ai_cli_center_repeat_launch_action">Open again</string>
     <string name="ai_cli_center_delete_latest">Delete latest</string>
     <string name="ai_cli_center_delete_latest_target">Delete local record: %1$s · %2$s</string>
     <string name="ai_cli_center_delete_latest_title">Delete this latest local launch record?</string>

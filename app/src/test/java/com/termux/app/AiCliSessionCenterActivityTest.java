@@ -430,6 +430,22 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_clear_history));
 
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(repeatConfirm);
+        assertEquals("再次打开 Claude Code？", shadowOf(repeatConfirm).getTitle());
+        String repeatMessage = ((TextView) repeatConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(repeatMessage.contains("Claude Code · 新建会话"));
+        assertTrue(repeatMessage.contains("本地记录时间："));
+        assertTrue(repeatMessage.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(repeatMessage.contains("执行命令：claude"));
+        assertTrue(repeatMessage.contains("不会自动进入 tmux"));
+        assertTrue(repeatMessage.contains("共享账号"));
+        assertEquals("确认打开",
+            repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         Intent repeated = shadowOf(activity).getNextStartedActivity();
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
@@ -614,6 +630,61 @@ public class AiCliSessionCenterActivityTest {
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("exec codex resume"));
+    }
+
+    @Test
+    public void confirmsSelectedNewSessionRecordBeforeOpeningFromManageDialog() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        WorkspaceTarget workspace = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/project");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(action);
+        action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(repeatConfirm);
+        assertEquals("再次打开 Claude Code？", shadowOf(repeatConfirm).getTitle());
+        String message = ((TextView) repeatConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("执行命令：claude"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        repeatConfirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+        assertNull(shadowOf(activity).getNextStartedActivity());
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        list = ShadowAlertDialog.getLatestAlertDialog();
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        action = ShadowAlertDialog.getLatestAlertDialog();
+        action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(repeated);
+        assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
+        assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
+            .contains("exec claude"));
     }
 
     @Test

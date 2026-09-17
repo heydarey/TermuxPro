@@ -22,6 +22,8 @@ usage() {
   ANDROID_CMDLINE_TOOLS_VERSION          覆盖 command-line tools 版本号。
   ANDROID_CMDLINE_TOOLS_URL              覆盖 command-line tools 下载地址。
   TERMUXPRO_ANDROID_SDK_ACCEPT_LICENSES  设为 1 时自动接受 Android SDK 许可证。
+  TERMUXPRO_ANDROID_SDK_MIRROR_BASE      覆盖 Android SDK 包索引和组件下载镜像，例如
+                                        https://mirrors.cloud.tencent.com/AndroidSDK。
 USAGE
 }
 
@@ -89,9 +91,25 @@ if (( install_optional_emulator == 1 )); then
 fi
 
 if [[ "${TERMUXPRO_ANDROID_SDK_ACCEPT_LICENSES:-0}" == "1" ]]; then
-    yes | "$sdkmanager" --licenses >/dev/null || true
+    mkdir -p "$sdk_root/licenses"
+    {
+        printf '%s\n' "8933bad161af4178b1185d1a37fbf41ea5269c55"
+        printf '%s\n' "d56f5187479451eabf01fb78af6dfcb131a6481e"
+        printf '%s\n' "24333f8a63b6825ea9c5514f83c2829b004d1fee"
+    } > "$sdk_root/licenses/android-sdk-license"
+    if [[ -z "${TERMUXPRO_ANDROID_SDK_MIRROR_BASE:-}" ]]; then
+        yes | "$sdkmanager" --licenses >/dev/null || true
+    fi
 fi
-"$sdkmanager" --sdk_root="$sdk_root" "${packages[@]}"
+
+if [[ -n "${TERMUXPRO_ANDROID_SDK_MIRROR_BASE:-}" ]]; then
+    "$project_dir/scripts/install-android-sdk-mirror-packages.py" \
+        --sdk-root "$sdk_root" \
+        --mirror-base "${TERMUXPRO_ANDROID_SDK_MIRROR_BASE%/}" \
+        "${packages[@]}"
+else
+    "$sdkmanager" --sdk_root="$sdk_root" "${packages[@]}"
+fi
 
 escaped_sdk="${sdk_root//\\/\\\\}"
 escaped_sdk="${escaped_sdk//:/\\:}"
