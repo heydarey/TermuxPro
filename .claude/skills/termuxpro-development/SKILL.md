@@ -37,5 +37,6 @@ Goal 规则：TermuxPro 日常维护是长期持久 Goal。单个切片完成后
 自动 PR 规则：研发 PR 合并且 dev 收尾 CI 成功后，仍必须等待对应 `auto-dev-pr.yml` 控制器自身完成，
 再对齐 `dev_dailyIteration` 到最新 `dev`，避免 concurrency 取消旧 run 并制造 cancelled 噪声。
 
-发布节奏：以 `.agents/skills/termuxpro-development/SKILL.md` 为准，稳定版发布要克制但不断档；长期
-维护期间每周至少做一次发布评审，满足稳定和价值条件时必须推进候选/正式发布，不能长期只迭代不发包。
+发布节奏：以 `.agents/skills/termuxpro-development/SKILL.md` 为准，稳定版发布要克制但不断档；克制
+发布不是停止发布。长期维护期间每周至少做一次稳定版发布窗口评审，满足稳定和价值条件时必须推进候选/
+正式发布；最近稳定版接近或超过 7 天时，应优先复核发布条件，不能长期只迭代不发包。
