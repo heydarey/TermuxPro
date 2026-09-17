@@ -273,7 +273,10 @@ shell、基础会话、基础快捷键或基础文件能力，不进入产品主
   `test/reports/terminal-navigation-large-text-20260908.md`。当前主动审计发现终端工具箱仍按技术分类展示，
   高频 AI 会话中心、Git 状态、tmux 会话和快捷指令散落在长菜单中，手机用户需要记忆分类后才能操作；
   本轮新增置顶“推荐操作”分组，前置上述四个现有安全入口，并把“当前上下文”改为“当前终端”，证据见
-  `test/reports/terminal-toolbox-recommended-actions-20260909.md`。后续变更不得移除该截图与可视区域断言。
+  `test/reports/terminal-toolbox-recommended-actions-20260909.md`。当前继续把置顶分组升级为“常用工作流
+  （安全打开）”，并在 Git、tmux、快捷指令入口说明中明确不会向当前终端或 AI TUI 注入命令、不自动进入共享
+  tmux 会话，证据见 `test/reports/terminal-toolbox-safe-open-copy-20260917.md`。后续变更不得移除该截图与
+  可视区域断言，也不得把结构化增值入口退回为直接向当前 shell 发送命令。
 - 设置视觉语义：设置页已改用 TermuxPro 产品主题，不再继承上游红色主色；颜色必须遵循信息/成功/警告/
   危险语义，危险色只用于破坏性动作或明确故障。后续继续校验深浅主题对比度和系统状态栏一致性。
 - “管理工作区”概念与入口重构：明确它管理的是服务器连接、项目目录和连接后策略；入口已从“连接配置”

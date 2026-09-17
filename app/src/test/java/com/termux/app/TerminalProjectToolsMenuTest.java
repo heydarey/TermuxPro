@@ -26,7 +26,7 @@ public class TerminalProjectToolsMenuTest {
 
         TerminalProjectToolsMenu.populate(RuntimeEnvironment.getApplication(), menu);
 
-        assertEquals("推荐操作", menu.getItem(0).getTitle().toString());
+        assertEquals("常用工作流（安全打开）", menu.getItem(0).getTitle().toString());
         assertFalse(menu.getItem(0).isEnabled());
         assertEquals(TerminalProjectToolsMenu.TOOL_AI_CENTER, menu.getItem(1).getItemId());
         assertEquals("AI CLI 会话中心", menu.getItem(1).getTitle().toString());
@@ -34,11 +34,14 @@ public class TerminalProjectToolsMenuTest {
             "打开当前工作区的 Claude/Codex 会话中心，先选择新建或历史入口；不会立即发送命令、自动恢复历史或进入 tmux。");
         assertEquals(TerminalProjectToolsMenu.TOOL_GIT_STATUS, menu.getItem(2).getItemId());
         assertEquals("Git 工作台", menu.getItem(2).getTitle().toString());
-        assertDescription(menu, 2, "打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态。");
+        assertDescription(menu, 2,
+            "安全打开当前工作区的 Git 工作台，查看分支、改动、提交记录和同步状态；不会把 git 命令输入当前终端。");
         assertEquals(TerminalProjectToolsMenu.TOOL_TMUX_SESSIONS, menu.getItem(3).getItemId());
-        assertDescription(menu, 3, "查看并显式进入 tmux 会话；只有当前工作区的 TermuxPro 会话可重命名或停止。");
+        assertDescription(menu, 3,
+            "安全打开 tmux 管理并显式选择会话；不会自动进入共享会话，只有当前工作区的 TermuxPro 会话可重命名或停止。");
         assertEquals(TerminalProjectToolsMenu.TOOL_CUSTOM_COMMANDS, menu.getItem(4).getItemId());
-        assertDescription(menu, 4, "打开当前工作区快捷指令，不会自动执行命令。");
+        assertDescription(menu, 4,
+            "安全打开当前工作区快捷指令；进入页面不会执行命令，也不会输入当前终端或 AI TUI。");
 
         assertEquals("当前终端", menu.getItem(5).getTitle().toString());
         assertFalse(menu.getItem(5).isEnabled());
