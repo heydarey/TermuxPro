@@ -2,7 +2,7 @@
 
 ## 结论
 
-状态：本地实现与静态门禁完成，目标 Robolectric 需由 GitHub CI 完整验证。
+状态：本地实现与静态门禁完成；首次 GitHub CI 暴露 Robolectric 点击后未等待主线程队列导致启动 Intent 读取为 null，已补同步断言，等待 GitHub CI 复验。
 
 本轮补强 SSH 公钥管理页的关键确认文案：
 
@@ -27,6 +27,7 @@
   - `ssh_keys_install_message`
 - `SshKeysNavigationTest`
   - 新增确认弹窗测试，覆盖生成密钥本地边界、安装目标 `host:port`、完整命令和服务器密码不保存说明。
+  - 修复 GitHub CI 中点击确认按钮后未等待主线程队列导致 `getNextStartedActivity()` 偶发/稳定返回 null 的测试同步问题。
 
 ## 非目标
 
@@ -54,6 +55,13 @@
   超时，错误为 `Read timed out`。
 - `./scripts/pre-push-smoke.sh`：静态门禁全部通过；进入自动补跑 Gradle 阶段后在共享远程机连续约 90 秒无输出，
   按资源守卫中断，退出码 130。完整 Android/Robolectric 验证交由 GitHub CI。
+- GitHub CI run `35221877646`：首次失败，`SshKeysNavigationTest.keyConfirmDialogsShowLocalAndRemoteBoundaries`
+  在确认按钮点击后立刻读取启动 Intent，未等待 Robolectric 主线程队列，导致 `generateIntent` 为 null。
+- 修复后复跑 `source scripts/resolve-jdk17.sh && timeout 180 ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests com.termux.app.SshKeysNavigationTest.keyConfirmDialogsShowLocalAndRemoteBoundaries`：
+  仍未进入测试阶段；Gradle 配置阶段访问 `dl.google.com` 超时，错误为 `Connect to dl.google.com:443 failed: Read timed out`。
+- 修复后 `./test/android-string-resource-parity-test.sh && ./scripts/validate-skills.sh && git diff --check`：通过。
+- 修复后 `timeout 180 ./scripts/pre-push-smoke.sh`：静态门禁、资源守卫均通过；进入 Gradle 阶段后 180 秒无进一步输出，
+  按远程共享机资源策略超时中断，退出码 124。完整 Android/Robolectric 验证继续以 GitHub CI 为准。
 
 ## 复盘
 

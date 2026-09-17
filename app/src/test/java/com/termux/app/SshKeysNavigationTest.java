@@ -9,6 +9,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.widget.TextView;
 
 import com.termux.R;
@@ -69,7 +70,9 @@ public final class SshKeysNavigationTest {
         assertTrue(generateMessage.contains("应用私有的 OpenSSH 目录"));
         assertTrue(generateMessage.contains("不会读取或保存口令"));
         generate.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         Intent generateIntent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(generateIntent);
         assertTrue(generateIntent.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("ssh-keygen -t ed25519 -a 64"));
 
@@ -82,7 +85,9 @@ public final class SshKeysNavigationTest {
         assertTrue(installMessage.contains("ssh-copy-id -p 2222 -- 'hdr@192.168.1.153'"));
         assertTrue(installMessage.contains("不会读取或保存服务器密码"));
         install.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         Intent installIntent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(installIntent);
         assertEquals("ssh-copy-id -p 2222 -- 'hdr@192.168.1.153'",
             installIntent.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND));
     }
