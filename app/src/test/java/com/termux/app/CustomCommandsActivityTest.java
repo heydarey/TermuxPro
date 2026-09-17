@@ -366,6 +366,37 @@ public class CustomCommandsActivityTest {
             .list("workspace-a").size());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertTrue(feedback.getText().toString().contains("不是有效的 TermuxPro 快捷指令备份"));
+        assertTrue(feedback.getText().toString().contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(feedback.getText().toString().contains("复制备份 JSON"));
+        assertTrue(feedback.getText().toString().contains("密码、Token、私钥"));
+        assertTrue(feedback.getText().toString().contains("本次没有保存任何指令"));
+        assertTrue(feedback.getText().toString().contains("没有执行远端命令"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void emptyClipboardImportExplainsRecoveryWithoutSavingOrExecuting() {
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("empty", ""));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("剪贴板中没有可导入的快捷指令 JSON"));
+        assertTrue(feedback.getText().toString().contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(feedback.getText().toString().contains("请先从另一台设备或工作区复制"));
+        assertTrue(feedback.getText().toString().contains("不会保存内容"));
+        assertTrue(feedback.getText().toString().contains("不会执行远端命令"));
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
     }
 
