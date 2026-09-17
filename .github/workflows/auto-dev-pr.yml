@@ -115,6 +115,30 @@ jobs:
           done
           echo "Android 运行时门禁：$requires_android_ci；模拟器 UI 门禁：$requires_emulator_ui。"
 
+          resolve_latest_emulator_ui_sha() {
+            local commit_sha
+            local file
+            local commit_files
+            mapfile -t compare_commits < <(gh_retry api "repos/$REPOSITORY/compare/dev...$HEAD_BRANCH" \
+              --jq '.commits[].sha')
+            for ((index=${#compare_commits[@]} - 1; index >= 0; index--)); do
+              commit_sha="${compare_commits[$index]}"
+              if ! commit_files="$(gh_retry api "repos/$REPOSITORY/commits/$commit_sha" \
+                --jq '.files[].filename')"; then
+                echo "查询提交 $commit_sha 文件列表失败，回退等待当前提交 $COMMIT_SHA 的模拟器 UI。" >&2
+                echo "$COMMIT_SHA"
+                return 0
+              fi
+              while IFS= read -r file; do
+                if is_emulator_ui_file "$file"; then
+                  echo "$commit_sha"
+                  return 0
+                fi
+              done <<<"$commit_files"
+            done
+            echo "$COMMIT_SHA"
+          }
+
           wait_for_workflow() {
             workflow="$1"
             label="$2"
@@ -267,7 +291,11 @@ jobs:
             exit 0
           fi
           if [[ "$requires_emulator_ui" == true ]]; then
-            if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI'; then
+            emulator_target_sha="$(resolve_latest_emulator_ui_sha)"
+            if [[ "$emulator_target_sha" != "$COMMIT_SHA" ]]; then
+              echo "最新提交未改动 UI 运行时文件，复用最后一个 UI 影响提交 $emulator_target_sha 的模拟器 UI 门禁。"
+            fi
+            if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI' "$emulator_target_sha"; then
               echo "预合并模拟器 UI 未通过；PR #$pr_number 已保留等待后续提交修复，自动 PR 工作流不再重复上报失败。"
               exit 0
             fi
