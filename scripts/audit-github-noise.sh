@@ -129,6 +129,48 @@ cat <<EOF
 - 稳定 Release 数：${release_stable}
 - Pre-release 数：${release_prerelease}
 
+## 治理结论
+EOF
+
+noise_reasons=()
+if (( remote_branch_count > 50 )); then
+    noise_reasons+=("远端分支超过 50 个")
+fi
+if (( stale_merged_count > 20 )); then
+    noise_reasons+=("已合并陈旧分支候选超过 20 个")
+fi
+if (( candidate_release_branch_count > 3 )); then
+    noise_reasons+=("候选发布分支超过 3 个")
+fi
+if (( release_prerelease > release_stable )); then
+    noise_reasons+=("Pre-release 数量超过稳定 Release")
+fi
+if (( release_total > 30 )); then
+    noise_reasons+=("Release 总数超过 30 个")
+fi
+
+if [[ "${#noise_reasons[@]}" -eq 0 ]]; then
+    cat <<'EOF'
+
+status=OK action=keep_current_cadence
+
+- 当前 GitHub 噪声在可维护范围内；继续复用 dev_dailyIteration，避免无必要分支和无价值预发布。
+EOF
+else
+    joined_reasons="$(IFS='；'; echo "${noise_reasons[*]}")"
+    cat <<EOF
+
+status=NOISE_HIGH action=plan_cleanup_review reason=${joined_reasons}
+
+- 下一步应先生成清理复核清单，不直接删除远端分支、标签或 Release。
+- 优先处理已合并陈旧 dev/hotfix 分支；每个候选删除前再次验证已合入 origin/dev、无打开 PR、无候选/稳定发布风险。
+- 候选发布分支单独复核对应标签、Release 和发布报告后再处理；不得和普通 dev/hotfix 分支混删。
+- 历史 Release 和附件默认保留，不删除用户可下载产物；后续通过发布窗口守卫减少无价值预发布。
+EOF
+fi
+
+cat <<'EOF'
+
 ## 规则
 
 - 本脚本只读审计，不删除远端分支、标签或 Release。
