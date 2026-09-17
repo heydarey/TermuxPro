@@ -676,6 +676,10 @@
     <string name="git_workbench_unstage_file_failed">Git did not unstage this file. Your working tree was preserved.\n\n%1$s</string>
     <string name="git_workbench_stash_save">Save stash</string>
     <string name="git_workbench_stashes">Stashes</string>
+    <plurals name="git_workbench_stashes_title_count">
+        <item quantity="one">Stashes (1)</item>
+        <item quantity="other">Stashes (%1$d)</item>
+    </plurals>
     <plurals name="git_workbench_stashes_count">
         <item quantity="one">1 stash</item>
         <item quantity="other">%1$d stashes</item>
@@ -694,8 +698,8 @@
     <string name="git_workbench_stash_failed">Git did not create a stash. Existing worktree content is preserved.\n\n%1$s</string>
     <string name="git_workbench_no_stashes">This repository has no stash entries.</string>
     <string name="git_workbench_stash_item">%1$s · %2$s\n%3$s</string>
-    <string name="git_workbench_stash_apply">Apply stash</string>
-    <string name="git_workbench_stash_drop">Delete stash</string>
+    <string name="git_workbench_stash_apply">Apply and keep</string>
+    <string name="git_workbench_stash_drop">Delete this stash</string>
     <string name="git_workbench_stash_apply_message">Apply %1$s to the current clean worktree?\n\n%2$s\n\nThe stash will remain in the list. TermuxPro does not use pop here.</string>
     <string name="git_workbench_stash_apply_action">Apply without deleting</string>
     <string name="git_workbench_stash_drop_message">Delete %1$s?\n\n%2$s\n\nOnly this stash entry will be dropped. The worktree and remote repository are not touched.</string>

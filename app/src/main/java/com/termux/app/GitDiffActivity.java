@@ -684,7 +684,9 @@ public final class GitDiffActivity extends AppCompatActivity {
             labels[index] = stashLabel(mOverview.stashes.get(index));
         }
         return new AlertDialog.Builder(this)
-            .setTitle(R.string.git_workbench_stashes)
+            .setTitle(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_title_count,
+                mOverview.stashes.size(), mOverview.stashes.size()))
             .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list, labels),
                 (selectionDialog, which) -> showStashActions(mOverview.stashes.get(which)))
             .setNegativeButton(android.R.string.cancel, null)
@@ -713,6 +715,10 @@ public final class GitDiffActivity extends AppCompatActivity {
             .setNegativeButton(android.R.string.cancel, null)
             .create();
         showStyledDialog(dialog);
+    }
+
+    void showStashActionsForTesting(@NonNull GitRepositoryOverview.StashEntry stash) {
+        showStashActions(stash);
     }
 
     @Nullable
