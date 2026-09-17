@@ -982,8 +982,8 @@
     <string name="custom_commands_export_copied">Copied %1$d custom commands as JSON. Save it somewhere safe or migrate it to another device; no remote command was run.</string>
     <string name="custom_commands_import">Import JSON from clipboard</string>
     <string name="custom_commands_import_description">Read a TermuxPro custom command backup from the clipboard; nothing is saved or run until you confirm.</string>
-    <string name="custom_commands_import_empty_clipboard">The clipboard does not contain custom command JSON to import.</string>
-    <string name="custom_commands_import_invalid">The clipboard is not a valid TermuxPro custom command backup, or it contains invalid or sensitive commands.</string>
+    <string name="custom_commands_import_empty_clipboard">The clipboard does not contain custom command JSON to import.\nCurrent target: %1$s\n\nCopy a TermuxPro custom command backup from another device or workspace first. Nothing is saved or run remotely here.</string>
+    <string name="custom_commands_import_invalid">The clipboard is not a valid TermuxPro custom command backup, or it contains invalid or sensitive commands.\nCurrent target: %1$s\n\nConfirm the JSON came from “Copy backup JSON” and does not contain passwords, tokens, private keys, or embedded credentials. No command was saved or run remotely.</string>
     <string name="custom_commands_import_unknown_workspace">Unknown workspace</string>
     <string name="custom_commands_import_preview_title">Confirm custom command import</string>
     <string name="custom_commands_import_preview_message">Import %1$d custom commands from “%2$s” into the current workspace “%3$s”.\nTarget: %4$s\n\nWill import: %5$s\n\nDuplicate names will get an “imported” suffix. Import saves local settings only and does not run remote commands.</string>

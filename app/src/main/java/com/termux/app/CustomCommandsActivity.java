@@ -416,19 +416,21 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         if (clipboard == null || clipboard.getPrimaryClip() == null
             || clipboard.getPrimaryClip().getItemCount() == 0) {
-            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard,
+                importTargetSummary());
             return;
         }
         CharSequence clip = clipboard.getPrimaryClip().getItemAt(0).coerceToText(this);
         if (clip == null || TextUtils.isEmpty(clip.toString().trim())) {
-            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard,
+                importTargetSummary());
             return;
         }
         try {
             ImportedCommands imported = parseImportJson(clip.toString());
             confirmImport(imported);
         } catch (JSONException error) {
-            showActionFeedback(R.string.custom_commands_import_invalid);
+            showActionFeedback(R.string.custom_commands_import_invalid, importTargetSummary());
         }
     }
 
