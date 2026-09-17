@@ -336,12 +336,15 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 getString(R.string.custom_commands_export),
                 getString(R.string.custom_commands_import)
             };
+        String targetSummary = getString(R.string.custom_commands_target_details,
+            mTarget.host, mTarget.port, mTarget.path);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(commands.isEmpty() ? R.string.custom_commands_import_backup_title
                 : R.string.custom_commands_backup_title)
             .setMessage(commands.isEmpty()
-                ? getString(R.string.custom_commands_import_backup_message)
-                : getString(R.string.custom_commands_backup_message, commands.size()))
+                ? getString(R.string.custom_commands_import_backup_message, targetSummary)
+                : getString(R.string.custom_commands_backup_message,
+                    commands.size(), targetSummary))
             .setItems(labels, (selectionDialog, which) -> {
                 if (!commands.isEmpty() && which == 0) {
                     exportCommands();

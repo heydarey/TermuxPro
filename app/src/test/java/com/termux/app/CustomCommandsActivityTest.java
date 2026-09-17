@@ -85,6 +85,17 @@ public class CustomCommandsActivityTest {
         assertEquals(R.string.custom_commands_template_hint_compact,
             CustomCommandsActivity.templateHintResForFontScale(1.5f));
 
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog importDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_title),
+            shadowOf(importDialog).getTitle());
+        String importMessage = ((TextView) importDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(importMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(importMessage.contains("确认前不会保存，也不会执行远端命令"));
+        importDialog.dismiss();
+
         activity.findViewById(R.id.custom_commands_add).performClick();
         shadowOf(Looper.getMainLooper()).idle();
         AlertDialog dialog = ShadowAlertDialog.getLatestAlertDialog();
@@ -143,6 +154,11 @@ public class CustomCommandsActivityTest {
         AlertDialog actionDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertEquals(activity.getString(R.string.custom_commands_backup_title),
             shadowOf(actionDialog).getTitle());
+        String backupMessage = ((TextView) actionDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(backupMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(backupMessage.contains("当前工作区有 2 条快捷指令"));
+        assertTrue(backupMessage.contains("不会执行远端命令"));
         ListView actionList = actionDialog.getListView();
         assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
         assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
