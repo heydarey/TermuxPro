@@ -26,6 +26,9 @@ Debug APK 代替这项证据。设备接入后运行 `./scripts/device-smoke-tes
 `AlertDialog`，必须经过 `TermuxProDialogStyle` 或专用可读样式，避免厂商默认主题造成黑字、浅字或
 按钮不可辨认。
 
+`./scripts/release-window-guard.sh` 是稳定版发布节奏门禁：最新稳定版满 5 天后必须优先发布评审，
+满 7 天后禁止继续普通 P2/P3 日常切片，必须发布正式版或在发布评审中落盘明确 HOLD。
+
 ## 证据
 
 使用 [验收报告模板](reports/ACCEPTANCE_TEMPLATE.md) 记录设备、Android 版本、APK SHA-256、步骤、结果、
