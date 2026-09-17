@@ -50,6 +50,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
     private TextView mStatus;
     private Button mRecovery;
     private Button mTaskSessions;
+    private Button mCustomCommands;
     private ListView mList;
     private ArrayAdapter<ProjectTaskDetector.Task> mAdapter;
     private View mRefresh;
@@ -77,6 +78,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mStatus = findViewById(R.id.project_tasks_status);
         mRecovery = findViewById(R.id.project_tasks_recovery_button);
         mTaskSessions = findViewById(R.id.project_tasks_sessions_button);
+        mCustomCommands = findViewById(R.id.project_tasks_custom_commands_button);
         mList = findViewById(R.id.project_tasks_list);
         mAdapter = new ArrayAdapter<>(this, R.layout.item_termuxpro_list, mTasks);
         mList.setAdapter(mAdapter);
@@ -85,6 +87,8 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mRefresh = findViewById(R.id.project_tasks_refresh_button);
         mRefresh.setOnClickListener(view -> detect());
         mTaskSessions.setOnClickListener(view -> openTaskSessions());
+        mCustomCommands.setOnClickListener(view ->
+            startActivity(new Intent(this, CustomCommandsActivity.class)));
         bindTarget();
         mRecovery.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
         if (mHost == null || mHost.trim().isEmpty() || mProjectPath == null || mProjectPath.trim().isEmpty()
@@ -116,6 +120,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mProgress.setVisibility(View.VISIBLE);
         mStatus.setVisibility(View.GONE);
         mRecovery.setVisibility(View.GONE);
+        mCustomCommands.setVisibility(View.GONE);
         mList.setVisibility(View.VISIBLE);
         mTaskSessionSummary.setText(R.string.project_tasks_sessions_loading);
         mType.setText(R.string.project_tasks_detecting);
@@ -156,6 +161,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mStatus.setText(message);
         mStatus.setVisibility(View.VISIBLE);
         mRecovery.setVisibility(View.VISIBLE);
+        mCustomCommands.setVisibility(View.GONE);
         mList.setVisibility(View.GONE);
     }
 
@@ -163,6 +169,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
         mStatus.setText(R.string.project_tasks_empty);
         mStatus.setVisibility(View.VISIBLE);
         mRecovery.setVisibility(View.GONE);
+        mCustomCommands.setVisibility(View.VISIBLE);
         mList.setVisibility(View.GONE);
     }
 

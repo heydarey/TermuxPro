@@ -702,7 +702,8 @@
     <string name="project_tasks_failed">暂时无法识别该项目。请返回工作区重新连接，再回来重试。</string>
     <string name="project_tasks_unavailable">暂不可用</string>
     <string name="project_tasks_invalid_metadata">项目描述信息无效或体积过大。</string>
-    <string name="project_tasks_empty">未找到支持的项目任务。</string>
+    <string name="project_tasks_empty">未找到支持的项目任务。如果这个项目使用公司脚本或自定义命令，可创建当前工作区快捷指令模板；这里尚未执行任何远端命令。</string>
+    <string name="project_tasks_open_custom_commands">打开快捷指令与模板</string>
     <string name="project_tasks_confirm_title">运行“%1$s”？</string>
     <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
     <string name="project_tasks_confirm_message">将在新的持久终端会话中运行。\n\n目标：%1$s\n\n命令：\n%2$s\n\n运行后可回到本页点“查看任务会话”继续看日志或进入 tmux 管理；不会自动进入其他工作区任务会话。</string>

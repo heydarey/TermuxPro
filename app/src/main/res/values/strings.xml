@@ -829,7 +829,8 @@
     <string name="project_tasks_failed">This project is temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
     <string name="project_tasks_unavailable">Temporarily unavailable</string>
     <string name="project_tasks_invalid_metadata">The project metadata is invalid or too large.</string>
-    <string name="project_tasks_empty">No supported tasks were found.</string>
+    <string name="project_tasks_empty">No supported tasks were found. If this project uses company scripts or custom commands, create a workspace shortcut template instead; nothing has been run.</string>
+    <string name="project_tasks_open_custom_commands">Open shortcuts and templates</string>
     <string name="project_tasks_confirm_title">Run %1$s?</string>
     <string name="project_tasks_confirm_target">%1$s:%2$d · %3$s</string>
     <string name="project_tasks_confirm_message">A new persistent terminal session will run.\n\nTarget: %1$s\n\nCommand:\n%2$s\n\nAfter it starts, return here and tap “View task sessions” to continue reading logs or open tmux management. TermuxPro will not auto-enter task sessions from other workspaces.</string>
