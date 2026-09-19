@@ -72,7 +72,7 @@ public class AiCliSessionCenterActivityTest {
         assertDescription(activity, R.id.ai_cli_center_repeat_last,
             "不会猜服务器");
         assertDescription(activity, R.id.ai_cli_center_delete_latest,
-            "不会删除远端 AI 历史");
+            "不会删除 Claude/Codex 远端历史");
         assertDescription(activity, R.id.ai_cli_center_manage_history,
             "未选择有效工作区");
         assertDescription(activity, R.id.ai_cli_center_clear_history,
@@ -455,7 +455,8 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地记录时间："));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地最近 2 条入口记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可再次打开上次 Codex CLI · 历史选择 入口"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("不会删除远端 AI 历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step)
+            .contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("再次打开：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除本地记录：Codex CLI · 历史选择",
@@ -467,7 +468,7 @@ public class AiCliSessionCenterActivityTest {
         assertDescription(activity, R.id.ai_cli_center_repeat_last,
             "不自动进入 tmux");
         assertDescription(activity, R.id.ai_cli_center_repeat_last,
-            "不读取远端 AI 历史");
+            "不读取 Claude/Codex 远端历史");
         assertDescription(activity, R.id.ai_cli_center_delete_latest,
             "只删除 TermuxPro 本地记录");
         assertDescription(activity, R.id.ai_cli_center_manage_history,
