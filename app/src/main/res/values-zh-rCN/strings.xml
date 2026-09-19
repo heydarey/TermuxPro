@@ -237,12 +237,12 @@
     <string name="ai_cli_center_history_title">TermuxPro 本地启动记录</string>
     <string name="ai_cli_center_history_hint">这里不是 Claude/Codex 历史库，只记录本机本 App 发起过哪些启动入口；不读取私有历史或终端输出。</string>
     <string name="ai_cli_center_history_scope">记录范围：%1$s\n%2$s:%3$d · %4$s\n只管理本机本 App 记录，不跨工作区。</string>
-    <string name="ai_cli_center_history_scope_missing">记录范围：未选择工作区。TermuxPro 不会猜测服务器或读取 AI 历史。</string>
+    <string name="ai_cli_center_history_scope_missing">记录范围：未选择工作区。TermuxPro 不会猜测服务器或读取 Claude/Codex 历史。</string>
     <string name="ai_cli_center_history_missing_workspace">请先选择有效工作区。启动记录按工作区隔离。</string>
     <string name="ai_cli_center_history_empty">当前工作区还没有 TermuxPro 本地启动记录。</string>
     <string name="ai_cli_center_history_next_missing_workspace">下一步：先回到“服务器与项目”选择目标，再启动 Claude 或 Codex。</string>
     <string name="ai_cli_center_history_next_empty">下一步：如果要开始新任务，点“新建”；如果要继续已有上下文，点对应工具的“历史选择器”，由 CLI 原生选择器确认。</string>
-    <string name="ai_cli_center_history_next_ready">下一步：可再次打开上次 %1$s · %2$s 入口；如果是误触，只删除本地记录，不会删除远端 AI 历史。</string>
+    <string name="ai_cli_center_history_next_ready">下一步：可再次打开上次 %1$s · %2$s 入口；如果是误触，只删除本地记录，不会删除 Claude/Codex 远端历史。</string>
     <string name="ai_cli_center_history_next_stale">下一步：上次 %1$s · %2$s 的目标已变化，请先检查工作区或删除这条过期本地记录。</string>
     <plurals name="ai_cli_center_history_count">
         <item quantity="other">本地最近 %1$d 条入口记录</item>
@@ -268,14 +268,14 @@
     <string name="ai_cli_center_repeat_stale_target">处理过期记录：%1$s · %2$s</string>
     <string name="ai_cli_center_repeat_missing_workspace_description">当前没有有效远程工作区，不能再次打开本地启动记录；TermuxPro 不会猜服务器或读取 Claude/Codex 历史。</string>
     <string name="ai_cli_center_repeat_empty_description">当前工作区“%1$s”还没有 TermuxPro 本地启动记录；可先新开 Claude 或 Codex SSH 入口。</string>
-    <string name="ai_cli_center_repeat_last_target_description">再次打开最近本地记录：%1$s · %2$s；目标：%3$s。会新开独立 SSH，不自动进入 tmux，也不读取远端 AI 历史。</string>
+    <string name="ai_cli_center_repeat_last_target_description">再次打开最近本地记录：%1$s · %2$s；目标：%3$s。会新开独立 SSH，不自动进入 tmux，也不读取 Claude/Codex 远端历史。</string>
     <string name="ai_cli_center_repeat_stale_target_description">最近本地记录目标已变化：%1$s · %2$s；当前目标：%3$s。点击只会显示检查/删除对话，不会启动 Claude/Codex。</string>
     <string name="ai_cli_center_repeat_launch_title">再次打开 %1$s？</string>
     <string name="ai_cli_center_repeat_launch_message">将再次打开这条 TermuxPro 本地启动记录：%1$s · %2$s\n本地记录时间：%7$s\n目标：%4$s:%5$d · %6$s\n\n执行命令：%3$s\n\n这会新开 SSH 终端，不会自动进入 tmux，也不会删除 Claude/Codex 远端历史。共享账号下请确认这仍然是你的任务。</string>
     <string name="ai_cli_center_repeat_launch_action">确认打开</string>
     <string name="ai_cli_center_delete_latest">删除最近本地记录</string>
     <string name="ai_cli_center_delete_latest_target">删除本地记录：%1$s · %2$s</string>
-    <string name="ai_cli_center_delete_missing_workspace_description">当前没有有效远程工作区，不能删除最近本地记录；不会删除远端 AI 历史、tmux 会话或终端输出。</string>
+    <string name="ai_cli_center_delete_missing_workspace_description">当前没有有效远程工作区，不能删除最近本地记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_delete_empty_description">当前工作区“%1$s”没有本地启动记录可删除；不会删除 Claude/Codex 远端历史。</string>
     <string name="ai_cli_center_delete_latest_target_description">删除最近本地记录：%1$s · %2$s；目标：%3$s。只删除 TermuxPro 本地记录，不会删除 Claude/Codex 远端历史。</string>
     <string name="ai_cli_center_delete_latest_title">删除最近这条本地启动记录？</string>
@@ -303,7 +303,7 @@
     <plurals name="ai_cli_center_clear_history_target_with_stale">
         <item quantity="other">清空 %1$d 条记录（含 %2$d 条过期）</item>
     </plurals>
-    <string name="ai_cli_center_clear_history_missing_workspace_description">当前没有有效远程工作区，不能清空本地启动记录；不会删除远端 AI 历史、tmux 会话或终端输出。</string>
+    <string name="ai_cli_center_clear_history_missing_workspace_description">当前没有有效远程工作区，不能清空本地启动记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_clear_history_empty_description">当前工作区“%1$s”没有本地启动记录可清空；不会删除 Claude/Codex 远端历史。</string>
     <string name="ai_cli_center_clear_history_target_description">清空当前工作区“%1$s”（%3$s）的 %2$d 条 TermuxPro 本地启动记录；不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_clear_history_target_stale_description">清空当前工作区“%1$s”（%3$s）的 %2$d 条 TermuxPro 本地启动记录，其中 %4$d 条目标已变化；只删除本机本 App 记录，不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
