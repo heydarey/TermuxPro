@@ -642,6 +642,14 @@ public final class GitDiffActivity extends AppCompatActivity {
         return new ConnectionTarget(host, port, path);
     }
 
+    @NonNull
+    private String withGitTargetContext(@NonNull String message) {
+        ConnectionTarget target = currentTargetWithoutSideEffects();
+        String targetLabel = target == null ? getString(R.string.git_workbench_unknown_target)
+            : gitTargetSummary(target);
+        return getString(R.string.git_workbench_action_target_context, message, targetLabel);
+    }
+
     private void loadCommitDetails(@NonNull String shortHash) {
         ConnectionTarget target = readTarget();
         if (target == null || !WorkspaceCommandBuilder.isSafeGitCommitHash(shortHash)) return;
@@ -872,7 +880,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_delete_branch)
-            .setMessage(getString(R.string.git_workbench_delete_branch_message, branch))
+            .setMessage(withGitTargetContext(getString(
+                R.string.git_workbench_delete_branch_message, branch)))
             .setPositiveButton(R.string.git_workbench_delete_branch_action,
                 (selectionDialog, which) -> deleteLocalBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -907,7 +916,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             : R.string.git_workbench_track_remote_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(branch)
-            .setMessage(getString(message, mOverview.head, branch, mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.head, branch,
+                mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_track_remote_action,
                 (selectionDialog, which) -> trackRemoteBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -926,7 +936,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             ? R.string.git_workbench_switch_dirty_message : R.string.git_workbench_switch_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_switch_branch)
-            .setMessage(getString(message, mOverview.head, branch, mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.head, branch,
+                mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_switch_action,
                 (selectionDialog, which) -> switchBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -1079,10 +1090,10 @@ public final class GitDiffActivity extends AppCompatActivity {
         input.setPadding(padding, padding / 2, padding, padding / 2);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_create_branch)
-            .setMessage(getString(mOverview.changedFiles > 0
+            .setMessage(withGitTargetContext(getString(mOverview.changedFiles > 0
                 ? R.string.git_workbench_create_branch_dirty_message
                 : R.string.git_workbench_create_branch_message, mOverview.head,
-                mOverview.changedFiles))
+                mOverview.changedFiles)))
             .setView(input)
             .setPositiveButton(R.string.git_workbench_create_branch_action, null)
             .setNegativeButton(android.R.string.cancel, null)

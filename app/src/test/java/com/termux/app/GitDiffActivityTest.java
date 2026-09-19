@@ -77,6 +77,8 @@ public final class GitDiffActivityTest {
             remote.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
         assertTrue(((TextView) remote.findViewById(android.R.id.message)).getText().toString()
             .contains("2 个未提交文件"));
+        assertTrue(((TextView) remote.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         branches.getListView().performItemClick(branches.getListView().getAdapter()
                 .getView(1, null, branches.getListView()), 1,
             branches.getListView().getAdapter().getItemId(1));
@@ -93,6 +95,37 @@ public final class GitDiffActivityTest {
             confirmDelete.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
         assertTrue(((TextView) confirmDelete.findViewById(android.R.id.message)).getText()
             .toString().contains("不会删除远端分支"));
+        assertTrue(((TextView) confirmDelete.findViewById(android.R.id.message)).getText()
+            .toString().contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+    }
+
+    @Test
+    public void switchBranchDialogShowsTargetContextWhenWorktreeIsClean() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n"
+                + "TP_LOCAL\tdev\n"
+                + "TP_LOCAL\tmobile-ui\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+        activity.showOverviewForTesting("~/repo", intent.getStringExtra(
+            GitDiffActivity.EXTRA_UI_TEST_OVERVIEW));
+
+        AlertDialog branches = activity.createBranchesDialog();
+        assertNotNull(branches);
+        activity.showStyledDialog(branches);
+        shadowOf(Looper.getMainLooper()).idle();
+        branches.getListView().performItemClick(branches.getListView().getAdapter()
+                .getView(1, null, branches.getListView()), 1,
+            branches.getListView().getAdapter().getItemId(1));
+
+        AlertDialog confirmSwitch = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(confirmSwitch);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) confirmSwitch.findViewById(android.R.id.message)).getText()
+            .toString().contains("从 dev 切换到 mobile-ui"));
+        assertTrue(((TextView) confirmSwitch.findViewById(android.R.id.message)).getText()
+            .toString().contains("目标：hdr@192.168.1.153:22 · ~/repo"));
     }
 
     @Test
@@ -114,6 +147,8 @@ public final class GitDiffActivityTest {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
         assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
             .contains("2 个未提交文件"));
+        assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
 
         EditText input = dialog.findViewById(android.R.id.edit);
         assertNotNull(input);
