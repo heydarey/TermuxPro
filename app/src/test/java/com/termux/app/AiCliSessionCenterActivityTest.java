@@ -615,7 +615,7 @@ public class AiCliSessionCenterActivityTest {
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
-        assertEquals("查看全部本地记录", text(activity, R.id.ai_cli_center_manage_history));
+        assertEquals("查看 4 条本地记录", text(activity, R.id.ai_cli_center_manage_history));
         assertTrue(activity.findViewById(R.id.ai_cli_center_manage_history).getContentDescription()
             .toString().contains("再次打开或删除"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还有 1 条已折叠"));
