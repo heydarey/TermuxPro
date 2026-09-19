@@ -282,7 +282,7 @@
     <string name="ai_cli_center_delete_entry_title">删除这条本地启动记录？</string>
     <string name="ai_cli_center_delete_latest_message">将删除 TermuxPro 本地记录：%1$s · %2$s\n本地记录时间：%6$s\n%3$s:%4$d · %5$s\n\n不会删除 Claude/Codex 远端历史、tmux 会话或终端输出。</string>
     <string name="ai_cli_center_delete_latest_action">删除本地记录</string>
-    <string name="ai_cli_center_manage_history">查看全部记录</string>
+    <string name="ai_cli_center_manage_history">查看全部本地记录</string>
     <string name="ai_cli_center_manage_history_description">查看、再次打开或删除当前工作区的 TermuxPro 本地启动记录</string>
     <string name="ai_cli_center_manage_history_missing_workspace_description">未选择有效工作区，暂无可查看的本地启动记录；TermuxPro 不会猜服务器。</string>
     <string name="ai_cli_center_manage_history_empty_description">当前工作区“%1$s”没有本地启动记录可查看。</string>
