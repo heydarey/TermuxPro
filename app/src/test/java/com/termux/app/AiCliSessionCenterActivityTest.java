@@ -388,6 +388,51 @@ public class AiCliSessionCenterActivityTest {
     }
 
     @Test
+    public void clearHistoryDisclosesStaleTargetsBeforeDeletingLocalRecords() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.154\",\"port\":\"22\",\"path\":\"~/other-project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
+            AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.154", 22,
+                "~/other-project"),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        assertEquals("清空 2 条记录（含 1 条过期）",
+            text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "其中 1 条目标已变化");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "只删除本机本 App 记录");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "不会删除 Claude/Codex 远端历史");
+
+        activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
+        AlertDialog confirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(confirm);
+        assertEquals("清空当前工作区的本地启动记录？", shadowOf(confirm).getTitle());
+        String message = ((TextView) confirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("2 条本地启动记录"));
+        assertTrue(message.contains("其中 1 条目标已变化"));
+        assertTrue(message.contains("当前目标：hdr@192.168.1.154:22 · ~/other-project"));
+        assertTrue(message.contains("只是本机本 App 的入口记录"));
+        assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
+        confirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary)
+            .contains("还没有 TermuxPro 本地启动记录"));
+    }
+
+    @Test
     public void repeatsDeletesAndClearsOnlyCurrentWorkspaceLaunchHistory() {
         RuntimeEnvironment.getApplication().getSharedPreferences(
             WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()

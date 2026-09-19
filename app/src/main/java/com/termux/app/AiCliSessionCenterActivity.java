@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -293,19 +294,32 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             R.string.ai_cli_center_delete_latest_target_description,
             AiCliLaunchCommand.displayName(latest.tool), modeLabel(latest.mode),
             targetLabel));
+        int staleCount = staleHistoryCount(workspace);
         manageHistory.setEnabled(true);
         manageHistory.setContentDescription(getString(
             R.string.ai_cli_center_manage_history_target_description,
             mLaunchHistory.size(), workspace.name));
         clear.setEnabled(true);
-        clear.setText(getResources().getQuantityString(
-            R.plurals.ai_cli_center_clear_history_target,
-            mLaunchHistory.size(), mLaunchHistory.size()));
-        clear.setContentDescription(getString(
-            R.string.ai_cli_center_clear_history_target_description,
-            workspace.name,
-            mLaunchHistory.size(),
-            targetLabel));
+        if (staleCount > 0) {
+            clear.setText(getResources().getQuantityString(
+                R.plurals.ai_cli_center_clear_history_target_with_stale,
+                mLaunchHistory.size(), mLaunchHistory.size(), staleCount));
+            clear.setContentDescription(getString(
+                R.string.ai_cli_center_clear_history_target_stale_description,
+                workspace.name,
+                mLaunchHistory.size(),
+                targetLabel,
+                staleCount));
+        } else {
+            clear.setText(getResources().getQuantityString(
+                R.plurals.ai_cli_center_clear_history_target,
+                mLaunchHistory.size(), mLaunchHistory.size()));
+            clear.setContentDescription(getString(
+                R.string.ai_cli_center_clear_history_target_description,
+                workspace.name,
+                mLaunchHistory.size(),
+                targetLabel));
+        }
     }
 
     private String modeLabel(AiCliLaunchCommand.Mode mode) {
@@ -477,6 +491,15 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         return item;
     }
 
+    private int staleHistoryCount(@NonNull WorkspaceTarget workspace) {
+        if (mLaunchHistory == null || mLaunchHistory.isEmpty()) return 0;
+        int count = 0;
+        for (AiLaunchHistoryStore.Entry entry : mLaunchHistory) {
+            if (!historyEntryMatchesWorkspace(entry, workspace)) count++;
+        }
+        return count;
+    }
+
     private String formatLaunchTime(long launchedAtMillis) {
         if (launchedAtMillis <= 0L) {
             return getString(R.string.ai_cli_center_history_time_unknown);
@@ -587,13 +610,17 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             bindHistory();
             return;
         }
+        int staleCount = staleHistoryCount(workspace);
+        String targetLabel = getString(R.string.ai_cli_center_history_target,
+            workspace.host, workspace.port, workspace.path);
+        String message = staleCount > 0
+            ? getString(R.string.ai_cli_center_clear_history_stale_message,
+                workspace.name, mLaunchHistory.size(), targetLabel, staleCount)
+            : getString(R.string.ai_cli_center_clear_history_message,
+                workspace.name, mLaunchHistory.size(), targetLabel);
         TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
             .setTitle(R.string.ai_cli_center_clear_history_title)
-            .setMessage(getString(R.string.ai_cli_center_clear_history_message,
-                workspace.name,
-                mLaunchHistory.size(),
-                getString(R.string.ai_cli_center_history_target,
-                    workspace.host, workspace.port, workspace.path)))
+            .setMessage(message)
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ai_cli_center_clear_history_action,
                 (dialog, which) -> clearCurrentHistory())
