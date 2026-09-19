@@ -629,7 +629,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.custom_commands_template_title)
-            .setMessage(R.string.custom_commands_template_message)
+            .setMessage(getString(R.string.custom_commands_template_message_target,
+                importTargetSummary()))
             .setItems(labels, (selectionDialog, which) -> showEditor(null, templates[which]))
             .setNegativeButton(android.R.string.cancel, null)
             .create();

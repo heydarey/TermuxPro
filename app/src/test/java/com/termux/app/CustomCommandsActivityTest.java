@@ -421,6 +421,11 @@ public class CustomCommandsActivityTest {
         assertNotNull(templateDialog);
         assertEquals(activity.getString(R.string.custom_commands_template_title),
             shadowOf(templateDialog).getTitle());
+        String templateMessage = ((TextView) templateDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(templateMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(templateMessage.contains("保存前不会落盘"));
+        assertTrue(templateMessage.contains("选择模板也不会执行命令"));
         ListView listView = templateDialog.getListView();
         assertTrue(listView.getAdapter().getCount() >= 8);
         assertEquals("Codex：新建独立会话", listView.getAdapter().getItem(0).toString());
