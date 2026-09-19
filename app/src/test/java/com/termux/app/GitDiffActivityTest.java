@@ -450,6 +450,9 @@ public final class GitDiffActivityTest {
         primary.performClick();
         assertEquals("快进拉取", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
             .toString());
+        assertTrue(((TextView) ShadowAlertDialog.getLatestAlertDialog()
+            .findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         ShadowAlertDialog.getLatestAlertDialog().dismiss();
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n");
@@ -457,6 +460,9 @@ public final class GitDiffActivityTest {
         primary.performClick();
         assertEquals("推送", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
             .toString());
+        assertTrue(((TextView) ShadowAlertDialog.getLatestAlertDialog()
+            .findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         ShadowAlertDialog.getLatestAlertDialog().dismiss();
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
