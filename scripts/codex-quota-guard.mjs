@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import {createReadStream, existsSync, readdirSync, statSync} from "node:fs";
+import {closeSync, existsSync, openSync, readSync, readdirSync, statSync} from "node:fs";
 import {homedir} from "node:os";
 import {join} from "node:path";
-import {createInterface} from "node:readline";
 
 const sessionsRoot = process.env.CODEX_SESSIONS_ROOT || join(homedir(), ".codex", "sessions");
 const threadId = process.env.CODEX_THREAD_ID;
 const minimumRemaining = Number(process.env.CODEX_MIN_REMAINING_PERCENT || "15");
+const tailBytes = Number(process.env.CODEX_QUOTA_TAIL_BYTES || String(8 * 1024 * 1024));
 
 function listJsonlFiles(root) {
   if (!existsSync(root)) return [];
@@ -25,10 +25,9 @@ function listJsonlFiles(root) {
   return files;
 }
 
-async function readSamples(file) {
+function parseSamples(text) {
   const samples = [];
-  const lines = createInterface({input: createReadStream(file), crlfDelay: Infinity});
-  for await (const line of lines) {
+  for (const line of text.split("\n")) {
     if (!line.includes('"type":"token_count"') || !line.includes('"rate_limits"')) continue;
     try {
       const event = JSON.parse(line);
@@ -47,6 +46,25 @@ async function readSamples(file) {
   return samples;
 }
 
+function readRecentSamples(file) {
+  const stat = statSync(file);
+  const bytesToRead = Math.min(stat.size, tailBytes);
+  const start = stat.size - bytesToRead;
+  const buffer = Buffer.alloc(bytesToRead);
+  const fd = openSync(file, "r");
+  try {
+    readSync(fd, buffer, 0, bytesToRead, start);
+  } finally {
+    closeSync(fd);
+  }
+  let text = buffer.toString("utf8");
+  if (start > 0) {
+    const firstLineBreak = text.indexOf("\n");
+    text = firstLineBreak === -1 ? "" : text.slice(firstLineBreak + 1);
+  }
+  return parseSamples(text);
+}
+
 if (!threadId || !/^[0-9a-f-]{36}$/.test(threadId)) {
   console.error("缺少有效的 CODEX_THREAD_ID，拒绝混合核算其他 Codex 会话。");
   process.exit(2);
@@ -55,14 +73,18 @@ if (!Number.isFinite(minimumRemaining) || minimumRemaining < 0 || minimumRemaini
   console.error("CODEX_MIN_REMAINING_PERCENT 必须是 0 到 100 之间的数字。");
   process.exit(2);
 }
+if (!Number.isFinite(tailBytes) || tailBytes < 4096) {
+  console.error("CODEX_QUOTA_TAIL_BYTES 必须是不小于 4096 的数字。");
+  process.exit(2);
+}
 
 const threadFiles = listJsonlFiles(sessionsRoot).filter(file => file.includes(threadId));
-const nested = await Promise.all(threadFiles.map(readSamples));
+const nested = threadFiles.map(readRecentSamples);
 const samples = nested.flat().filter(sample => Number.isFinite(Date.parse(sample.timestamp)))
   .sort((left, right) => Date.parse(left.timestamp) - Date.parse(right.timestamp));
 
 if (samples.length === 0) {
-  console.error("未找到当前线程的 Codex token_count 额度元数据，无法安全核算。");
+  console.error("未在当前线程会话文件尾部找到 Codex token_count 额度元数据，无法安全核算。");
   process.exit(2);
 }
 
