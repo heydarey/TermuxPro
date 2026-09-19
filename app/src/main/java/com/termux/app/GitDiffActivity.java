@@ -1437,8 +1437,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_pull)
-            .setMessage(getString(R.string.git_workbench_pull_message,
-                mOverview.behind, mOverview.upstream))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_pull_message,
+                mOverview.behind, mOverview.upstream)))
             .setPositiveButton(R.string.git_workbench_pull_action,
                 (selectionDialog, which) -> pullFastForward())
             .setNegativeButton(android.R.string.cancel, null)
@@ -1491,8 +1491,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             : R.string.git_workbench_push_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_push)
-            .setMessage(getString(message, mOverview.ahead, mOverview.upstream,
-                mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.ahead,
+                mOverview.upstream, mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_push_action,
                 (selectionDialog, which) -> pushUpstream())
             .setNegativeButton(android.R.string.cancel, null)
