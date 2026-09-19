@@ -41,6 +41,8 @@ import java.util.Properties;
 /** The {@link TerminalSessionClient} implementation that may require an {@link Activity} for its interface methods. */
 public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionClientBase {
 
+    static final int TOAST_TITLE_MAX_LABEL_CHARS = 80;
+
     private final TermuxActivity mActivity;
 
     private static final int MAX_SESSIONS = 8;
@@ -491,21 +493,39 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
         final int indexOfSession = service.getIndexOfSession(session);
         if (indexOfSession < 0) return null;
-        return formatToastTitle(indexOfSession, session.mSessionName, session.getTitle());
+        return formatToastTitle(indexOfSession, session.mSessionName, session.getTitle(),
+            mActivity.getString(R.string.terminal_session_fallback_name));
     }
 
     static String formatToastTitle(int sessionIndex, String sessionName, String title) {
+        return formatToastTitle(sessionIndex, sessionName, title, "Session");
+    }
+
+    static String formatToastTitle(int sessionIndex, String sessionName, String title, String fallbackLabel) {
         if (sessionIndex < 0) return null;
-        StringBuilder toastTitle = new StringBuilder("[" + (sessionIndex + 1) + "]");
-        if (!isEmpty(sessionName)) {
-            toastTitle.append(" ").append(sessionName);
+        String cleanSessionName = cleanToastLabel(sessionName);
+        String cleanTitle = cleanToastLabel(title);
+        String cleanFallbackLabel = cleanToastLabel(fallbackLabel);
+        if (isEmpty(cleanFallbackLabel)) cleanFallbackLabel = "Session";
+
+        StringBuilder toastTitle = new StringBuilder(cleanFallbackLabel)
+            .append(" ")
+            .append(sessionIndex + 1);
+        if (!isEmpty(cleanSessionName)) {
+            toastTitle.append(" · ").append(cleanSessionName);
         }
-        if (!isEmpty(title)) {
-            // Space to "[${NR}]" or newline after session name.
-            toastTitle.append(isEmpty(sessionName) ? " " : "\n");
-            toastTitle.append(title);
+        if (!isEmpty(cleanTitle)) {
+            toastTitle.append("\n");
+            toastTitle.append(cleanTitle);
         }
         return toastTitle.toString();
+    }
+
+    static String cleanToastLabel(String value) {
+        if (value == null) return null;
+        String cleaned = value.replaceAll("\\s+", " ").trim();
+        if (cleaned.length() <= TOAST_TITLE_MAX_LABEL_CHARS) return cleaned;
+        return cleaned.substring(0, TOAST_TITLE_MAX_LABEL_CHARS - 1) + "…";
     }
 
     private static boolean isEmpty(String value) {

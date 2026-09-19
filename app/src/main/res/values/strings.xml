@@ -908,6 +908,7 @@
     <string name="terminal_search_truncated">Results are bounded to the latest 1 MB and 100 matches.</string>
     <string name="terminal_session_switched">Switched to session: %1$s</string>
     <string name="terminal_session_exited">Session exited: %1$s</string>
+    <string name="terminal_session_fallback_name">Session</string>
     <string name="terminal_session_close_title">Close current session?</string>
     <string name="terminal_session_close_message">This will stop the local terminal session %1$s and its foreground process. Remote tmux sessions are not touched.</string>
     <string name="terminal_session_close_action">Close session</string>
