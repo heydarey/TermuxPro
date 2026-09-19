@@ -795,7 +795,7 @@ public final class GitDiffActivity extends AppCompatActivity {
         if (actions.isEmpty()) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(change.path)
-            .setMessage(R.string.git_workbench_file_action_message)
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_file_action_message)))
             .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list,
                 actions.toArray(new String[0])), (selectionDialog, which) ->
                 runFileIndexOperation(stageActions.get(which), change.path))
@@ -952,8 +952,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stage_all)
-            .setMessage(getString(R.string.git_workbench_stage_all_message,
-                mOverview.unstagedFiles))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_stage_all_message,
+                mOverview.unstagedFiles)))
             .setPositiveButton(R.string.git_workbench_stage_all_action,
                 (selectionDialog, which) -> runIndexOperation(true))
             .setNegativeButton(android.R.string.cancel, null)
@@ -968,8 +968,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_unstage_all)
-            .setMessage(getString(R.string.git_workbench_unstage_all_message,
-                mOverview.stagedFiles))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_unstage_all_message,
+                mOverview.stagedFiles)))
             .setPositiveButton(R.string.git_workbench_unstage_all_action,
                 (selectionDialog, which) -> runIndexOperation(false))
             .setNegativeButton(android.R.string.cancel, null)

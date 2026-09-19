@@ -160,6 +160,37 @@ public final class GitDiffActivityTest {
     }
 
     @Test
+    public void indexActionDialogsShowTargetContext() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t3\t2\t1\t\t\t0\n"
+                + "TP_LOCAL\tdev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        Button stageButton = activity.findViewById(R.id.git_overview_stage_all_button);
+        stageButton.performClick();
+        AlertDialog stage = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(stage);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) stage.findViewById(android.R.id.message)).getText().toString()
+            .contains("1 个未暂存/未跟踪文件"));
+        assertTrue(((TextView) stage.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        stage.dismiss();
+
+        Button unstageButton = activity.findViewById(R.id.git_overview_unstage_all_button);
+        unstageButton.performClick();
+        AlertDialog unstage = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(unstage);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) unstage.findViewById(android.R.id.message)).getText().toString()
+            .contains("2 个已暂存文件"));
+        assertTrue(((TextView) unstage.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+    }
+
+    @Test
     public void overviewShowsIndexSplitAndDisablesUnavailableIndexActions() {
         Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
                 "hdr@192.168.1.153", 22, "~/repo")
@@ -616,6 +647,8 @@ public final class GitDiffActivityTest {
             actions.getListView().getAdapter().getItem(0).toString());
         assertEquals(activity.getString(R.string.git_workbench_unstage_file_action),
             actions.getListView().getAdapter().getItem(1).toString());
+        assertTrue(((TextView) actions.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
     }
 
     @Test
