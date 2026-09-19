@@ -202,7 +202,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         TextView nextStep = findViewById(R.id.ai_cli_center_history_next_step);
         TextView repeat = findViewById(R.id.ai_cli_center_repeat_last);
         TextView deleteLatest = findViewById(R.id.ai_cli_center_delete_latest);
-        View manageHistory = findViewById(R.id.ai_cli_center_manage_history);
+        TextView manageHistory = findViewById(R.id.ai_cli_center_manage_history);
         TextView clear = findViewById(R.id.ai_cli_center_clear_history);
         WorkspaceTarget workspace = WorkspaceTargetStore.readActive(this);
         if (workspace == null || !workspace.isConfigured()) {
@@ -219,6 +219,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             deleteLatest.setContentDescription(getString(
                 R.string.ai_cli_center_delete_missing_workspace_description));
             manageHistory.setEnabled(false);
+            manageHistory.setText(R.string.ai_cli_center_manage_history);
             manageHistory.setContentDescription(getString(
                 R.string.ai_cli_center_manage_history_missing_workspace_description));
             clear.setEnabled(false);
@@ -242,6 +243,7 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             deleteLatest.setContentDescription(getString(
                 R.string.ai_cli_center_delete_empty_description, workspace.name));
             manageHistory.setEnabled(false);
+            manageHistory.setText(R.string.ai_cli_center_manage_history);
             manageHistory.setContentDescription(getString(
                 R.string.ai_cli_center_manage_history_empty_description, workspace.name));
             clear.setEnabled(false);
@@ -296,6 +298,9 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
             targetLabel));
         int staleCount = staleHistoryCount(workspace);
         manageHistory.setEnabled(true);
+        manageHistory.setText(getResources().getQuantityString(
+            R.plurals.ai_cli_center_manage_history_target, mLaunchHistory.size(),
+            mLaunchHistory.size()));
         manageHistory.setContentDescription(getString(
             R.string.ai_cli_center_manage_history_target_description,
             mLaunchHistory.size(), workspace.name));
