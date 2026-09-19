@@ -7,6 +7,7 @@ usage() {
   termuxpro-release-notification.sh --version <版本> --kind <stable|candidate>
     --url <Release URL> --sha256 <APK SHA-256>
     --features <功能说明> --fixes <修复说明>
+    --scenarios <重点体验场景>
     --known-limits <已知限制> --gates <验收状态> --action <用户动作>
     [--send]
 
@@ -20,6 +21,7 @@ release_url=''
 sha256=''
 features=''
 fixes=''
+scenarios=''
 known_limits=''
 gates=''
 action=''
@@ -35,6 +37,8 @@ while [[ $# -gt 0 ]]; do
         --features-file) features="$(<"${2:-}")"; shift 2 ;;
         --fixes) fixes="${2:-}"; shift 2 ;;
         --fixes-file) fixes="$(<"${2:-}")"; shift 2 ;;
+        --scenarios) scenarios="${2:-}"; shift 2 ;;
+        --scenarios-file) scenarios="$(<"${2:-}")"; shift 2 ;;
         --known-limits) known_limits="${2:-}"; shift 2 ;;
         --known-limits-file) known_limits="$(<"${2:-}")"; shift 2 ;;
         --gates) gates="${2:-}"; shift 2 ;;
@@ -57,6 +61,7 @@ required_fields=(
     "sha256:$sha256"
     "features:$features"
     "fixes:$fixes"
+    "scenarios:$scenarios"
     "known_limits:$known_limits"
     "gates:$gates"
     "action:$action"
@@ -95,6 +100,9 @@ ${features}
 
 修复问题：
 ${fixes}
+
+重点体验场景：
+${scenarios}
 
 已知限制：
 ${known_limits}

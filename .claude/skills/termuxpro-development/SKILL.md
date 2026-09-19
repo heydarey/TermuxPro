@@ -46,3 +46,6 @@ Goal 规则：TermuxPro 日常维护是长期持久 Goal。单个切片完成后
 时，应优先复核发布条件或启动发布列车，不能长期只迭代不发包。每轮日常迭代开头都要检查最新稳定
 Release 年龄：满 5 天进入发布预警，满 7 天没有 `RELEASED/HOLD` 结论时禁止继续普通切片；如果连续几天
 评审未发现 P0/P1 且已累计用户可感知价值，必须推进一周至少一次正式稳定版发布。
+
+发布通知：候选/正式 Release 通知同样以 `.agents/skills/termuxpro-development/SKILL.md` 为准，必须用
+`scripts/termuxpro-release-notification.sh` 生成结构化内容，并包含重点体验场景，禁止只发送笼统上架消息。
