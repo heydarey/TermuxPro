@@ -881,6 +881,7 @@
     <string name="custom_commands_group_header">%1$s 场景</string>
     <string name="custom_commands_template_title">选择快捷指令模板</string>
     <string name="custom_commands_template_message">先按场景选择模板，再在编辑页核对完整命令。保存前不会落盘，选择模板也不会执行命令。</string>
+    <string name="custom_commands_template_message_target">当前目标：%1$s\n\n先按场景选择模板，再在编辑页核对完整命令。保存前不会落盘，选择模板也不会执行命令。</string>
     <string name="custom_commands_template_codex_new">Codex：新建独立会话</string>
     <string name="custom_commands_template_codex">Codex：打开历史选择器</string>
     <string name="custom_commands_template_claude_new">Claude：新建独立会话</string>
