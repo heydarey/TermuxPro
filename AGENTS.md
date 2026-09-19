@@ -115,7 +115,7 @@ tmux/Git 可视化、自定义快捷指令或上下文工具箱时，才允许�
 backlog 清空或继续制造候选版；确需用户/设备验收时明确标记 HOLD 和解除条件。稳定 Release 完成后先让
 `dev` 对齐 `master`，再开始下一版本迭代。候选/正式 Release 的飞书通知必须使用
 `scripts/termuxpro-release-notification.sh` 生成结构化内容，至少包含版本、类型、Release URL、APK
-SHA-256、新功能、修复、已知限制、验收状态和用户动作。
+SHA-256、新功能、修复、重点体验场景、已知限制、验收状态和用户动作。
 
 检测到远程或共享服务器时，先运行 `scripts/resource-guard.sh`。Gradle 默认最多 2 个 worker，不并行
 运行多个全量构建；模拟器仅在 KVM 和 CPU/内存/磁盘余量满足时单实例运行。所有项目工具安装到
