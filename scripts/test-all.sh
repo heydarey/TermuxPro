@@ -22,6 +22,14 @@ source "$project_dir/scripts/resolve-jdk17.sh"
 ./test/ui-screenshot-manifest-test.sh
 ./test/release-apk-device-smoke-test.sh
 ./test/release-abi-gate-test.sh
+./test/codex-quota-guard-test.sh
+./test/android-string-resource-parity-test.sh
+./test/release-window-guard-test.sh
+./test/context-checkpoint-test.sh
+./test/goal-lifecycle-policy-test.sh
+./test/generated-cache-cleanup-test.sh
+./test/android-sdk-bootstrap-test.sh
+./test/ui-affordance-batch-test.sh
 ./scripts/validate-skills.sh
 
 gradle_args=(--no-daemon --max-workers=2)

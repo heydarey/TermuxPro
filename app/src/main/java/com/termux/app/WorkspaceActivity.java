@@ -234,7 +234,7 @@ public final class WorkspaceActivity extends AppCompatActivity {
         compactText(R.id.workspace_summary_details, 15, 2);
         compactText(R.id.workspace_summary_policy, 14, 2);
         compactText(R.id.workspace_ai_title, 16, 1);
-        mHostInput.setHint(R.string.workspace_host_hint_compact);
+        mHostInput.setHint(R.string.workspace_host_hint_minimal);
         compactManagementActionsForLargeFont();
         ((TextView) findViewById(R.id.workspace_ai_title))
             .setText(R.string.workspace_ai_quick_title_compact);

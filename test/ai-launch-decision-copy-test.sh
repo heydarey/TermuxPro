@@ -40,6 +40,10 @@ require_contains "$zh" "TermuxPro 本地启动记录" \
     "AI 会话中心记录区必须明确这是 TermuxPro 本地记录，不能暗示读取远端 AI 历史库。"
 require_contains "$zh" "这里不是 Claude/Codex 历史库" \
     "AI 会话中心记录区必须直接说明不是 Claude/Codex 私有历史。"
+require_contains "$zh" "TermuxPro 不读取 Claude/Codex 私有历史" \
+    "AI 会话中心摘要必须精确说明不读取 Claude/Codex 私有历史，不能泛化成 AI 私有历史。"
+require_contains "$zh" "不读取 Claude/Codex 私有历史或终端输出" \
+    "AI 会话中心记录提示必须精确说明不读取 Claude/Codex 私有历史或终端输出。"
 require_contains "$zh" "不会删除 Claude/Codex 远端历史" \
     "AI 会话中心必须精确说明不触碰 Claude/Codex 远端历史，不能泛化成 AI 历史。"
 if grep -Fq "远端 AI 历史" "$zh"; then
@@ -48,6 +52,10 @@ if grep -Fq "远端 AI 历史" "$zh"; then
 fi
 if grep -Fq "读取 AI 历史" "$zh"; then
     echo "AI 会话中心中文文案不能写“读取 AI 历史”，必须明确为 Claude/Codex 历史。" >&2
+    exit 1
+fi
+if grep -Fq "AI 私有历史" "$zh"; then
+    echo "AI 会话中心中文文案不能写“AI 私有历史”，必须明确为 Claude/Codex 私有历史。" >&2
     exit 1
 fi
 require_contains "$zh" '再次打开：%1$s · %2$s' \
@@ -72,12 +80,18 @@ require_contains "$en" "Clear local records" \
     "英文 AI 会话中心清空按钮必须明确只清空本地记录。"
 require_contains "$en" "Latest %1\$d local launch record" \
     "英文 AI 会话中心记录摘要必须使用 local launch record，不能写成模糊 entry record。"
+require_contains "$en" "Claude/Codex private history" \
+    "英文 AI 会话中心摘要必须精确说明不读取 Claude/Codex private history。"
 if grep -Fq "remote AI history" "$en"; then
     echo "英文 AI 会话中心文案不能再使用 remote AI history，必须明确为 Claude/Codex remote history。" >&2
     exit 1
 fi
 if grep -Fq "read AI history" "$en"; then
     echo "英文 AI 会话中心文案不能写 read AI history，必须明确为 read Claude/Codex history。" >&2
+    exit 1
+fi
+if grep -Fq "private AI history" "$en"; then
+    echo "英文 AI 会话中心文案不能写 private AI history，必须明确为 Claude/Codex private history。" >&2
     exit 1
 fi
 require_contains "$choice_layout" "@+id/ai_session_new_button" \
@@ -94,6 +108,42 @@ if [[ -z "$new_line" || -z "$history_line" || -z "$context_line" || "$new_line" 
     echo "AI 会话的两个决策按钮必须排在详细说明之前。" >&2
     exit 1
 fi
+
+require_contains "$zh" "不会自动进入未指定的 tmux 或 Claude/Codex 历史会话" \
+    "工作区安全提示必须精确说明不会进入未指定的 tmux 或 Claude/Codex 历史会话。"
+require_contains "$en" "Claude/Codex history sessions" \
+    "英文工作区安全提示必须与中文语义对齐，明确 tmux 与 Claude/Codex 历史会话边界。"
+if grep -Fq "AI 历史会话" "$zh"; then
+    echo "中文文案不能使用泛化的“AI 历史会话”，必须明确为 Claude/Codex 历史会话。" >&2
+    exit 1
+fi
+if grep -Fq "续接 AI 历史" "$zh"; then
+    echo "中文文案不能写“续接 AI 历史”，必须明确为续接 Claude/Codex 历史。" >&2
+    exit 1
+fi
+if grep -Fq "AI history sessions" "$en"; then
+    echo "英文文案不能使用 AI history sessions，必须明确为 Claude/Codex history sessions。" >&2
+    exit 1
+fi
+
+# 用户可见文档（README 与 UX 质量门）与资源同口径；历史 RELEASE_NOTES 属不可变发布记录，不回溯改写、不纳入扫描。
+readme_doc="$project_dir/README.md"
+ux_doc="$project_dir/docs/UX_QUALITY.md"
+for doc_file in "$readme_doc" "$ux_doc"; do
+    if [[ ! -f "$doc_file" ]]; then
+        echo "门禁扫描目标缺失：$doc_file" >&2
+        exit 1
+    fi
+    if grep -Fq -e "AI 历史会话" -e "续接 AI 历史" -e "远端 AI 历史" -e "读取 AI 历史" -e "AI 私有历史" "$doc_file"; then
+        echo "用户可见文档 $doc_file 不能使用泛化 AI 历史表述，必须明确为 Claude/Codex 历史。" >&2
+        exit 1
+    fi
+    if grep -Fq -e "AI history sessions" -e "private AI history" -e "remote AI history" -e "read AI history" "$doc_file"; then
+        echo "用户可见文档 $doc_file 不能使用泛化 AI history 表述，必须明确为 Claude/Codex history。" >&2
+        exit 1
+    fi
+done
+
 require_contains "$command" "claude --resume" \
     "Claude 历史入口只能打开原生命令选择器，不能改成静默最近恢复。"
 require_contains "$command" "codex resume" \

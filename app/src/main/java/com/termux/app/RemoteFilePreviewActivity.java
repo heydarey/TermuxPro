@@ -71,6 +71,9 @@ public final class RemoteFilePreviewActivity extends AppCompatActivity {
 
     private void loadFile() {
         if (mHost == null || mProjectPath == null || mFilePath == null || mPort < 1 || mPort > 65535) {
+            View refresh = findViewById(R.id.remote_file_refresh_button);
+            refresh.setEnabled(false);
+            refresh.setAlpha(0.4f);
             showStatus(getString(R.string.remote_files_invalid_workspace), true);
             return;
         }

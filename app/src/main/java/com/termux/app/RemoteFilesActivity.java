@@ -79,6 +79,9 @@ public final class RemoteFilesActivity extends AppCompatActivity {
         mReturnWorkspace.setOnClickListener(view -> WorkspaceNavigation.returnToWorkspace(this));
 
         if (mHost == null || mProjectPath == null || mPort < 1 || mPort > 65535) {
+            View refresh = findViewById(R.id.remote_files_refresh_button);
+            refresh.setEnabled(false);
+            refresh.setAlpha(0.4f);
             showStatus(getString(R.string.remote_files_invalid_workspace), true);
         } else {
             loadDirectory();

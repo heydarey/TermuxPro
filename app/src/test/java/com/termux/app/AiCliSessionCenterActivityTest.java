@@ -62,7 +62,7 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertEquals("TermuxPro 本地启动记录", text(activity, R.id.ai_cli_center_history_title));
         assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不是 Claude/Codex 历史库"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取私有历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("未选择工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不会猜测服务器"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));

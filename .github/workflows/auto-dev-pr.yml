@@ -17,7 +17,7 @@ permissions:
 jobs:
   create:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - name: 创建 PR、等待门禁、合并并验证 dev
         env:
@@ -343,7 +343,15 @@ jobs:
           if [[ "$requires_emulator_ui" == true ]]; then
             emulator_target_sha="$(resolve_latest_emulator_ui_sha)"
             if [[ "$emulator_target_sha" != "$COMMIT_SHA" ]]; then
-              echo "最新提交未改动 UI 运行时文件，复用最后一个 UI 影响提交 $emulator_target_sha 的模拟器 UI 门禁。"
+              reused_run="$(gh_safe run list --repo "$REPOSITORY" --workflow '.github/workflows/ui-emulator.yml' \
+                --limit 20 --json status,headSha \
+                --jq "map(select(.headSha == \"$emulator_target_sha\"))[0] // empty" || true)"
+              if [[ -n "$reused_run" ]]; then
+                echo "最新提交未改动 UI 运行时文件，复用最后一个 UI 影响提交 $emulator_target_sha 的既有模拟器 UI 门禁。"
+              else
+                echo "UI 影响提交 $emulator_target_sha 没有可复用的模拟器 UI 运行（批量推送的运行挂在头提交），改为等待头提交 $COMMIT_SHA 的模拟器 UI。"
+                emulator_target_sha="$COMMIT_SHA"
+              fi
             fi
             if ! wait_for_workflow '.github/workflows/ui-emulator.yml' '模拟器 UI' "$emulator_target_sha"; then
               echo "预合并模拟器 UI 未通过；PR #$pr_number 已保留等待后续提交修复，自动 PR 工作流不再重复上报失败。"

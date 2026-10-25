@@ -48,7 +48,7 @@ public class TerminalProjectToolsMenuTest {
         assertEquals(TerminalProjectToolsMenu.TOOL_PROMPT_COMPOSER, menu.getItem(6).getItemId());
         assertDescription(menu, 6, "打开提示词编辑器，编写或粘贴多行内容，确认后只发送到当前终端。");
         assertEquals(TerminalProjectToolsMenu.TOOL_SEARCH_OUTPUT, menu.getItem(7).getItemId());
-        assertDescription(menu, 7, "在当前可用的终端历史中搜索文本，不读取远端文件或 AI 私有历史。");
+        assertDescription(menu, 7, "在当前可用的终端历史中搜索文本，不读取远端文件或 Claude/Codex 私有历史。");
         assertEquals(TerminalProjectToolsMenu.TOOL_TOUCH_SCROLL_MODE, menu.getItem(8).getItemId());
         assertEquals("临时控制 AI/TUI 面板", menu.getItem(8).getTitle().toString());
         assertDescription(menu, 8,
@@ -130,6 +130,10 @@ public class TerminalProjectToolsMenuTest {
             TerminalProjectToolsMenu.toolsButtonLabel(false));
         assertEquals(com.termux.R.string.workspace_tools_tui_scroll_action,
             TerminalProjectToolsMenu.toolsButtonLabel(true));
+        assertEquals(com.termux.R.string.workspace_tools_scrollback_action_compact,
+            TerminalProjectToolsMenu.toolsButtonLabel(false, true));
+        assertEquals(com.termux.R.string.workspace_tools_tui_scroll_action_compact,
+            TerminalProjectToolsMenu.toolsButtonLabel(true, true));
         assertEquals(com.termux.R.string.workspace_tools_scrollback_description,
             TerminalProjectToolsMenu.toolsButtonDescription(false));
         assertEquals(com.termux.R.string.workspace_tools_tui_scroll_description,

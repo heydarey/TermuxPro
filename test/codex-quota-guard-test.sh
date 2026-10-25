@@ -47,4 +47,29 @@ if ! grep -Fq '"usedPercent": 8' <<<"${output}"; then
   exit 1
 fi
 
+
+# 非 Codex 驱动显式声明 TERMUXPRO_DRIVER_ID 时直接放行，不伪造 Codex 读数。
+non_codex_output="$(TERMUXPRO_DRIVER_ID=zcode-batch-test "${PROJECT_ROOT}/scripts/codex-quota-guard.sh")"
+non_codex_status=$?
+if [[ "${non_codex_status}" -ne 0 ]]; then
+  echo "非 Codex 驱动声明 TERMUXPRO_DRIVER_ID 后应直接放行，实际退出码 ${non_codex_status}" >&2
+  exit 1
+fi
+if ! grep -Fq '"codexQuotaObservable": false' <<<"${non_codex_output}" || \
+   ! grep -Fq '"driver": "zcode-batch-test"' <<<"${non_codex_output}"; then
+  echo "非 Codex 放行结果必须标注驱动与 codexQuotaObservable=false：" >&2
+  echo "${non_codex_output}" >&2
+  exit 1
+fi
+
+# 未声明驱动标识且缺少 CODEX_THREAD_ID 时必须保持失败关闭。
+set +e
+"${PROJECT_ROOT}/scripts/codex-quota-guard.sh" >/dev/null 2>&1
+unguarded_status=$?
+set -e
+if [[ "${unguarded_status}" -eq 0 ]]; then
+  echo "缺少 CODEX_THREAD_ID 且未声明 TERMUXPRO_DRIVER_ID 时必须失败关闭。" >&2
+  exit 1
+fi
+
 echo "Codex 总额度门禁测试通过。"

@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-09-19T09:55:30Z
+- UTC：2026-10-25T11:49:32Z
 
 ## 当前目标
 
@@ -16,22 +16,16 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`db06c3e6608a`
-- 最近提交：Merge pull request #410 from heydarey/dev_dailyIteration
-- `origin/dev`：`db06c3e6608a`
+- 当前提交：`85bf1c6db116`
+- 最近提交：docs(ux): 登记AI中心层级与终端空态两项暂缓决策及理由
+- `origin/dev`：`86f3f92489d7`
 - `origin/master`：`28b8318985cb`
 - 版本源：`0.10.1` / `100102`
 
 ### 工作树
 
 ```text
- M .agents/skills/termuxpro-development/SKILL.md
- M .claude/skills/termuxpro-development/SKILL.md
- M AGENTS.md
- M docs/PRODUCT_BACKLOG.md
- M scripts/termuxpro-release-notification.sh
- M test/release-notification-format-test.sh
-?? test/reports/release-notification-scenarios-20260919.md
+干净
 ```
 
 ## 额度与资源
@@ -40,16 +34,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```json
 {
-  "latest": {
-    "timestamp": "2026-09-19T09:55:22.999Z",
-    "usedPercent": 38,
-    "remainingPercent": 62,
-    "resetsAt": 1790301721,
-    "windowMinutes": 10080
-  },
-  "minimumRemainingPercent": 15,
+  "driver": "zcode-batch-20261025",
+  "codexQuotaObservable": false,
   "allowed": true,
-  "policy": "不按自然日限额；总剩余额度不少于阈值时持续运行"
+  "policy": "非 Codex 驱动没有 Codex 额度概念；资源守卫与发布门禁仍然适用"
 }
 ```
 
@@ -57,10 +45,10 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：0.82
-可用内存：12347 MiB
-工作区可用磁盘：35014 MiB
-工作区磁盘使用率：82%
+CPU：8 核，1 分钟负载：0.03
+可用内存：15228 MiB
+工作区可用磁盘：23043 MiB
+工作区磁盘使用率：89%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
 ```
@@ -76,7 +64,7 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-19T09:44:25Z","databaseId":35435520630,"displayTitle":"TermuxPro CI","headSha":"db06c3e6608a13c68d86b13d6ccaa43f0ff7658a","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:24:23Z","databaseId":35434602713,"displayTitle":"TermuxPro CI","headSha":"67f89bbbf5271bcc84a14f24d94cc938ad1794c7","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:05:25Z","databaseId":35433740009,"displayTitle":"TermuxPro CI","headSha":"24c7860a53aded8502c9bbcbf34d7ca8a3c0b64c","status":"completed"}]
+[{"conclusion":"success","createdAt":"2026-09-19T10:02:49Z","databaseId":35436329519,"displayTitle":"TermuxPro CI","headSha":"86f3f92489d7144ba45e63fd7354688a1e320eb2","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:44:25Z","databaseId":35435520630,"displayTitle":"TermuxPro CI","headSha":"db06c3e6608a13c68d86b13d6ccaa43f0ff7658a","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:24:23Z","databaseId":35434602713,"displayTitle":"TermuxPro CI","headSha":"67f89bbbf5271bcc84a14f24d94cc938ad1794c7","status":"completed"}]
 ```
 
 ### 最近 Release
@@ -92,7 +80,7 @@ TermuxPro v0.9.9-rc.1	Pre-release	v0.9.9-rc.1	2026-09-08T06:32:09Z
 ### 稳定版发布窗口
 
 ```text
-status=OK action=continue_daily_iteration latestTag=v0.10.1 publishedAt=2026-09-17T08:17:31Z ageDays=2 ageHours=49 reviewAfter=2026-09-22T08:17:31Z deadline=2026-09-24T08:17:31Z
+status=OVERDUE action=release_or_record_hold latestTag=v0.10.1 publishedAt=2026-09-17T08:17:31Z ageDays=38 ageHours=915 reviewAfter=2026-09-22T08:17:31Z deadline=2026-09-24T08:17:31Z
 ```
 
 ## 恢复步骤

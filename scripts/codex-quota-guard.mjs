@@ -65,6 +65,15 @@ function readRecentSamples(file) {
   return parseSamples(text);
 }
 
+if (!threadId && process.env.TERMUXPRO_DRIVER_ID) {
+  console.log(JSON.stringify({
+    driver: process.env.TERMUXPRO_DRIVER_ID,
+    codexQuotaObservable: false,
+    allowed: true,
+    policy: "非 Codex 驱动没有 Codex 额度概念；资源守卫与发布门禁仍然适用"
+  }, null, 2));
+  process.exit(0);
+}
 if (!threadId || !/^[0-9a-f-]{36}$/.test(threadId)) {
   console.error("缺少有效的 CODEX_THREAD_ID，拒绝混合核算其他 Codex 会话。");
   process.exit(2);
