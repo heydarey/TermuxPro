@@ -959,4 +959,6 @@
     <string name="terminal_tools_section_keyboard">键区切换</string>
     <string name="terminal_custom_commands_action">快捷指令</string>
     <string name="terminal_custom_commands_description">安全打开当前工作区快捷指令；进入页面不会执行命令，也不会输入当前终端或 AI TUI。</string>
+    <string name="session_null_title">未知会话</string>
+    <string name="terminal_toolbar_input_hint">输入要发送到终端的文本</string>
 </resources>

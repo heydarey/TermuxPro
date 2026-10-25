@@ -1091,4 +1091,6 @@
     <string name="terminal_custom_commands_action">Quick commands</string>
     <string name="terminal_custom_commands_description">Safely open quick commands for the current workspace. Entering the page will not run a command or type into the current terminal or AI TUI.</string>
 
+    <string name="session_null_title">Unknown session</string>
+    <string name="terminal_toolbar_input_hint">Text to send to terminal</string>
 </resources>
