@@ -126,8 +126,11 @@ public final class SshKeysActivity extends AppCompatActivity {
         mPublicKeyPayload = payload.toString().trim();
         boolean available = !mPublicKeyPayload.isEmpty();
         mKeyView.setText(available ? mPublicKeyDisplay : getString(R.string.ssh_keys_empty));
+        boolean installable = available && SshTargetValidator.isValid(mHost) && mPort > 0 && mPort <= 65535;
         mCopyButton.setEnabled(available);
-        mInstallButton.setEnabled(available && SshTargetValidator.isValid(mHost) && mPort > 0 && mPort <= 65535);
+        mCopyButton.setAlpha(available ? 1f : 0.4f);
+        mInstallButton.setEnabled(installable);
+        mInstallButton.setAlpha(installable ? 1f : 0.4f);
     }
 
     private void confirmGenerate() {
