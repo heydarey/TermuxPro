@@ -5,7 +5,7 @@
 
 ## 生成时间
 
-- UTC：2026-10-25T11:49:32Z
+- UTC：2026-10-25T13:08:06Z
 
 ## 当前目标
 
@@ -16,11 +16,11 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 ## 代码状态
 
 - 当前分支：`dev_dailyIteration`
-- 当前提交：`85bf1c6db116`
-- 最近提交：docs(ux): 登记AI中心层级与终端空态两项暂缓决策及理由
-- `origin/dev`：`86f3f92489d7`
-- `origin/master`：`28b8318985cb`
-- 版本源：`0.10.1` / `100102`
+- 当前提交：`34701c14290b`
+- 最近提交：chore(release): 发布0.10.2正式版
+- `origin/dev`：`34701c14290b`
+- `origin/master`：`34701c14290b`
+- 版本源：`0.10.2` / `100104`
 
 ### 工作树
 
@@ -45,9 +45,9 @@ Termux 原始终端/PTY/包管理/本地 shell/基础会话/基础快捷键/基�
 
 ```text
 环境：远程/共享
-CPU：8 核，1 分钟负载：0.03
-可用内存：15228 MiB
-工作区可用磁盘：23043 MiB
+CPU：8 核，1 分钟负载：0.10
+可用内存：15253 MiB
+工作区可用磁盘：22976 MiB
 工作区磁盘使用率：89%
 KVM：不可用
 资源守卫通过：保持单个重任务，Gradle 使用 --max-workers=2。
@@ -64,23 +64,23 @@ KVM：不可用
 ### 最近 dev CI
 
 ```json
-[{"conclusion":"success","createdAt":"2026-09-19T10:02:49Z","databaseId":35436329519,"displayTitle":"TermuxPro CI","headSha":"86f3f92489d7144ba45e63fd7354688a1e320eb2","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:44:25Z","databaseId":35435520630,"displayTitle":"TermuxPro CI","headSha":"db06c3e6608a13c68d86b13d6ccaa43f0ff7658a","status":"completed"},{"conclusion":"success","createdAt":"2026-09-19T09:24:23Z","databaseId":35434602713,"displayTitle":"TermuxPro CI","headSha":"67f89bbbf5271bcc84a14f24d94cc938ad1794c7","status":"completed"}]
+[{"conclusion":"","createdAt":"2026-10-25T13:06:03Z","databaseId":40196073823,"displayTitle":"chore(release): 发布0.10.2正式版","headSha":"34701c14290bde067609f240332a61752f91a736","status":"in_progress"},{"conclusion":"success","createdAt":"2026-10-25T12:50:38Z","databaseId":40194914406,"displayTitle":"chore(release): 发布 0.10.2 正式版","headSha":"c4afe721987c8ac107b0ba367efd3b18237b0aac","status":"completed"},{"conclusion":"success","createdAt":"2026-10-25T12:50:35Z","databaseId":40194910165,"displayTitle":"TermuxPro CI","headSha":"c4afe721987c8ac107b0ba367efd3b18237b0aac","status":"completed"}]
 ```
 
 ### 最近 Release
 
 ```text
-TermuxPro v0.10.1	Latest	v0.10.1	2026-09-17T08:17:31Z
+TermuxPro v0.10.2	Latest	v0.10.2	2026-10-25T13:04:51Z
+TermuxPro v0.10.2-rc.1	Pre-release	v0.10.2-rc.1	2026-10-25T12:27:23Z
+TermuxPro v0.10.1		v0.10.1	2026-09-17T08:17:31Z
 TermuxPro v0.10.1-rc.1	Pre-release	v0.10.1-rc.1	2026-09-17T07:38:52Z
 TermuxPro v0.10.0		v0.10.0	2026-09-09T05:00:08Z
-TermuxPro v0.10.0-rc.1	Pre-release	v0.10.0-rc.1	2026-09-09T04:16:32Z
-TermuxPro v0.9.9-rc.1	Pre-release	v0.9.9-rc.1	2026-09-08T06:32:09Z
 ```
 
 ### 稳定版发布窗口
 
 ```text
-status=OVERDUE action=release_or_record_hold latestTag=v0.10.1 publishedAt=2026-09-17T08:17:31Z ageDays=38 ageHours=915 reviewAfter=2026-09-22T08:17:31Z deadline=2026-09-24T08:17:31Z
+status=OK action=continue_daily_iteration latestTag=v0.10.2 publishedAt=2026-10-25T13:04:51Z ageDays=0 ageHours=0 reviewAfter=2026-10-30T13:04:51Z deadline=2026-11-01T13:04:51Z
 ```
 
 ## 恢复步骤
