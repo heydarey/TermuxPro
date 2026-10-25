@@ -582,7 +582,7 @@
     <string name="git_diff_clean">The working tree has no unstaged changes.</string>
     <string name="git_diff_truncated">Output was truncated at 1.5 MB. Use the terminal for the complete diff.</string>
     <string name="git_diff_failed">Git changes are temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
-    <string name="git_diff_invalid_workspace">The workspace connection information is invalid.</string>
+    <string name="git_diff_invalid_workspace">Workspace connection details are incomplete: SSH host, port, or project path is missing. Return to the workspace to complete them, then reopen this page.</string>
     <string name="git_diff_ssh_missing">OpenSSH is not installed. Return to the workspace and install the SSH component.</string>
     <string name="git_diff_cancelled">Review was cancelled.</string>
     <string name="git_diff_connection_error">Unable to read changes (%1$s).</string>
@@ -810,7 +810,7 @@
     <string name="workspace_remote_files_description">Browse the current workspace remote directory and read files in a bounded, read-only view.</string>
     <string name="remote_files_title">Remote files</string>
     <string name="remote_file_preview_title">File preview</string>
-    <string name="remote_files_invalid_workspace">The workspace connection information is invalid.</string>
+    <string name="remote_files_invalid_workspace">Workspace connection details are incomplete: SSH host, port, or project path is missing. Return to the workspace to complete them, then reopen this page.</string>
     <string name="remote_files_failed">This directory is temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
     <string name="remote_files_empty">This directory is empty.</string>
     <string name="remote_files_truncated">Too many entries; the list was truncated.</string>
@@ -828,7 +828,7 @@
     <string name="project_tasks_target_missing">not set</string>
     <string name="project_tasks_detecting">Detecting project type…</string>
     <string name="project_tasks_type">Detected: %1$s</string>
-    <string name="project_tasks_invalid_workspace">The workspace connection information is invalid.</string>
+    <string name="project_tasks_invalid_workspace">Workspace connection details are incomplete: SSH host, port, or project path is missing. Return to the workspace to complete them, then reopen this page.</string>
     <string name="project_tasks_failed">This project is temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
     <string name="project_tasks_unavailable">Temporarily unavailable</string>
     <string name="project_tasks_invalid_metadata">The project metadata is invalid or too large.</string>
@@ -856,7 +856,7 @@
     <string name="connection_diagnostic_running">Checking the active SSH connection and remote tools…</string>
     <string name="connection_diagnostic_success">Connection succeeded. Available tools are listed below.</string>
     <string name="connection_diagnostic_failed">Connection diagnostics could not finish. Return to the workspace, check the connection, then retry.</string>
-    <string name="connection_diagnostic_invalid_workspace">The workspace connection information is invalid.</string>
+    <string name="connection_diagnostic_invalid_workspace">Workspace connection details are incomplete: SSH host, port, or project path is missing. Return to the workspace to complete them, then reopen this page.</string>
     <string name="connection_diagnostic_invalid">The server returned an invalid diagnostic response.</string>
     <string name="connection_diagnostic_interactive_action">Open interactive connection to authenticate</string>
     <string name="connection_stage_network">Network and SSH port</string>
@@ -921,7 +921,7 @@
     <string name="task_sessions_ready">This page supports create, attach, rename, and stop. Only TermuxPro sessions from the current workspace can be renamed or stopped.</string>
     <string name="task_sessions_ready_compact">Create or attach; only current workspace sessions can be renamed or stopped.</string>
     <string name="task_sessions_empty">No tmux sessions yet. Create an isolated session for this workspace.</string>
-    <string name="task_sessions_invalid_workspace">The workspace connection information is invalid.</string>
+    <string name="task_sessions_invalid_workspace">Workspace connection details are incomplete: SSH host, port, or project path is missing. Return to the workspace to complete them, then reopen this page.</string>
     <string name="task_sessions_failed">tmux sessions are temporarily unavailable. Return to the workspace, reconnect, then retry.</string>
     <string name="task_sessions_stop_failed">The session could not be stopped. It may have already ended; return to the workspace and check the connection.</string>
     <string name="task_sessions_create_failed">Unable to create the session. Check for a duplicate name, workspace path, or SSH connection issue.</string>

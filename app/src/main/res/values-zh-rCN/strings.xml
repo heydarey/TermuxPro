@@ -457,7 +457,7 @@
     <string name="git_diff_clean">当前工作区没有未暂存修改。</string>
     <string name="git_diff_truncated">输出已在 1.5 MB 处截断，完整 Diff 请在终端中查看。</string>
     <string name="git_diff_failed">暂时无法读取 Git 修改。请返回工作区重新连接，再回来重试。</string>
-    <string name="git_diff_invalid_workspace">工作区连接信息无效。</string>
+    <string name="git_diff_invalid_workspace">工作区连接信息不完整：缺少可用的 SSH 地址、端口或项目目录。请点“返回工作区”补全后再打开本页。</string>
     <string name="git_diff_ssh_missing">尚未安装 OpenSSH，请返回工作区安装 SSH 组件。</string>
     <string name="git_diff_cancelled">已取消审查。</string>
     <string name="git_diff_connection_error">无法读取修改（%1$s）。</string>
@@ -681,7 +681,7 @@
     <string name="workspace_remote_files_description">浏览当前工作区远端目录，只读查看文件，受大小限制保护。</string>
     <string name="remote_files_title">远端文件</string>
     <string name="remote_file_preview_title">文件预览</string>
-    <string name="remote_files_invalid_workspace">工作区连接信息无效。</string>
+    <string name="remote_files_invalid_workspace">工作区连接信息不完整：缺少可用的 SSH 地址、端口或项目目录。请点“返回工作区”补全后再打开本页。</string>
     <string name="remote_files_failed">暂时无法列出该目录。请返回工作区重新连接，再回来重试。</string>
     <string name="remote_files_empty">该目录为空。</string>
     <string name="remote_files_truncated">目录项过多，列表已截断。</string>
@@ -699,7 +699,7 @@
     <string name="project_tasks_target_missing">未填写</string>
     <string name="project_tasks_detecting">正在识别项目类型…</string>
     <string name="project_tasks_type">已识别：%1$s</string>
-    <string name="project_tasks_invalid_workspace">工作区连接信息无效。</string>
+    <string name="project_tasks_invalid_workspace">工作区连接信息不完整：缺少可用的 SSH 地址、端口或项目目录。请点“返回工作区”补全后再打开本页。</string>
     <string name="project_tasks_failed">暂时无法识别该项目。请返回工作区重新连接，再回来重试。</string>
     <string name="project_tasks_unavailable">暂不可用</string>
     <string name="project_tasks_invalid_metadata">项目描述信息无效或体积过大。</string>
@@ -725,7 +725,7 @@
     <string name="connection_diagnostic_running">正在检查活动 SSH 连接和远端工具…</string>
     <string name="connection_diagnostic_success">连接成功，可用能力如下。</string>
     <string name="connection_diagnostic_failed">暂时无法完成连接诊断。请返回工作区检查连接信息后重试。</string>
-    <string name="connection_diagnostic_invalid_workspace">工作区连接信息无效。</string>
+    <string name="connection_diagnostic_invalid_workspace">工作区连接信息不完整：缺少可用的 SSH 地址、端口或项目目录。请点“返回工作区”补全后再打开本页。</string>
     <string name="connection_diagnostic_invalid">服务器返回的诊断信息无效。</string>
     <string name="connection_diagnostic_interactive_action">打开交互连接并完成认证</string>
     <string name="connection_stage_network">网络与 SSH 端口</string>
@@ -790,7 +790,7 @@
     <string name="task_sessions_ready">当前页支持新建、进入、重命名和停止；只有当前工作区的 TermuxPro 会话可被重命名或停止。</string>
     <string name="task_sessions_ready_compact">可新建/进入；仅当前工作区会话可改名或停止。</string>
     <string name="task_sessions_empty">还没有 tmux 会话，可以为当前工作区新建一个隔离会话。</string>
-    <string name="task_sessions_invalid_workspace">工作区连接信息无效。</string>
+    <string name="task_sessions_invalid_workspace">工作区连接信息不完整：缺少可用的 SSH 地址、端口或项目目录。请点“返回工作区”补全后再打开本页。</string>
     <string name="task_sessions_failed">暂时无法读取 tmux 会话。请返回工作区重新连接，再回来重试。</string>
     <string name="task_sessions_stop_failed">无法停止该会话。它可能已经结束，请返回工作区检查连接后重试。</string>
     <string name="task_sessions_create_failed">无法新建会话。请检查名称是否重复、项目目录是否可用以及 SSH 连接状态。</string>

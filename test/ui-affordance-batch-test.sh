@@ -60,4 +60,25 @@ forbid_contains "$zh" 'name="git_workbench_recommend_' \
 forbid_contains "$en" 'name="git_workbench_recommend_' \
     "英文资源不得残留已无引用的 git_workbench_recommend_* 字符串。"
 
+# 无效工作区错误态：必须说明缺失项与恢复路径，刷新按钮不可用。
+for key in remote_files_invalid_workspace project_tasks_invalid_workspace connection_diagnostic_invalid_workspace git_diff_invalid_workspace task_sessions_invalid_workspace; do
+    if ! grep -Fq "name=\"$key\"" "$zh"; then
+        echo "缺少资源 $key。" >&2; exit 1
+    fi
+done
+require_contains "$zh" "请点“返回工作区”补全后再打开本页" \
+    "无效工作区错误必须给出“返回工作区补全”的恢复路径，不能只报“连接信息无效”。"
+require_contains "$en" "SSH host, port, or project path is missing" \
+    "英文无效工作区错误必须列明缺失项。"
+forbid_contains "$zh" ">工作区连接信息无效。<" \
+    "无效工作区错误不能停留在无原因无动作的死胡同文案。"
+require_contains "$project_dir/app/src/main/java/com/termux/app/RemoteFilesActivity.java" "refresh.setAlpha(0.4f)" \
+    "远端文件页无效工作区态必须禁用刷新按钮并降低透明度。"
+require_contains "$project_dir/app/src/main/java/com/termux/app/RemoteFilePreviewActivity.java" "refresh.setAlpha(0.4f)" \
+    "远端文件预览页无效工作区态必须禁用刷新按钮。"
+require_contains "$project_dir/app/src/main/java/com/termux/app/ConnectionDiagnosticActivity.java" "refresh.setAlpha(0.4f)" \
+    "连接诊断页无效工作区态必须禁用刷新按钮。"
+require_contains "$project_dir/app/src/main/java/com/termux/app/ProjectTasksActivity.java" "mRefresh.setAlpha(0.4f)" \
+    "项目任务页无效工作区态必须同步降低刷新按钮透明度。"
+
 echo "UI 审计快赢静态校验通过。"

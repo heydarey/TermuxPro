@@ -95,6 +95,7 @@ public final class ProjectTasksActivity extends AppCompatActivity {
             || !WorkspaceOwnershipStore.isValid(mOwnerToken)
             || mPort < 1 || mPort > 65535) {
             mRefresh.setEnabled(false);
+            mRefresh.setAlpha(0.4f);
             mTaskSessions.setVisibility(View.GONE);
             mTaskSessionSummary.setVisibility(View.GONE);
             showError(R.string.project_tasks_invalid_workspace);

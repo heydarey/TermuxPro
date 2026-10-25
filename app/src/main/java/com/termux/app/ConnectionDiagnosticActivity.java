@@ -172,6 +172,9 @@ public final class ConnectionDiagnosticActivity extends AppCompatActivity {
 
     private void showInvalidWorkspace() {
         mProgress.setVisibility(View.GONE);
+        View refresh = findViewById(R.id.connection_diagnostic_refresh_button);
+        refresh.setEnabled(false);
+        refresh.setAlpha(0.4f);
         mStatus.setText(R.string.connection_diagnostic_invalid_workspace);
         mInteractiveConnection.setVisibility(View.GONE);
         mReturnWorkspace.setVisibility(View.VISIBLE);

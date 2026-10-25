@@ -181,6 +181,9 @@ public final class GitDiffActivity extends AppCompatActivity {
         String path = getIntent().getStringExtra(EXTRA_PATH);
         int port = getIntent().getIntExtra(EXTRA_PORT, 22);
         if (host == null || path == null || port < 1 || port > 65535) {
+            View refresh = findViewById(R.id.git_diff_refresh_button);
+            refresh.setEnabled(false);
+            refresh.setAlpha(0.4f);
             showStatus(getString(R.string.git_diff_invalid_workspace), true);
             return null;
         }
