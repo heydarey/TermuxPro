@@ -190,7 +190,7 @@
     <string name="ai_session_terminal_new_button">发送新建命令到当前终端\n%1$s</string>
     <string name="ai_session_terminal_history_button">发送历史选择器命令到当前终端\n%1$s\n不自动恢复</string>
     <string name="ai_cli_center_title">AI CLI 会话中心</string>
-    <string name="ai_cli_center_summary">按“准备环境 → 启动 AI → 检查结果”使用。TermuxPro 不读取 AI 私有历史，也不会自动进入最近会话。</string>
+    <string name="ai_cli_center_summary">按“准备环境 → 启动 AI → 检查结果”使用。TermuxPro 不读取 Claude/Codex 私有历史，也不会自动进入最近会话。</string>
     <string name="ai_cli_center_context_title">当前上下文</string>
     <string name="ai_cli_center_start_title">开始 AI 工作</string>
     <string name="ai_cli_center_start_hint">新建不会恢复历史；历史只打开 CLI 原生选择器，TermuxPro 不会自动进入会话或 tmux。</string>
@@ -235,7 +235,7 @@
     <string name="ai_cli_center_codex_new_description">新开 SSH 终端执行 Codex CLI；安全默认：不自动恢复历史，也不自动进入 tmux。</string>
     <string name="ai_cli_center_codex_history_description">新开 SSH 终端打开 Codex 原生历史选择器，不自动恢复。</string>
     <string name="ai_cli_center_history_title">TermuxPro 本地启动记录</string>
-    <string name="ai_cli_center_history_hint">这里不是 Claude/Codex 历史库，只记录本机本 App 发起过哪些启动入口；不读取私有历史或终端输出。</string>
+    <string name="ai_cli_center_history_hint">这里不是 Claude/Codex 历史库，只记录本机本 App 发起过哪些启动入口；不读取 Claude/Codex 私有历史或终端输出。</string>
     <string name="ai_cli_center_history_scope">记录范围：%1$s\n%2$s:%3$d · %4$s\n只管理本机本 App 记录，不跨工作区。</string>
     <string name="ai_cli_center_history_scope_missing">记录范围：未选择工作区。TermuxPro 不会猜测服务器或读取 Claude/Codex 历史。</string>
     <string name="ai_cli_center_history_missing_workspace">请先选择有效工作区。启动记录按工作区隔离。</string>
@@ -780,7 +780,7 @@
     <string name="workspace_development_tools_title">开发工具箱</string>
     <string name="workspace_development_tools_description">只在需要时打开 Git、tmux、文件、项目任务、快捷指令、诊断和 Web 预览。</string>
     <string name="terminal_search_action">搜索终端输出</string>
-    <string name="terminal_search_description">在当前可用的终端历史中搜索文本，不读取远端文件或 AI 私有历史。</string>
+    <string name="terminal_search_description">在当前可用的终端历史中搜索文本，不读取远端文件或 Claude/Codex 私有历史。</string>
     <string name="terminal_search_title">搜索终端输出</string>
     <string name="terminal_search_hint">错误文本、文件名、命令……</string>
     <string name="terminal_search_results_title">“%1$s” · %2$d 条结果</string>

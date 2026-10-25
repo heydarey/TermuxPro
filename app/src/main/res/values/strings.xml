@@ -310,7 +310,7 @@
     <string name="ai_session_terminal_new_button">Send new-session command to current terminal\n%1$s</string>
     <string name="ai_session_terminal_history_button">Send history-picker command to current terminal\n%1$s\nNo automatic resume</string>
     <string name="ai_cli_center_title">AI CLI session center</string>
-    <string name="ai_cli_center_summary">Use this as Prepare environment → Start AI → Review result. TermuxPro does not read private AI history and never auto-enters the latest session.</string>
+    <string name="ai_cli_center_summary">Use this as Prepare environment → Start AI → Review result. TermuxPro does not read Claude/Codex private history and never auto-enters the latest session.</string>
     <string name="ai_cli_center_context_title">Current context</string>
     <string name="ai_cli_center_start_title">Start AI work</string>
     <string name="ai_cli_center_start_hint">New sessions never resume history. History opens the native CLI picker only; TermuxPro never enters a session or tmux automatically.</string>
@@ -911,7 +911,7 @@
     <string name="workspace_development_tools_title">Development toolbox</string>
     <string name="workspace_development_tools_description">Open Git, tmux, files, project tasks, custom commands, diagnostics, and Web preview only when needed.</string>
     <string name="terminal_search_action">Search output</string>
-    <string name="terminal_search_description">Search available terminal history without reading remote files or private AI history.</string>
+    <string name="terminal_search_description">Search available terminal history without reading remote files or Claude/Codex private history.</string>
     <string name="terminal_search_title">Search terminal output</string>
     <string name="terminal_search_hint">Error text, filename, command…</string>
     <string name="terminal_search_results_title">“%1$s” · %2$d matches</string>
