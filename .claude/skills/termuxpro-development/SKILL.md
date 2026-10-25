@@ -37,5 +37,15 @@ Goal 规则：TermuxPro 日常维护是长期持久 Goal。单个切片完成后
 自动 PR 规则：研发 PR 合并且 dev 收尾 CI 成功后，仍必须等待对应 `auto-dev-pr.yml` 控制器自身完成，
 再对齐 `dev_dailyIteration` 到最新 `dev`，避免 concurrency 取消旧 run 并制造 cancelled 噪声。
 
-发布节奏：以 `.agents/skills/termuxpro-development/SKILL.md` 为准，稳定版发布要克制但不断档；长期
-维护期间每周至少做一次发布评审，满足稳定和价值条件时必须推进候选/正式发布，不能长期只迭代不发包。
+发布节奏：以 `.agents/skills/termuxpro-development/SKILL.md` 为准，稳定版发布要克制但不断档；克制
+发布不是停止发布，少发版不是不发版。长期维护期间每周至少做一次稳定版发布窗口评审；稳定版发布 SLA
+为最近稳定 Release 后 7 天内必须给出 `RELEASED` 或有证据的 `HOLD`。默认期望是一周至少发布一版正式
+稳定包；满足稳定和价值条件时必须推进候选/正式发布，不能用“用户要求别太频繁”解释为长期不发正式版；
+未满足时必须在 backlog 或发布评审报告中记录 `HOLD` 原因、责任角色、解除条件和下次复评时间。本周已
+发布时记录最新稳定版、下次最晚复评日期和不重复发版依据。最近稳定版接近或超过 7 天且没有落盘 `HOLD`
+时，应优先复核发布条件或启动发布列车，不能长期只迭代不发包。每轮日常迭代开头都要检查最新稳定
+Release 年龄：满 5 天进入发布预警，满 7 天没有 `RELEASED/HOLD` 结论时禁止继续普通切片；如果连续几天
+评审未发现 P0/P1 且已累计用户可感知价值，必须推进一周至少一次正式稳定版发布。
+
+发布通知：候选/正式 Release 通知同样以 `.agents/skills/termuxpro-development/SKILL.md` 为准，必须用
+`scripts/termuxpro-release-notification.sh` 生成结构化内容，并包含重点体验场景，禁止只发送笼统上架消息。

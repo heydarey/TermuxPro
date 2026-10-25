@@ -86,6 +86,33 @@ public final class ProjectTasksActivityTest {
     }
 
     @Test
+    public void emptyProjectTasksOfferCustomCommandTemplatesWithoutRunningRemoteCommands()
+        throws Exception {
+        ProjectTasksActivity activity = Robolectric.buildActivity(ProjectTasksActivity.class,
+            ProjectTasksActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/project", OWNER))
+            .setup().get();
+
+        Method showEmpty = ProjectTasksActivity.class.getDeclaredMethod("showEmpty");
+        showEmpty.setAccessible(true);
+        showEmpty.invoke(activity);
+
+        assertTrue(((TextView) activity.findViewById(R.id.project_tasks_status)).getText()
+            .toString().contains("快捷指令模板"));
+        assertEquals(View.GONE, activity.findViewById(R.id.project_tasks_recovery_button)
+            .getVisibility());
+        View templates = activity.findViewById(R.id.project_tasks_custom_commands_button);
+        assertEquals(View.VISIBLE, templates.getVisibility());
+        assertEquals("打开快捷指令与模板", ((Button) templates).getText().toString());
+
+        templates.performClick();
+
+        Intent intent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(intent);
+        assertEquals(CustomCommandsActivity.class.getName(), intent.getComponent().getClassName());
+    }
+
+    @Test
     public void taskSessionSummaryHighlightsOnlyCurrentWorkspaceTasks() {
         String current = WorkspaceCommandBuilder.workspaceFingerprint(
             "hdr@192.168.1.153", 22, "~/project");

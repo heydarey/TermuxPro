@@ -11,6 +11,7 @@ output="$("$script" \
     --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
     --features $'- Git 工作台支持安全快进拉取\\n- AI 会话中心支持删除最近启动记录' \
     --fixes $'- 修复深色弹窗文字不可读\\n- 修复终端滚动误触命令历史' \
+    --scenarios $'- 手机 SSH 到远程项目后检查 Git 状态\\n- 从 AI 会话中心启动 Claude/Codex 并处理本地记录' \
     --known-limits '模拟器可覆盖 Android 通用行为，厂商 ROM 差异仍需后续样本补充。' \
     --gates 'CI、模拟器 UI、Release 签名 APK 校验均通过。' \
     --action '可下载正式包体验；如遇 SSH/AI CLI 场景问题，保留脱敏截图或步骤。')"
@@ -23,13 +24,15 @@ required_patterns=(
     'APK SHA-256：0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
     '新增能力：'
     '修复问题：'
+    '重点体验场景：'
+    '- 手机 SSH 到远程项目后检查 Git 状态'
     '已知限制：'
     '验收状态：'
     '需要你做什么：'
 )
 
 for pattern in "${required_patterns[@]}"; do
-    if ! grep -Fq "$pattern" <<<"$output"; then
+    if ! grep -Fq -- "$pattern" <<<"$output"; then
         echo "发布通知缺少结构化字段：$pattern" >&2
         exit 1
     fi
@@ -48,6 +51,7 @@ if "$script" \
     --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
     --features '-' \
     --fixes '-' \
+    --scenarios '-' \
     --known-limits '-' \
     --gates '-' \
     --action '-' >/tmp/termuxpro-notification-kind.log 2>&1; then

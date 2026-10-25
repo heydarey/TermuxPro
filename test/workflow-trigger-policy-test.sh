@@ -176,6 +176,16 @@ if ! grep -Fq '查询 GitHub Actions 超时或失败' "$auto_dev_pr_file"; then
     echo "自动研发 PR 工作流等待 CI 时必须容忍短暂查询失败，不能把 GitHub API 抖动误判成项目失败。" >&2
     exit 1
 fi
+if ! grep -Fq 'checks: read' "$auto_dev_pr_file" \
+    || ! grep -Fq 'wait_for_check_run()' "$auto_dev_pr_file" \
+    || ! grep -Fq 'commits/$target_sha/check-runs?check_name=$check_name' "$auto_dev_pr_file" \
+    || ! grep -Fq "echo 'test'" "$auto_dev_pr_file" \
+    || ! grep -Fq "echo 'emulator-ui'" "$auto_dev_pr_file" \
+    || ! grep -Fq 'GitHub Checks 兜底' "$auto_dev_pr_file" \
+    || ! grep -Fq "return 2" "$auto_dev_pr_file"; then
+    echo "自动研发 PR 等待 workflow run 时必须有 GitHub Checks 兜底，避免 CI/UI 已绿但 run list 刷新或分支匹配异常导致控制器空等。" >&2
+    exit 1
+fi
 if grep -Fq 'pulls/$pr_number/merge" \' "$auto_dev_pr_file" \
     && grep -Fq -- '--jq' <(grep -A6 'pulls/$pr_number/merge" \\' "$auto_dev_pr_file"); then
     echo "自动研发 PR 合并不能直接对 Pulls merge API 响应使用 --jq，空响应会误报失败。" >&2

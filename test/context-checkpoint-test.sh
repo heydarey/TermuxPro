@@ -18,6 +18,7 @@ for required in \
     "scripts/codex-quota-guard.sh" \
     "scripts/resource-guard.sh" \
     "scripts/github-cli.sh" \
+    "scripts/release-window-guard.sh" \
     "docs/CURRENT_STATE.md" \
     "tmux kill-server" \
     "origin/dev"; do
@@ -34,9 +35,15 @@ for required in \
     "代码状态" \
     "额度与资源" \
     "GitHub 状态" \
+    "稳定版发布窗口" \
     "恢复步骤" \
     "安全红线" \
-    "总剩余额度低于 15%"; do
+    "总剩余额度低于 15%" \
+    "若稳定版已满 5 天，优先做发布评审" \
+    "若已满" \
+    "7 天，先发布正式版或落盘有证据的 HOLD" \
+    "少发版不是不发版" \
+    "一周至少一次正式稳定版发布"; do
     if ! grep -Fq "$required" <<<"$checkpoint"; then
         echo "上下文检查点输出缺少关键段落：$required" >&2
         exit 1

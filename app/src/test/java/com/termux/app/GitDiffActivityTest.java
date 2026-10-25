@@ -77,6 +77,8 @@ public final class GitDiffActivityTest {
             remote.getButton(AlertDialog.BUTTON_NEGATIVE).getCurrentTextColor());
         assertTrue(((TextView) remote.findViewById(android.R.id.message)).getText().toString()
             .contains("2 个未提交文件"));
+        assertTrue(((TextView) remote.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         branches.getListView().performItemClick(branches.getListView().getAdapter()
                 .getView(1, null, branches.getListView()), 1,
             branches.getListView().getAdapter().getItemId(1));
@@ -93,6 +95,37 @@ public final class GitDiffActivityTest {
             confirmDelete.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
         assertTrue(((TextView) confirmDelete.findViewById(android.R.id.message)).getText()
             .toString().contains("不会删除远端分支"));
+        assertTrue(((TextView) confirmDelete.findViewById(android.R.id.message)).getText()
+            .toString().contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+    }
+
+    @Test
+    public void switchBranchDialogShowsTargetContextWhenWorktreeIsClean() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n"
+                + "TP_LOCAL\tdev\n"
+                + "TP_LOCAL\tmobile-ui\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+        activity.showOverviewForTesting("~/repo", intent.getStringExtra(
+            GitDiffActivity.EXTRA_UI_TEST_OVERVIEW));
+
+        AlertDialog branches = activity.createBranchesDialog();
+        assertNotNull(branches);
+        activity.showStyledDialog(branches);
+        shadowOf(Looper.getMainLooper()).idle();
+        branches.getListView().performItemClick(branches.getListView().getAdapter()
+                .getView(1, null, branches.getListView()), 1,
+            branches.getListView().getAdapter().getItemId(1));
+
+        AlertDialog confirmSwitch = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(confirmSwitch);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) confirmSwitch.findViewById(android.R.id.message)).getText()
+            .toString().contains("从 dev 切换到 mobile-ui"));
+        assertTrue(((TextView) confirmSwitch.findViewById(android.R.id.message)).getText()
+            .toString().contains("目标：hdr@192.168.1.153:22 · ~/repo"));
     }
 
     @Test
@@ -114,6 +147,8 @@ public final class GitDiffActivityTest {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
         assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
             .contains("2 个未提交文件"));
+        assertTrue(((TextView) dialog.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
 
         EditText input = dialog.findViewById(android.R.id.edit);
         assertNotNull(input);
@@ -122,6 +157,37 @@ public final class GitDiffActivityTest {
         assertNotNull(input.getError());
         assertTrue(dialog.isShowing());
         dialog.dismiss();
+    }
+
+    @Test
+    public void indexActionDialogsShowTargetContext() {
+        Intent intent = GitDiffActivity.newIntent(RuntimeEnvironment.getApplication(),
+                "hdr@192.168.1.153", 22, "~/repo")
+            .putExtra(GitDiffActivity.EXTRA_UI_TEST_OVERVIEW, "TP_OVERVIEW\tdev\t0\t3\t2\t1\t\t\t0\n"
+                + "TP_LOCAL\tdev\n");
+        GitDiffActivity activity = Robolectric.buildActivity(GitDiffActivity.class, intent)
+            .setup().get();
+
+        Button stageButton = activity.findViewById(R.id.git_overview_stage_all_button);
+        stageButton.performClick();
+        AlertDialog stage = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(stage);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) stage.findViewById(android.R.id.message)).getText().toString()
+            .contains("1 个未暂存/未跟踪文件"));
+        assertTrue(((TextView) stage.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        stage.dismiss();
+
+        Button unstageButton = activity.findViewById(R.id.git_overview_unstage_all_button);
+        unstageButton.performClick();
+        AlertDialog unstage = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(unstage);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(((TextView) unstage.findViewById(android.R.id.message)).getText().toString()
+            .contains("2 个已暂存文件"));
+        assertTrue(((TextView) unstage.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
     }
 
     @Test
@@ -141,7 +207,8 @@ public final class GitDiffActivityTest {
         assertTrue(stateSummary.getText().toString().contains("共 3 个改动文件"));
         assertTrue(stateSummary.getText().toString().contains("已暂存 2、未暂存 1"));
         assertTrue(stateSummary.getText().toString().contains("已跟踪 origin/dev"));
-        assertTrue(stateSummary.getText().toString().contains("推荐动作"));
+        assertTrue(stateSummary.getText().toString().contains("当前状态"));
+        assertTrue(!stateSummary.getText().toString().contains("推荐动作"));
         assertEquals(stateSummary.getText().toString(),
             stateSummary.getContentDescription().toString());
         assertTrue(index.getText().toString().contains("已暂存 2"));
@@ -155,12 +222,19 @@ public final class GitDiffActivityTest {
         assertTrue(((Button) activity.findViewById(R.id.git_overview_stage_all_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        Button filesButton = activity.findViewById(R.id.git_overview_files_button);
+        assertTrue(!filesButton.isEnabled());
+        assertTrue(filesButton.getContentDescription().toString()
+            .contains("没有返回文件级改动"));
         assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
             .getVisibility());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_stash_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_stashes_button)).isEnabled());
+        Button stashesButton = activity.findViewById(R.id.git_overview_stashes_button);
+        assertTrue(!stashesButton.isEnabled());
+        assertEquals("Stash 列表", stashesButton.getText().toString());
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("没有 stash 记录"));
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n"
             + "TP_LOCAL\tdev\n"
@@ -170,16 +244,42 @@ public final class GitDiffActivityTest {
         assertTrue(((Button) activity.findViewById(R.id.git_overview_push_button)).isEnabled());
         assertTrue(((Button) activity.findViewById(R.id.git_overview_delete_branch_button)).isEnabled());
         assertTrue(!((Button) activity.findViewById(R.id.git_overview_stash_button)).isEnabled());
-        assertTrue(((Button) activity.findViewById(R.id.git_overview_stashes_button)).isEnabled());
+        assertTrue(stashesButton.isEnabled());
+        assertEquals("1 条 Stash", stashesButton.getText().toString());
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("查看当前仓库的 1 条 stash"));
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("应用但保留"));
+        assertTrue(stashesButton.getContentDescription().toString()
+            .contains("只删除选中的单条 stash"));
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_fetch_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_pull_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_push_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_stage_all_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_unstage_all_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_commit_button)).isEnabled());
-        assertTrue(!((Button) activity.findViewById(R.id.git_overview_files_button)).isEnabled());
+        Button fetchButton = activity.findViewById(R.id.git_overview_fetch_button);
+        Button pullButton = activity.findViewById(R.id.git_overview_pull_button);
+        Button pushButton = activity.findViewById(R.id.git_overview_push_button);
+        Button stageButton = activity.findViewById(R.id.git_overview_stage_all_button);
+        Button unstageButton = activity.findViewById(R.id.git_overview_unstage_all_button);
+        Button commitButton = activity.findViewById(R.id.git_overview_commit_button);
+        Button stashButton = activity.findViewById(R.id.git_overview_stash_button);
+        Button deleteBranchButton = activity.findViewById(R.id.git_overview_delete_branch_button);
+        assertTrue(!fetchButton.isEnabled());
+        assertTrue(fetchButton.getContentDescription().toString().contains("没有配置上游"));
+        assertTrue(!pullButton.isEnabled());
+        assertTrue(pullButton.getContentDescription().toString().contains("落后上游"));
+        assertTrue(!pushButton.isEnabled());
+        assertTrue(pushButton.getContentDescription().toString().contains("才能推送"));
+        assertTrue(!stageButton.isEnabled());
+        assertTrue(stageButton.getContentDescription().toString().contains("没有未暂存"));
+        assertTrue(!unstageButton.isEnabled());
+        assertTrue(unstageButton.getContentDescription().toString().contains("没有已暂存"));
+        assertTrue(!commitButton.isEnabled());
+        assertTrue(commitButton.getContentDescription().toString().contains("不能提交"));
+        assertTrue(!stashButton.isEnabled());
+        assertTrue(stashButton.getContentDescription().toString().contains("没有改动"));
+        assertTrue(!deleteBranchButton.isEnabled());
+        assertTrue(deleteBranchButton.getContentDescription().toString()
+            .contains("没有可安全删除"));
+        assertTrue(!filesButton.isEnabled());
         assertEquals(View.GONE, activity.findViewById(R.id.git_overview_review_actions)
             .getVisibility());
     }
@@ -351,6 +451,9 @@ public final class GitDiffActivityTest {
         primary.performClick();
         assertEquals("快进拉取", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
             .toString());
+        assertTrue(((TextView) ShadowAlertDialog.getLatestAlertDialog()
+            .findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         ShadowAlertDialog.getLatestAlertDialog().dismiss();
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t2\t0\t1\torigin/dev\n");
@@ -358,6 +461,9 @@ public final class GitDiffActivityTest {
         primary.performClick();
         assertEquals("推送", shadowOf(ShadowAlertDialog.getLatestAlertDialog()).getTitle()
             .toString());
+        assertTrue(((TextView) ShadowAlertDialog.getLatestAlertDialog()
+            .findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
         ShadowAlertDialog.getLatestAlertDialog().dismiss();
 
         activity.showOverviewForTesting("~/repo", "TP_OVERVIEW\tdev\t0\t0\t0\t0\t\t\t0\n");
@@ -449,8 +555,11 @@ public final class GitDiffActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertEquals(dirty.getString(R.string.git_workbench_stash_save_action),
             stash.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
-        assertTrue(((TextView) stash.findViewById(android.R.id.message)).getText().toString()
-            .contains("不会提交，也不会推送"));
+        String stashMessage = ((TextView) stash.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(stashMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(stashMessage.contains("当前分支：dev"));
+        assertTrue(stashMessage.contains("不会提交，也不会推送"));
         ((EditText) stash.findViewById(android.R.id.edit)).setText("bad\nstash");
         stash.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         assertNotNull(((EditText) stash.findViewById(android.R.id.edit)).getError());
@@ -459,6 +568,7 @@ public final class GitDiffActivityTest {
         AlertDialog stashes = dirty.createStashesDialog();
         assertNotNull(stashes);
         dirty.showStyledDialog(stashes);
+        assertEquals("Stash 列表（1）", shadowOf(stashes).getTitle().toString());
         assertEquals(1, stashes.getListView().getAdapter().getCount());
         assertTrue(stashes.getListView().getAdapter().getItem(0).toString()
             .contains("WIP mobile flow"));
@@ -479,8 +589,13 @@ public final class GitDiffActivityTest {
         clean.confirmApplyStash(entry);
         AlertDialog apply = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(apply);
-        assertTrue(((TextView) apply.findViewById(android.R.id.message)).getText()
-            .toString().contains("stash 会保留"));
+        assertEquals(clean.getString(R.string.git_workbench_stash_apply_action),
+            apply.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        String applyMessage = ((TextView) apply.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(applyMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(applyMessage.contains("当前分支：dev"));
+        assertTrue(applyMessage.contains("stash 会保留"));
         apply.dismiss();
 
         clean.confirmDropStash(entry);
@@ -491,8 +606,19 @@ public final class GitDiffActivityTest {
             drop.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         assertEquals(clean.getColor(R.color.tp_danger),
             drop.getButton(AlertDialog.BUTTON_POSITIVE).getCurrentTextColor());
-        assertTrue(((TextView) drop.findViewById(android.R.id.message)).getText()
-            .toString().contains("不触碰工作树和远端仓库"));
+        String dropMessage = ((TextView) drop.findViewById(android.R.id.message)).getText()
+            .toString();
+        assertTrue(dropMessage.contains("目标：hdr@192.168.1.153:22 · ~/repo"));
+        assertTrue(dropMessage.contains("当前分支：dev"));
+        assertTrue(dropMessage.contains("不触碰工作树和远端仓库"));
+
+        clean.showStashActionsForTesting(entry);
+        AlertDialog actions = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(actions);
+        assertEquals("应用但保留", actions.getListView().getAdapter().getItem(0)
+            .toString());
+        assertEquals("删除这一条", actions.getListView().getAdapter().getItem(1)
+            .toString());
     }
 
     @Test
@@ -528,6 +654,8 @@ public final class GitDiffActivityTest {
             actions.getListView().getAdapter().getItem(0).toString());
         assertEquals(activity.getString(R.string.git_workbench_unstage_file_action),
             actions.getListView().getAdapter().getItem(1).toString());
+        assertTrue(((TextView) actions.findViewById(android.R.id.message)).getText().toString()
+            .contains("目标：hdr@192.168.1.153:22 · ~/repo"));
     }
 
     @Test

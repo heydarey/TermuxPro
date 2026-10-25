@@ -62,11 +62,21 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_next_hint).contains("运行项目任务"));
         assertEquals("TermuxPro 本地启动记录", text(activity, R.id.ai_cli_center_history_title));
         assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不是 Claude/Codex 历史库"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取私有历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_hint).contains("不读取 Claude/Codex 私有历史"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("未选择工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不会猜测服务器"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("请先选择有效工作区"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("先回到“服务器与项目”"));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "当前没有有效远程工作区");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不会猜服务器");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "不会删除 Claude/Codex 远端历史");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "未选择有效工作区");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "不能清空本地启动记录");
         assertTrue(text(activity, R.id.ai_cli_center_claude_commands).contains("claude --resume"));
         assertTrue(text(activity, R.id.ai_cli_center_codex_commands).contains("codex resume"));
         assertEquals("新开 SSH 跑 Claude", text(activity, R.id.ai_cli_center_claude_new));
@@ -112,6 +122,14 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_scope)
             .contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(text(activity, R.id.ai_cli_center_history_scope).contains("不跨工作区"));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "当前工作区“远程开发”还没有 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "没有本地启动记录可删除");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "没有本地启动记录可查看");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "没有本地启动记录可清空");
         assertDescription(activity, R.id.ai_cli_center_open_workspace,
             "只修改本地工作区连接信息");
         assertDescription(activity, R.id.ai_cli_center_open_templates,
@@ -311,6 +329,31 @@ public class AiCliSessionCenterActivityTest {
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary)
+            .contains("目标已变化：不会直接再次打开"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step)
+            .contains("目标已变化，请先检查工作区"));
+        assertEquals("处理过期记录：Claude Code · 新建会话",
+            text(activity, R.id.ai_cli_center_repeat_last));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "最近本地记录目标已变化");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不会启动 Claude/Codex");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "目标已变化记录会被阻止直接启动");
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
+        assertTrue(list.getListView().getAdapter().getItem(0).toString()
+            .contains("目标已变化：不会直接再次打开"));
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        AlertDialog changedFromList = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(changedFromList);
+        assertEquals("工作区目标已变化", shadowOf(changedFromList).getTitle());
+        changedFromList.dismiss();
+
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
 
         assertNull(shadowOf(activity).getNextStartedActivity());
@@ -320,6 +363,7 @@ public class AiCliSessionCenterActivityTest {
         String message = ((TextView) changed.findViewById(android.R.id.message))
             .getText().toString();
         assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("本地记录时间："));
         assertTrue(message.contains("记录目标："));
         assertTrue(message.contains("hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("当前目标："));
@@ -339,6 +383,51 @@ public class AiCliSessionCenterActivityTest {
         changed = ShadowAlertDialog.getLatestAlertDialog();
         changed.getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
         shadowOf(Looper.getMainLooper()).idle();
+        assertTrue(text(activity, R.id.ai_cli_center_history_summary)
+            .contains("还没有 TermuxPro 本地启动记录"));
+    }
+
+    @Test
+    public void clearHistoryDisclosesStaleTargetsBeforeDeletingLocalRecords() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.154\",\"port\":\"22\",\"path\":\"~/other-project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.153", 22,
+                "~/project"),
+            AiCliLaunchCommand.Tool.CLAUDE, AiCliLaunchCommand.Mode.NEW_SESSION);
+        store.record(new WorkspaceTarget("workspace-a", "远程开发", "hdr@192.168.1.154", 22,
+                "~/other-project"),
+            AiCliLaunchCommand.Tool.CODEX, AiCliLaunchCommand.Mode.PICK_HISTORY);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        assertEquals("清空 2 条记录（含 1 条过期）",
+            text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "其中 1 条目标已变化");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "只删除本机本 App 记录");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "不会删除 Claude/Codex 远端历史");
+
+        activity.findViewById(R.id.ai_cli_center_clear_history).performClick();
+        AlertDialog confirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(confirm);
+        assertEquals("清空当前工作区的本地启动记录？", shadowOf(confirm).getTitle());
+        String message = ((TextView) confirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("2 条本地启动记录"));
+        assertTrue(message.contains("其中 1 条目标已变化"));
+        assertTrue(message.contains("当前目标：hdr@192.168.1.154:22 · ~/other-project"));
+        assertTrue(message.contains("只是本机本 App 的入口记录"));
+        assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
+        confirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
         assertTrue(text(activity, R.id.ai_cli_center_history_summary)
             .contains("还没有 TermuxPro 本地启动记录"));
     }
@@ -366,11 +455,31 @@ public class AiCliSessionCenterActivityTest {
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地记录时间："));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("本地最近 2 条入口记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("可再次打开上次 Codex CLI · 历史选择 入口"));
-        assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("不会删除远端 AI 历史"));
+        assertTrue(text(activity, R.id.ai_cli_center_history_next_step)
+            .contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("再次打开：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除本地记录：Codex CLI · 历史选择",
             text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空 2 条本地记录",
+            text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "再次打开最近本地记录：Codex CLI · 历史选择");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不自动进入 tmux");
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "不读取 Claude/Codex 远端历史");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "只删除 TermuxPro 本地记录");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "远程开发");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "目标已变化记录会被阻止直接启动");
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "远程开发");
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "2 条 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "hdr@192.168.1.153:22 · ~/project");
+        assertDescription(activity, R.id.ai_cli_center_clear_history, "不会删除 Claude/Codex 远端历史");
 
         activity.findViewById(R.id.ai_cli_center_delete_latest).performClick();
         AlertDialog deleteConfirm = ShadowAlertDialog.getLatestAlertDialog();
@@ -399,8 +508,26 @@ public class AiCliSessionCenterActivityTest {
             text(activity, R.id.ai_cli_center_repeat_last));
         assertEquals("删除本地记录：Claude Code · 新建会话",
             text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空 1 条本地记录",
+            text(activity, R.id.ai_cli_center_clear_history));
 
         activity.findViewById(R.id.ai_cli_center_repeat_last).performClick();
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(repeatConfirm);
+        assertEquals("再次打开 Claude Code？", shadowOf(repeatConfirm).getTitle());
+        String repeatMessage = ((TextView) repeatConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(repeatMessage.contains("Claude Code · 新建会话"));
+        assertTrue(repeatMessage.contains("本地记录时间："));
+        assertTrue(repeatMessage.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(repeatMessage.contains("执行命令：claude"));
+        assertTrue(repeatMessage.contains("不会自动进入 tmux"));
+        assertTrue(repeatMessage.contains("共享账号"));
+        assertEquals("确认打开",
+            repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
         Intent repeated = shadowOf(activity).getNextStartedActivity();
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
@@ -414,6 +541,7 @@ public class AiCliSessionCenterActivityTest {
             .getText().toString();
         assertTrue(message.contains("远程开发"));
         assertTrue(message.contains("2 条本地启动记录"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
         assertTrue(message.contains("不会删除 Claude/Codex 远端历史"));
         assertEquals("清空本地记录",
             confirm.getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
@@ -426,7 +554,17 @@ public class AiCliSessionCenterActivityTest {
         shadowOf(Looper.getMainLooper()).idle();
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还没有 TermuxPro 本地启动记录"));
         assertTrue(text(activity, R.id.ai_cli_center_history_next_step).contains("如果要开始新任务"));
-        assertEquals("重复上次", text(activity, R.id.ai_cli_center_repeat_last));
+        assertEquals("再次打开最近本地记录", text(activity, R.id.ai_cli_center_repeat_last));
+        assertEquals("删除最近本地记录", text(activity, R.id.ai_cli_center_delete_latest));
+        assertEquals("清空本地记录", text(activity, R.id.ai_cli_center_clear_history));
+        assertDescription(activity, R.id.ai_cli_center_repeat_last,
+            "还没有 TermuxPro 本地启动记录");
+        assertDescription(activity, R.id.ai_cli_center_delete_latest,
+            "不会删除 Claude/Codex 远端历史");
+        assertDescription(activity, R.id.ai_cli_center_manage_history,
+            "没有本地启动记录可查看");
+        assertDescription(activity, R.id.ai_cli_center_clear_history,
+            "没有本地启动记录可清空");
 
         activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
         AlertDialog empty = ShadowAlertDialog.getLatestAlertDialog();
@@ -478,7 +616,7 @@ public class AiCliSessionCenterActivityTest {
         AiCliSessionCenterActivity activity = Robolectric.buildActivity(
             AiCliSessionCenterActivity.class).setup().get();
 
-        assertEquals("查看全部记录", text(activity, R.id.ai_cli_center_manage_history));
+        assertEquals("查看 4 条本地记录", text(activity, R.id.ai_cli_center_manage_history));
         assertTrue(activity.findViewById(R.id.ai_cli_center_manage_history).getContentDescription()
             .toString().contains("再次打开或删除"));
         assertTrue(text(activity, R.id.ai_cli_center_history_summary).contains("还有 1 条已折叠"));
@@ -584,6 +722,61 @@ public class AiCliSessionCenterActivityTest {
         assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
         assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
             .contains("exec codex resume"));
+    }
+
+    @Test
+    public void confirmsSelectedNewSessionRecordBeforeOpeningFromManageDialog() {
+        RuntimeEnvironment.getApplication().getSharedPreferences(
+            WorkspaceTargetStore.PREFERENCES_NAME, Context.MODE_PRIVATE).edit()
+            .putString(WorkspaceTargetStore.KEY_PROFILES,
+                "[{\"id\":\"workspace-a\",\"name\":\"远程开发\",\"host\":\"hdr@192.168.1.153\",\"port\":\"22\",\"path\":\"~/project\",\"remotePort\":\"5173\",\"localPort\":\"5173\"}]")
+            .putString(WorkspaceTargetStore.KEY_ACTIVE_PROFILE, "workspace-a")
+            .commit();
+        AiLaunchHistoryStore store = new AiLaunchHistoryStore(RuntimeEnvironment.getApplication());
+        WorkspaceTarget workspace = new WorkspaceTarget("workspace-a", "远程开发",
+            "hdr@192.168.1.153", 22, "~/project");
+        store.record(workspace, AiCliLaunchCommand.Tool.CLAUDE,
+            AiCliLaunchCommand.Mode.NEW_SESSION);
+        AiCliSessionCenterActivity activity = Robolectric.buildActivity(
+            AiCliSessionCenterActivity.class).setup().get();
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        AlertDialog list = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(list);
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        AlertDialog action = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(action);
+        action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertNull(shadowOf(activity).getNextStartedActivity());
+        AlertDialog repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(repeatConfirm);
+        assertEquals("再次打开 Claude Code？", shadowOf(repeatConfirm).getTitle());
+        String message = ((TextView) repeatConfirm.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(message.contains("Claude Code · 新建会话"));
+        assertTrue(message.contains("执行命令：claude"));
+        assertTrue(message.contains("目标：hdr@192.168.1.153:22 · ~/project"));
+        repeatConfirm.getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+        assertNull(shadowOf(activity).getNextStartedActivity());
+
+        activity.findViewById(R.id.ai_cli_center_manage_history).performClick();
+        list = ShadowAlertDialog.getLatestAlertDialog();
+        list.getListView().performItemClick(null, 0,
+            list.getListView().getAdapter().getItemId(0));
+        action = ShadowAlertDialog.getLatestAlertDialog();
+        action.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        repeatConfirm = ShadowAlertDialog.getLatestAlertDialog();
+        repeatConfirm.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        Intent repeated = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(repeated);
+        assertEquals(TermuxActivity.class.getName(), repeated.getComponent().getClassName());
+        assertTrue(repeated.getStringExtra(TermuxActivity.EXTRA_STARTUP_COMMAND)
+            .contains("exec claude"));
     }
 
     @Test

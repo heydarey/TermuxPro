@@ -223,8 +223,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         ((TextView) row.findViewById(R.id.custom_command_name)).setText(command.name);
         ((TextView) row.findViewById(R.id.custom_command_state)).setText(command.enabled
             ? R.string.custom_commands_enabled_state : R.string.custom_commands_disabled_state);
-        String directory = TextUtils.isEmpty(command.workingDirectory)
-            ? getString(R.string.custom_commands_default_directory) : command.workingDirectory;
+        String directory = displayDirectory(command);
+        String executionDirectory = executionDirectory(command);
         String targetSummary = getString(R.string.custom_commands_summary, group, directory,
             mTarget.host, mTarget.port);
         ((TextView) row.findViewById(R.id.custom_command_summary)).setText(targetSummary);
@@ -236,7 +236,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         row.findViewById(R.id.custom_command_run).setContentDescription(getString(
             requiresPreview ? R.string.custom_commands_run_description
                 : R.string.custom_commands_run_now_description,
-            command.name, mTarget.host, mTarget.port, directory));
+            command.name, mTarget.host, mTarget.port, executionDirectory));
         row.findViewById(R.id.custom_command_manage).setContentDescription(getString(
             R.string.custom_commands_manage_description, command.name));
         row.findViewById(R.id.custom_command_run).setEnabled(command.enabled);
@@ -336,12 +336,15 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 getString(R.string.custom_commands_export),
                 getString(R.string.custom_commands_import)
             };
+        String targetSummary = getString(R.string.custom_commands_target_details,
+            mTarget.host, mTarget.port, mTarget.path);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(commands.isEmpty() ? R.string.custom_commands_import_backup_title
                 : R.string.custom_commands_backup_title)
             .setMessage(commands.isEmpty()
-                ? getString(R.string.custom_commands_import_backup_message)
-                : getString(R.string.custom_commands_backup_message, commands.size()))
+                ? getString(R.string.custom_commands_import_backup_message, targetSummary)
+                : getString(R.string.custom_commands_backup_message,
+                    commands.size(), targetSummary))
             .setItems(labels, (selectionDialog, which) -> {
                 if (!commands.isEmpty() && which == 0) {
                     exportCommands();
@@ -413,19 +416,21 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         if (clipboard == null || clipboard.getPrimaryClip() == null
             || clipboard.getPrimaryClip().getItemCount() == 0) {
-            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard,
+                importTargetSummary());
             return;
         }
         CharSequence clip = clipboard.getPrimaryClip().getItemAt(0).coerceToText(this);
         if (clip == null || TextUtils.isEmpty(clip.toString().trim())) {
-            showActionFeedback(R.string.custom_commands_import_empty_clipboard);
+            showActionFeedback(R.string.custom_commands_import_empty_clipboard,
+                importTargetSummary());
             return;
         }
         try {
             ImportedCommands imported = parseImportJson(clip.toString());
             confirmImport(imported);
         } catch (JSONException error) {
-            showActionFeedback(R.string.custom_commands_import_invalid);
+            showActionFeedback(R.string.custom_commands_import_invalid, importTargetSummary());
         }
     }
 
@@ -624,7 +629,8 @@ public final class CustomCommandsActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.custom_commands_template_title)
-            .setMessage(R.string.custom_commands_template_message)
+            .setMessage(getString(R.string.custom_commands_template_message_target,
+                importTargetSummary()))
             .setItems(labels, (selectionDialog, which) -> showEditor(null, templates[which]))
             .setNegativeButton(android.R.string.cancel, null)
             .create();
@@ -639,8 +645,7 @@ public final class CustomCommandsActivity extends AppCompatActivity {
                 .create());
             return;
         }
-        String directory = TextUtils.isEmpty(command.workingDirectory)
-            ? mTarget.path : command.workingDirectory;
+        String directory = executionDirectory(command);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(getString(R.string.custom_commands_preview_title, command.name))
             .setMessage(getString(R.string.custom_commands_preview_message, mTarget.host,
@@ -659,6 +664,18 @@ public final class CustomCommandsActivity extends AppCompatActivity {
             .putExtra(TermuxActivity.EXTRA_STARTUP_COMMAND, startup)
             .putExtra(TermuxActivity.EXTRA_NEW_SESSION, true);
         startActivity(intent);
+    }
+
+    @NonNull
+    private String displayDirectory(@NonNull CustomCommand command) {
+        return TextUtils.isEmpty(command.workingDirectory)
+            ? getString(R.string.custom_commands_default_directory)
+            : command.workingDirectory;
+    }
+
+    @NonNull
+    private String executionDirectory(@NonNull CustomCommand command) {
+        return TextUtils.isEmpty(command.workingDirectory) ? mTarget.path : command.workingDirectory;
     }
 
     private void confirmDelete(CustomCommand command) {

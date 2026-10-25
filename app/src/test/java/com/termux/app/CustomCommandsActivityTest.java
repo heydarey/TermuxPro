@@ -85,6 +85,17 @@ public class CustomCommandsActivityTest {
         assertEquals(R.string.custom_commands_template_hint_compact,
             CustomCommandsActivity.templateHintResForFontScale(1.5f));
 
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        AlertDialog importDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertEquals(activity.getString(R.string.custom_commands_import_backup_title),
+            shadowOf(importDialog).getTitle());
+        String importMessage = ((TextView) importDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(importMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(importMessage.contains("确认前不会保存，也不会执行远端命令"));
+        importDialog.dismiss();
+
         activity.findViewById(R.id.custom_commands_add).performClick();
         shadowOf(Looper.getMainLooper()).idle();
         AlertDialog dialog = ShadowAlertDialog.getLatestAlertDialog();
@@ -143,6 +154,11 @@ public class CustomCommandsActivityTest {
         AlertDialog actionDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertEquals(activity.getString(R.string.custom_commands_backup_title),
             shadowOf(actionDialog).getTitle());
+        String backupMessage = ((TextView) actionDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(backupMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(backupMessage.contains("当前工作区有 2 条快捷指令"));
+        assertTrue(backupMessage.contains("不会执行远端命令"));
         ListView actionList = actionDialog.getListView();
         assertEquals("复制备份 JSON", actionList.getAdapter().getItem(0).toString());
         assertEquals("从剪贴板导入 JSON", actionList.getAdapter().getItem(1).toString());
@@ -350,6 +366,37 @@ public class CustomCommandsActivityTest {
             .list("workspace-a").size());
         TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
         assertTrue(feedback.getText().toString().contains("不是有效的 TermuxPro 快捷指令备份"));
+        assertTrue(feedback.getText().toString().contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(feedback.getText().toString().contains("复制备份 JSON"));
+        assertTrue(feedback.getText().toString().contains("密码、Token、私钥"));
+        assertTrue(feedback.getText().toString().contains("本次没有保存任何指令"));
+        assertTrue(feedback.getText().toString().contains("没有执行远端命令"));
+        assertEquals(null, shadowOf(activity).getNextStartedActivity());
+    }
+
+    @Test
+    public void emptyClipboardImportExplainsRecoveryWithoutSavingOrExecuting() {
+        ClipboardManager clipboard = (ClipboardManager) RuntimeEnvironment.getApplication()
+            .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("empty", ""));
+        CustomCommandsActivity activity = Robolectric.buildActivity(
+            CustomCommandsActivity.class).setup().get();
+
+        activity.findViewById(R.id.custom_commands_backup).performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        ListView actionList = ShadowAlertDialog.getLatestAlertDialog().getListView();
+        actionList.performItemClick(actionList.getAdapter().getView(0, null, actionList), 0,
+            actionList.getAdapter().getItemId(0));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(0, new CustomCommandStore(RuntimeEnvironment.getApplication())
+            .list("workspace-a").size());
+        TextView feedback = activity.findViewById(R.id.custom_commands_action_feedback);
+        assertTrue(feedback.getText().toString().contains("剪贴板中没有可导入的快捷指令 JSON"));
+        assertTrue(feedback.getText().toString().contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(feedback.getText().toString().contains("请先从另一台设备或工作区复制"));
+        assertTrue(feedback.getText().toString().contains("不会保存内容"));
+        assertTrue(feedback.getText().toString().contains("不会执行远端命令"));
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
     }
 
@@ -374,6 +421,11 @@ public class CustomCommandsActivityTest {
         assertNotNull(templateDialog);
         assertEquals(activity.getString(R.string.custom_commands_template_title),
             shadowOf(templateDialog).getTitle());
+        String templateMessage = ((TextView) templateDialog.findViewById(android.R.id.message))
+            .getText().toString();
+        assertTrue(templateMessage.contains("当前目标：hdr@192.168.1.153:22 · ~/project"));
+        assertTrue(templateMessage.contains("保存前不会落盘"));
+        assertTrue(templateMessage.contains("选择模板也不会执行命令"));
         ListView listView = templateDialog.getListView();
         assertTrue(listView.getAdapter().getCount() >= 8);
         assertEquals("Codex：新建独立会话", listView.getAdapter().getItem(0).toString());
@@ -424,6 +476,9 @@ public class CustomCommandsActivityTest {
             .getText().toString();
         assertTrue(message.contains("hdr@192.168.1.153:22"));
         assertTrue(message.contains("~/project"));
+        assertTrue(message.contains("新开独立 SSH 会话"));
+        assertTrue(message.contains("不会把命令输入当前终端、Claude Code 或 Codex CLI"));
+        assertTrue(message.contains("不会自动进入 tmux"));
         assertTrue(message.contains("git status --short"));
         assertEquals(null, shadowOf(activity).getNextStartedActivity());
 
@@ -453,7 +508,7 @@ public class CustomCommandsActivityTest {
                 .getText().toString());
         assertEquals(activity.getString(R.string.custom_commands_run_now),
             ((TextView) list.getChildAt(1).findViewById(R.id.custom_command_run)).getText().toString());
-        assertEquals("立即运行“查看状态”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+        assertEquals("立即运行“查看状态”；将在目标 hdr@192.168.1.153:22 的 ~/project 中新开独立 SSH 会话，不会输入当前终端或 AI TUI。",
             list.getChildAt(1).findViewById(R.id.custom_command_run)
                 .getContentDescription().toString());
         assertEquals("编辑/更多", ((TextView) list.getChildAt(1)
@@ -560,7 +615,7 @@ public class CustomCommandsActivityTest {
         assertEquals("AI 场景", ((TextView) list.getChildAt(3)).getText().toString());
         assertEquals("Codex 历史", ((TextView) list.getChildAt(4)
             .findViewById(R.id.custom_command_name)).getText().toString());
-        assertEquals("查看并运行“Codex 历史”；目标 hdr@192.168.1.153:22，目录 工作区目录。",
+        assertEquals("查看并运行“Codex 历史”；将在目标 hdr@192.168.1.153:22 的 ~/project 中新开独立 SSH 会话，不会输入当前终端或 AI TUI。",
             list.getChildAt(4).findViewById(R.id.custom_command_run)
                 .getContentDescription().toString());
         assertEquals("Git 状态", store.list("workspace-a").get(0).name);

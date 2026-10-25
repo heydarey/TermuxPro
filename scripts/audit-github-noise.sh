@@ -7,6 +7,12 @@ cd "$project_dir"
 branch_file="${TERMUXPRO_AUDIT_BRANCHES_FILE:-}"
 open_pr_file="${TERMUXPRO_AUDIT_OPEN_PRS_FILE:-}"
 release_file="${TERMUXPRO_AUDIT_RELEASES_FILE:-}"
+candidate_limit="${TERMUXPRO_AUDIT_CANDIDATE_LIMIT:-50}"
+
+if ! [[ "$candidate_limit" =~ ^[0-9]+$ ]]; then
+    echo "TERMUXPRO_AUDIT_CANDIDATE_LIMIT 必须是非负整数。" >&2
+    exit 64
+fi
 
 load_remote_branches() {
     if [[ -n "$branch_file" ]]; then
@@ -129,12 +135,55 @@ cat <<EOF
 - 稳定 Release 数：${release_stable}
 - Pre-release 数：${release_prerelease}
 
+## 治理结论
+EOF
+
+noise_reasons=()
+if (( remote_branch_count > 50 )); then
+    noise_reasons+=("远端分支超过 50 个")
+fi
+if (( stale_merged_count > 20 )); then
+    noise_reasons+=("已合并陈旧分支候选超过 20 个")
+fi
+if (( candidate_release_branch_count > 3 )); then
+    noise_reasons+=("候选发布分支超过 3 个")
+fi
+if (( release_prerelease > release_stable )); then
+    noise_reasons+=("Pre-release 数量超过稳定 Release")
+fi
+if (( release_total > 30 )); then
+    noise_reasons+=("Release 总数超过 30 个")
+fi
+
+if [[ "${#noise_reasons[@]}" -eq 0 ]]; then
+    cat <<'EOF'
+
+status=OK action=keep_current_cadence
+
+- 当前 GitHub 噪声在可维护范围内；继续复用 dev_dailyIteration，避免无必要分支和无价值预发布。
+EOF
+else
+    joined_reasons="$(IFS='；'; echo "${noise_reasons[*]}")"
+    cat <<EOF
+
+status=NOISE_HIGH action=plan_cleanup_review reason=${joined_reasons}
+
+- 下一步应先生成清理复核清单，不直接删除远端分支、标签或 Release。
+- 优先处理已合并陈旧 dev/hotfix 分支；每个候选删除前再次验证已合入 origin/dev、无打开 PR、无候选/稳定发布风险。
+- 候选发布分支单独复核对应标签、Release 和发布报告后再处理；不得和普通 dev/hotfix 分支混删。
+- 历史 Release 和附件默认保留，不删除用户可下载产物；后续通过发布窗口守卫减少无价值预发布。
+EOF
+fi
+
+cat <<'EOF'
+
 ## 规则
 
 - 本脚本只读审计，不删除远端分支、标签或 Release。
 - 永远排除 master、dev、dev_dailyIteration 和打开 PR 的 head 分支。
 - “已合并陈旧分支候选”只代表可进入人工/自治清理复核，不代表可直接删除。
 - 删除远端分支前必须再次确认分支已合入 origin/dev，且无打开 PR、无候选/稳定发布风险。
+- 默认最多展示 50 个候选，避免审计报告本身制造噪声；设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 可显示全部。
 
 ## 已合并陈旧分支候选
 EOF
@@ -144,5 +193,17 @@ if [[ "${#cleanup_candidates[@]}" -eq 0 ]]; then
     echo "当前没有可列出的候选。"
 else
     printf '\n'
-    printf -- '- %s\n' "${cleanup_candidates[@]}"
+    displayed=0
+    for candidate in "${cleanup_candidates[@]}"; do
+        if (( candidate_limit > 0 && displayed >= candidate_limit )); then
+            break
+        fi
+        printf -- '- %s\n' "$candidate"
+        ((displayed += 1))
+    done
+    remaining=$(( ${#cleanup_candidates[@]} - displayed ))
+    if (( remaining > 0 )); then
+        printf '\n'
+        printf '……另有 %d 个候选未显示；如需完整清单，设置 TERMUXPRO_AUDIT_CANDIDATE_LIMIT=0 后重跑。\n' "$remaining"
+    fi
 fi

@@ -709,7 +709,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         TextView tools = findViewById(R.id.terminal_tools_button);
         if (tools == null || mPreferences == null) return;
         boolean tuiMode = isCurrentTerminalTuiTouchScrollMode();
-        int touchModeLabel = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode);
+        boolean largeFont = getResources().getConfiguration().fontScale >= 1.5f;
+        int touchModeLabel = TerminalProjectToolsMenu.toolsButtonLabel(tuiMode, largeFont);
         int touchModeDescription = TerminalProjectToolsMenu.toolsButtonDescription(tuiMode);
         tools.setText(touchModeLabel);
         tools.setContentDescription(getString(touchModeDescription));

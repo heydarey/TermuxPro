@@ -114,8 +114,17 @@ final class TerminalProjectToolsMenu {
     }
 
     static int toolsButtonLabel(boolean tuiTouchScrollMode) {
-        return tuiTouchScrollMode ? R.string.workspace_tools_tui_scroll_action :
-            R.string.workspace_tools_scrollback_action;
+        return toolsButtonLabel(tuiTouchScrollMode, false);
+    }
+
+    /** 大字体下顶部按钮只保留模式词，完整语义交给无障碍说明，避免 200% 字体截断。 */
+    static int toolsButtonLabel(boolean tuiTouchScrollMode, boolean largeFont) {
+        if (!largeFont) {
+            return tuiTouchScrollMode ? R.string.workspace_tools_tui_scroll_action :
+                R.string.workspace_tools_scrollback_action;
+        }
+        return tuiTouchScrollMode ? R.string.workspace_tools_tui_scroll_action_compact :
+            R.string.workspace_tools_scrollback_action_compact;
     }
 
     /** 顶部工具箱按钮保持短文本，完整语义交给无障碍说明，避免小屏拥挤。 */

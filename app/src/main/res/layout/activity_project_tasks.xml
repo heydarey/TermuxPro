@@ -144,6 +144,19 @@
         android:visibility="gone"
         app:backgroundTint="#68E0B7" />
 
+    <Button
+        android:id="@+id/project_tasks_custom_commands_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:minHeight="48dp"
+        android:text="@string/project_tasks_open_custom_commands"
+        android:textAllCaps="false"
+        android:textColor="#08131C"
+        android:visibility="gone"
+        app:backgroundTint="#68E0B7" />
+
     <ListView
         android:id="@+id/project_tasks_list"
         android:layout_width="match_parent"

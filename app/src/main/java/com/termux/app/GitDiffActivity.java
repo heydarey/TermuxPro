@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -180,6 +181,9 @@ public final class GitDiffActivity extends AppCompatActivity {
         String path = getIntent().getStringExtra(EXTRA_PATH);
         int port = getIntent().getIntExtra(EXTRA_PORT, 22);
         if (host == null || path == null || port < 1 || port > 65535) {
+            View refresh = findViewById(R.id.git_diff_refresh_button);
+            refresh.setEnabled(false);
+            refresh.setAlpha(0.4f);
             showStatus(getString(R.string.git_diff_invalid_workspace), true);
             return null;
         }
@@ -287,30 +291,47 @@ public final class GitDiffActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.git_overview_index_state)).setText(getString(
             R.string.git_workbench_index_state, overview.stagedFiles, overview.unstagedFiles));
         Button stageAll = findViewById(R.id.git_overview_stage_all_button);
-        stageAll.setEnabled(overview.unstagedFiles > 0);
-        stageAll.setAlpha(overview.unstagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(stageAll, overview.unstagedFiles > 0,
+            R.string.git_workbench_stage_all_enabled_description,
+            R.string.git_workbench_stage_all_disabled_description);
         Button unstageAll = findViewById(R.id.git_overview_unstage_all_button);
-        unstageAll.setEnabled(overview.stagedFiles > 0);
-        unstageAll.setAlpha(overview.stagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(unstageAll, overview.stagedFiles > 0,
+            R.string.git_workbench_unstage_all_enabled_description,
+            R.string.git_workbench_unstage_all_disabled_description);
         Button commit = findViewById(R.id.git_overview_commit_button);
-        commit.setEnabled(overview.stagedFiles > 0);
-        commit.setAlpha(overview.stagedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(commit, overview.stagedFiles > 0,
+            R.string.git_workbench_commit_enabled_description,
+            R.string.git_workbench_commit_disabled_description);
         Button files = findViewById(R.id.git_overview_files_button);
         boolean hasFileChanges = !overview.fileChanges.isEmpty();
-        files.setEnabled(hasFileChanges);
-        files.setAlpha(hasFileChanges ? 1f : 0.48f);
+        setButtonAvailability(files, hasFileChanges,
+            R.string.git_workbench_files_enabled_description,
+            R.string.git_workbench_files_disabled_description);
         findViewById(R.id.git_overview_review_actions).setVisibility(
             hasFileChanges ? View.VISIBLE : View.GONE);
         Button stash = findViewById(R.id.git_overview_stash_button);
-        stash.setEnabled(overview.changedFiles > 0);
-        stash.setAlpha(overview.changedFiles > 0 ? 1f : 0.48f);
+        setButtonAvailability(stash, overview.changedFiles > 0,
+            R.string.git_workbench_stash_enabled_description,
+            R.string.git_workbench_stash_disabled_description);
         Button stashes = findViewById(R.id.git_overview_stashes_button);
         stashes.setEnabled(!overview.stashes.isEmpty());
         stashes.setAlpha(!overview.stashes.isEmpty() ? 1f : 0.48f);
+        if (overview.stashes.isEmpty()) {
+            stashes.setText(R.string.git_workbench_stashes);
+            stashes.setContentDescription(getString(R.string.git_workbench_stashes_empty_description));
+        } else {
+            stashes.setText(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_count,
+                overview.stashes.size(), overview.stashes.size()));
+            stashes.setContentDescription(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_count_description,
+                overview.stashes.size(), overview.stashes.size()));
+        }
         Button deleteBranch = findViewById(R.id.git_overview_delete_branch_button);
         boolean canDeleteBranch = !deletableLocalBranches(overview).isEmpty();
-        deleteBranch.setEnabled(canDeleteBranch);
-        deleteBranch.setAlpha(canDeleteBranch ? 1f : 0.48f);
+        setButtonAvailability(deleteBranch, canDeleteBranch,
+            R.string.git_workbench_delete_branch_enabled_description,
+            R.string.git_workbench_delete_branch_disabled_description);
         TextView sync = findViewById(R.id.git_overview_sync);
         if (overview.ahead == null || overview.behind == null) {
             sync.setText(R.string.git_workbench_no_upstream);
@@ -326,18 +347,29 @@ public final class GitDiffActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.git_overview_recent_commits)).setText(
             recentCommitsSummary(overview));
         Button fetch = findViewById(R.id.git_overview_fetch_button);
-        fetch.setEnabled(overview.upstream != null);
-        fetch.setAlpha(overview.upstream != null ? 1f : 0.48f);
+        setButtonAvailability(fetch, overview.upstream != null,
+            R.string.git_workbench_fetch_enabled_description,
+            R.string.git_workbench_fetch_disabled_description);
         boolean canPull = overview.upstream != null && overview.behind != null && overview.behind > 0;
         Button pull = findViewById(R.id.git_overview_pull_button);
-        pull.setEnabled(canPull);
-        pull.setAlpha(canPull ? 1f : 0.48f);
+        setButtonAvailability(pull, canPull,
+            R.string.git_workbench_pull_enabled_description,
+            R.string.git_workbench_pull_disabled_description);
         boolean canPush = overview.upstream != null && overview.ahead != null
             && overview.ahead > 0 && (overview.behind == null || overview.behind == 0)
             && !overview.detached;
         Button push = findViewById(R.id.git_overview_push_button);
-        push.setEnabled(canPush);
-        push.setAlpha(canPush ? 1f : 0.48f);
+        setButtonAvailability(push, canPush,
+            R.string.git_workbench_push_enabled_description,
+            R.string.git_workbench_push_disabled_description);
+    }
+
+    private void setButtonAvailability(@NonNull Button button, boolean enabled,
+                                       @StringRes int enabledDescription,
+                                       @StringRes int disabledDescription) {
+        button.setEnabled(enabled);
+        button.setAlpha(enabled ? 1f : 0.48f);
+        button.setContentDescription(getString(enabled ? enabledDescription : disabledDescription));
     }
 
     /** 将“下一步建议”落实为首屏主操作，避免手机上在横向按钮长条中寻找动作。 */
@@ -428,11 +460,11 @@ public final class GitDiffActivity extends AppCompatActivity {
         return getString(R.string.git_workbench_next_clean);
     }
 
-    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话，降低手机上扫读成本。 */
+    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话；下一步动作由主按钮与建议区承载。 */
     @NonNull
     private String stateSummary(@NonNull GitRepositoryOverview overview) {
         return getString(R.string.git_workbench_state_summary, changeState(overview),
-            syncState(overview), recommendedAction(overview));
+            syncState(overview));
     }
 
     @NonNull
@@ -463,26 +495,6 @@ public final class GitDiffActivity extends AppCompatActivity {
         return getString(R.string.git_workbench_state_synced, overview.upstream);
     }
 
-    @NonNull
-    private String recommendedAction(@NonNull GitRepositoryOverview overview) {
-        if (overview.detached) return getString(R.string.git_workbench_recommend_switch_branch);
-        if (overview.changedFiles > 0) {
-            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
-                return getString(R.string.git_workbench_recommend_commit);
-            }
-            if (!overview.fileChanges.isEmpty()) {
-                return getString(R.string.git_workbench_recommend_review_files);
-            }
-            return getString(R.string.git_workbench_recommend_review_diff);
-        }
-        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
-            return getString(R.string.git_workbench_recommend_create_branch);
-        }
-        if (overview.behind > 0) return getString(R.string.git_workbench_recommend_pull);
-        if (overview.ahead > 0) return getString(R.string.git_workbench_recommend_push);
-        if (!overview.commits.isEmpty()) return getString(R.string.git_workbench_recommend_commits);
-        return getString(R.string.git_workbench_recommend_create_branch);
-    }
 
     @NonNull
     private String recentCommitsSummary(@NonNull GitRepositoryOverview overview) {
@@ -613,6 +625,14 @@ public final class GitDiffActivity extends AppCompatActivity {
         return new ConnectionTarget(host, port, path);
     }
 
+    @NonNull
+    private String withGitTargetContext(@NonNull String message) {
+        ConnectionTarget target = currentTargetWithoutSideEffects();
+        String targetLabel = target == null ? getString(R.string.git_workbench_unknown_target)
+            : gitTargetSummary(target);
+        return getString(R.string.git_workbench_action_target_context, message, targetLabel);
+    }
+
     private void loadCommitDetails(@NonNull String shortHash) {
         ConnectionTarget target = readTarget();
         if (target == null || !WorkspaceCommandBuilder.isSafeGitCommitHash(shortHash)) return;
@@ -673,7 +693,9 @@ public final class GitDiffActivity extends AppCompatActivity {
             labels[index] = stashLabel(mOverview.stashes.get(index));
         }
         return new AlertDialog.Builder(this)
-            .setTitle(R.string.git_workbench_stashes)
+            .setTitle(getResources().getQuantityString(
+                R.plurals.git_workbench_stashes_title_count,
+                mOverview.stashes.size(), mOverview.stashes.size()))
             .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list, labels),
                 (selectionDialog, which) -> showStashActions(mOverview.stashes.get(which)))
             .setNegativeButton(android.R.string.cancel, null)
@@ -702,6 +724,10 @@ public final class GitDiffActivity extends AppCompatActivity {
             .setNegativeButton(android.R.string.cancel, null)
             .create();
         showStyledDialog(dialog);
+    }
+
+    void showStashActionsForTesting(@NonNull GitRepositoryOverview.StashEntry stash) {
+        showStashActions(stash);
     }
 
     @Nullable
@@ -752,7 +778,7 @@ public final class GitDiffActivity extends AppCompatActivity {
         if (actions.isEmpty()) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(change.path)
-            .setMessage(R.string.git_workbench_file_action_message)
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_file_action_message)))
             .setAdapter(new ArrayAdapter<>(this, R.layout.item_termuxpro_list,
                 actions.toArray(new String[0])), (selectionDialog, which) ->
                 runFileIndexOperation(stageActions.get(which), change.path))
@@ -837,7 +863,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_delete_branch)
-            .setMessage(getString(R.string.git_workbench_delete_branch_message, branch))
+            .setMessage(withGitTargetContext(getString(
+                R.string.git_workbench_delete_branch_message, branch)))
             .setPositiveButton(R.string.git_workbench_delete_branch_action,
                 (selectionDialog, which) -> deleteLocalBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -872,7 +899,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             : R.string.git_workbench_track_remote_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(branch)
-            .setMessage(getString(message, mOverview.head, branch, mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.head, branch,
+                mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_track_remote_action,
                 (selectionDialog, which) -> trackRemoteBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -891,7 +919,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             ? R.string.git_workbench_switch_dirty_message : R.string.git_workbench_switch_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_switch_branch)
-            .setMessage(getString(message, mOverview.head, branch, mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.head, branch,
+                mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_switch_action,
                 (selectionDialog, which) -> switchBranch(branch))
             .setNegativeButton(android.R.string.cancel, null)
@@ -906,8 +935,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stage_all)
-            .setMessage(getString(R.string.git_workbench_stage_all_message,
-                mOverview.unstagedFiles))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_stage_all_message,
+                mOverview.unstagedFiles)))
             .setPositiveButton(R.string.git_workbench_stage_all_action,
                 (selectionDialog, which) -> runIndexOperation(true))
             .setNegativeButton(android.R.string.cancel, null)
@@ -922,8 +951,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_unstage_all)
-            .setMessage(getString(R.string.git_workbench_unstage_all_message,
-                mOverview.stagedFiles))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_unstage_all_message,
+                mOverview.stagedFiles)))
             .setPositiveButton(R.string.git_workbench_unstage_all_action,
                 (selectionDialog, which) -> runIndexOperation(false))
             .setNegativeButton(android.R.string.cancel, null)
@@ -942,6 +971,8 @@ public final class GitDiffActivity extends AppCompatActivity {
     @Nullable
     AlertDialog createStashDialog() {
         if (mOverview == null) return null;
+        ConnectionTarget target = readTarget();
+        if (target == null) return null;
         if (mOverview.changedFiles <= 0) {
             showStatus(getString(R.string.git_workbench_no_stash_changes), false);
             return null;
@@ -957,7 +988,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_save)
             .setMessage(getString(R.string.git_workbench_stash_message,
-                mOverview.changedFiles, mOverview.stagedFiles, mOverview.unstagedFiles))
+                mOverview.changedFiles, mOverview.stagedFiles, mOverview.unstagedFiles,
+                gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setView(input)
             .setPositiveButton(R.string.git_workbench_stash_save_action, null)
             .setNegativeButton(android.R.string.cancel, null)
@@ -1041,10 +1073,10 @@ public final class GitDiffActivity extends AppCompatActivity {
         input.setPadding(padding, padding / 2, padding, padding / 2);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_create_branch)
-            .setMessage(getString(mOverview.changedFiles > 0
+            .setMessage(withGitTargetContext(getString(mOverview.changedFiles > 0
                 ? R.string.git_workbench_create_branch_dirty_message
                 : R.string.git_workbench_create_branch_message, mOverview.head,
-                mOverview.changedFiles))
+                mOverview.changedFiles)))
             .setView(input)
             .setPositiveButton(R.string.git_workbench_create_branch_action, null)
             .setNegativeButton(android.R.string.cancel, null)
@@ -1239,10 +1271,12 @@ public final class GitDiffActivity extends AppCompatActivity {
                 mOverview.changedFiles), false);
             return;
         }
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_apply)
             .setMessage(getString(R.string.git_workbench_stash_apply_message,
-                stash.ref, stash.subject))
+                stash.ref, stash.subject, gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setPositiveButton(R.string.git_workbench_stash_apply_action,
                 (selectionDialog, which) -> applyStash(stash.ref))
             .setNegativeButton(android.R.string.cancel, null)
@@ -1255,10 +1289,12 @@ public final class GitDiffActivity extends AppCompatActivity {
             || !WorkspaceCommandBuilder.isSafeGitStashRef(stash.ref)) {
             return;
         }
+        ConnectionTarget target = readTarget();
+        if (target == null) return;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_stash_drop)
             .setMessage(getString(R.string.git_workbench_stash_drop_message,
-                stash.ref, stash.subject))
+                stash.ref, stash.subject, gitTargetSummary(target), gitHeadSummary(mOverview)))
             .setPositiveButton(R.string.git_workbench_stash_drop_action,
                 (selectionDialog, which) -> dropStash(stash.ref))
             .setNegativeButton(android.R.string.cancel, null)
@@ -1287,6 +1323,17 @@ public final class GitDiffActivity extends AppCompatActivity {
                     result.output.trim()), false);
             });
         });
+    }
+
+    @NonNull
+    private String gitTargetSummary(@NonNull ConnectionTarget target) {
+        return getString(R.string.git_workbench_target, target.host, target.port, target.path);
+    }
+
+    @NonNull
+    private String gitHeadSummary(@NonNull GitRepositoryOverview overview) {
+        return getString(overview.detached ? R.string.git_workbench_detached
+            : R.string.git_workbench_branch, overview.head);
     }
 
     private void applyStash(@NonNull String stashRef) {
@@ -1373,8 +1420,8 @@ public final class GitDiffActivity extends AppCompatActivity {
         }
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_pull)
-            .setMessage(getString(R.string.git_workbench_pull_message,
-                mOverview.behind, mOverview.upstream))
+            .setMessage(withGitTargetContext(getString(R.string.git_workbench_pull_message,
+                mOverview.behind, mOverview.upstream)))
             .setPositiveButton(R.string.git_workbench_pull_action,
                 (selectionDialog, which) -> pullFastForward())
             .setNegativeButton(android.R.string.cancel, null)
@@ -1427,8 +1474,8 @@ public final class GitDiffActivity extends AppCompatActivity {
             : R.string.git_workbench_push_message;
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.git_workbench_push)
-            .setMessage(getString(message, mOverview.ahead, mOverview.upstream,
-                mOverview.changedFiles))
+            .setMessage(withGitTargetContext(getString(message, mOverview.ahead,
+                mOverview.upstream, mOverview.changedFiles)))
             .setPositiveButton(R.string.git_workbench_push_action,
                 (selectionDialog, which) -> pushUpstream())
             .setNegativeButton(android.R.string.cancel, null)

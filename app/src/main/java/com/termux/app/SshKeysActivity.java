@@ -126,8 +126,11 @@ public final class SshKeysActivity extends AppCompatActivity {
         mPublicKeyPayload = payload.toString().trim();
         boolean available = !mPublicKeyPayload.isEmpty();
         mKeyView.setText(available ? mPublicKeyDisplay : getString(R.string.ssh_keys_empty));
+        boolean installable = available && SshTargetValidator.isValid(mHost) && mPort > 0 && mPort <= 65535;
         mCopyButton.setEnabled(available);
-        mInstallButton.setEnabled(available && SshTargetValidator.isValid(mHost) && mPort > 0 && mPort <= 65535);
+        mCopyButton.setAlpha(available ? 1f : 0.4f);
+        mInstallButton.setEnabled(installable);
+        mInstallButton.setAlpha(installable ? 1f : 0.4f);
     }
 
     private void confirmGenerate() {
@@ -152,7 +155,7 @@ public final class SshKeysActivity extends AppCompatActivity {
         String command = WorkspaceCommandBuilder.buildCopySshKeyCommand(mHost, mPort);
         TermuxProDialogStyle.show(this, new AlertDialog.Builder(this)
             .setTitle(R.string.ssh_keys_install_title)
-            .setMessage(getString(R.string.ssh_keys_install_message, mHost, command))
+            .setMessage(getString(R.string.ssh_keys_install_message, mHost, mPort, command))
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ssh_keys_install_action,
                 (dialog, which) -> openTerminal(command))

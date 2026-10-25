@@ -730,7 +730,7 @@ public class WorkspaceActivitySmokeTest {
             TextView label = activity.findViewById(R.id.workspace_host_label);
             EditText host = activity.findViewById(R.id.workspace_host_input);
             assertEquals("SSH 地址（支持粘贴 ssh 命令）", label.getText().toString());
-            assertEquals("user@host 或 ssh 命令", host.getHint().toString());
+            assertEquals("user@host 或 ssh…", host.getHint().toString());
             assertEquals(R.id.workspace_host_input, label.getLabelFor());
             activity.finish();
         } finally {
