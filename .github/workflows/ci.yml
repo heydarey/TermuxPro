@@ -158,6 +158,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: termuxpro-test-reports
+          retention-days: 14
           path: |
             **/build/reports/tests/
             **/build/reports/lint-results-*.html
@@ -167,4 +168,5 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: termuxpro-debug-apk
+          retention-days: 14
           path: app/build/outputs/apk/debug/*.apk

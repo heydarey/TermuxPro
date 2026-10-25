@@ -9,9 +9,14 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: maintenance-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   create-maintenance-task:
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: 创建未重复的迭代巡检任务
         env:
