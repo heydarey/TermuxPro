@@ -457,11 +457,11 @@ public final class GitDiffActivity extends AppCompatActivity {
         return getString(R.string.git_workbench_next_clean);
     }
 
-    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话，降低手机上扫读成本。 */
+    /** 首屏状态摘要把分支风险、改动数量和同步状态压缩成一句人话；下一步动作由主按钮与建议区承载。 */
     @NonNull
     private String stateSummary(@NonNull GitRepositoryOverview overview) {
         return getString(R.string.git_workbench_state_summary, changeState(overview),
-            syncState(overview), recommendedAction(overview));
+            syncState(overview));
     }
 
     @NonNull
@@ -492,26 +492,6 @@ public final class GitDiffActivity extends AppCompatActivity {
         return getString(R.string.git_workbench_state_synced, overview.upstream);
     }
 
-    @NonNull
-    private String recommendedAction(@NonNull GitRepositoryOverview overview) {
-        if (overview.detached) return getString(R.string.git_workbench_recommend_switch_branch);
-        if (overview.changedFiles > 0) {
-            if (overview.stagedFiles > 0 && overview.unstagedFiles == 0) {
-                return getString(R.string.git_workbench_recommend_commit);
-            }
-            if (!overview.fileChanges.isEmpty()) {
-                return getString(R.string.git_workbench_recommend_review_files);
-            }
-            return getString(R.string.git_workbench_recommend_review_diff);
-        }
-        if (overview.upstream == null || overview.ahead == null || overview.behind == null) {
-            return getString(R.string.git_workbench_recommend_create_branch);
-        }
-        if (overview.behind > 0) return getString(R.string.git_workbench_recommend_pull);
-        if (overview.ahead > 0) return getString(R.string.git_workbench_recommend_push);
-        if (!overview.commits.isEmpty()) return getString(R.string.git_workbench_recommend_commits);
-        return getString(R.string.git_workbench_recommend_create_branch);
-    }
 
     @NonNull
     private String recentCommitsSummary(@NonNull GitRepositoryOverview overview) {

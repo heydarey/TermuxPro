@@ -207,7 +207,8 @@ public final class GitDiffActivityTest {
         assertTrue(stateSummary.getText().toString().contains("共 3 个改动文件"));
         assertTrue(stateSummary.getText().toString().contains("已暂存 2、未暂存 1"));
         assertTrue(stateSummary.getText().toString().contains("已跟踪 origin/dev"));
-        assertTrue(stateSummary.getText().toString().contains("推荐动作"));
+        assertTrue(stateSummary.getText().toString().contains("当前状态"));
+        assertTrue(!stateSummary.getText().toString().contains("推荐动作"));
         assertEquals(stateSummary.getText().toString(),
             stateSummary.getContentDescription().toString());
         assertTrue(index.getText().toString().contains("已暂存 2"));

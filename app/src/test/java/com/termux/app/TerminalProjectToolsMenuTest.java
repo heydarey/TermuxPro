@@ -130,6 +130,10 @@ public class TerminalProjectToolsMenuTest {
             TerminalProjectToolsMenu.toolsButtonLabel(false));
         assertEquals(com.termux.R.string.workspace_tools_tui_scroll_action,
             TerminalProjectToolsMenu.toolsButtonLabel(true));
+        assertEquals(com.termux.R.string.workspace_tools_scrollback_action_compact,
+            TerminalProjectToolsMenu.toolsButtonLabel(false, true));
+        assertEquals(com.termux.R.string.workspace_tools_tui_scroll_action_compact,
+            TerminalProjectToolsMenu.toolsButtonLabel(true, true));
         assertEquals(com.termux.R.string.workspace_tools_scrollback_description,
             TerminalProjectToolsMenu.toolsButtonDescription(false));
         assertEquals(com.termux.R.string.workspace_tools_tui_scroll_description,
