@@ -1088,4 +1088,5 @@
     <string name="workspace_tools_scrollback_action_compact">History</string>
     <string name="workspace_tools_tui_scroll_action_compact">TUI</string>
     <string name="workspace_host_hint_minimal">user@host or ssh…</string>
+    <string name="terminal_sessions_empty">No terminal sessions yet\nTap New session to start</string>
 </resources>

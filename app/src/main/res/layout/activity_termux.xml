@@ -169,6 +169,18 @@
                     android:choiceMode="singleChoice"
                     android:longClickable="true" />
 
+                <TextView
+                    android:id="@+id/terminal_sessions_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:text="@string/terminal_sessions_empty"
+                    android:textColor="?attr/termuxActivityDrawerImageTint"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
                 <LinearLayout
                     style="?android:attr/buttonBarStyle"
                     android:layout_width="match_parent"

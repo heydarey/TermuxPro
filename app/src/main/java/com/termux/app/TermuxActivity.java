@@ -561,6 +561,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         ListView termuxSessionsListView = findViewById(R.id.terminal_sessions_list);
         mTermuxSessionListViewController = new TermuxSessionsListViewController(this, mTermuxService.getTermuxSessions());
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
+        termuxSessionsListView.setEmptyView(findViewById(R.id.terminal_sessions_empty));
+        // “关闭”会停止当前远程会话，用危险色与“新建”区分，降低并排误触；停止仍有确认弹窗兜底。
+        ((android.widget.Button) findViewById(R.id.close_session_button))
+            .setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.tp_danger));
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
     }
