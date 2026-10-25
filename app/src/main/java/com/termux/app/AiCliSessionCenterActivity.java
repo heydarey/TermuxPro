@@ -70,6 +70,11 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
 
     /** 大字体优先保证四个 AI 核心操作可见，完整上下文和策略仍由可读控件保留。 */
     private void configureLargeFontHierarchy() {
+        // 静态启动说明与状态风险行、历史按钮标签三处语义重复（UI 走查 2026-10-25 复核），
+        // 默认字体同样隐藏；安全语义由状态风险行与按钮文案承载，完整文本保留给辅助技术。
+        TextView hint = findViewById(R.id.ai_cli_center_start_hint);
+        hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
+        hint.setVisibility(View.GONE);
         if (getResources().getConfiguration().fontScale < 1.5f) return;
         reduceVerticalPadding(R.id.ai_cli_center_content, 12);
         reduceVerticalPadding(R.id.ai_cli_center_target_card, 12);
@@ -77,12 +82,6 @@ public final class AiCliSessionCenterActivity extends AppCompatActivity {
         findViewById(R.id.ai_cli_center_context_title).setVisibility(View.GONE);
         findViewById(R.id.ai_cli_center_target_label).setVisibility(View.GONE);
         findViewById(R.id.ai_cli_center_target).setVisibility(View.GONE);
-        TextView hint = findViewById(R.id.ai_cli_center_start_hint);
-        hint.setText(R.string.ai_cli_center_start_hint_compact);
-        hint.setContentDescription(getString(R.string.ai_cli_center_start_hint));
-        // 200% 字体下“开始 AI 工作”卡片已经有风险摘要、推荐/谨慎标签和四个核心按钮。
-        // 隐藏重复说明，确保四个启动入口仍在首屏可见；完整语义保留给辅助技术。
-        hint.setVisibility(View.GONE);
         TextView risk = findViewById(R.id.ai_cli_center_ai_risk);
         if (!getString(R.string.ai_cli_center_ai_risk_missing)
             .contentEquals(risk.getText())) {
