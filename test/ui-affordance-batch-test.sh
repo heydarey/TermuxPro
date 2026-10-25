@@ -81,4 +81,18 @@ require_contains "$project_dir/app/src/main/java/com/termux/app/ConnectionDiagno
 require_contains "$project_dir/app/src/main/java/com/termux/app/ProjectTasksActivity.java" "mRefresh.setAlpha(0.4f)" \
     "项目任务页无效工作区态必须同步降低刷新按钮透明度。"
 
+# 终端会话抽屉：空态引导与关闭按钮危险色。
+layout_drawer="$project_dir/app/src/main/res/layout/activity_termux.xml"
+termux_activity="$project_dir/app/src/main/java/com/termux/app/TermuxActivity.java"
+require_contains "$zh" "terminal_sessions_empty" \
+    "终端会话空态必须有一行可行动的引导文案。"
+require_contains "$en" "terminal_sessions_empty" \
+    "英文终端会话空态引导必须存在。"
+require_contains "$layout_drawer" '@+id/terminal_sessions_empty' \
+    "终端会话列表必须挂空态视图。"
+require_contains "$termux_activity" "setEmptyView(findViewById(R.id.terminal_sessions_empty))" \
+    "终端会话空态必须完成 setEmptyView 接线。"
+require_contains "$termux_activity" "R.color.tp_danger" \
+    "关闭会话按钮必须使用 tp_danger 危险色与“新建”区分，不得回退为等权重中性色。"
+
 echo "UI 审计快赢静态校验通过。"

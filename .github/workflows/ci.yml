@@ -122,12 +122,7 @@ jobs:
             exit 1
           fi
       - name: 静态门禁
-        run: |
-          ./scripts/validate-skills.sh
-          ./test/version-metadata-test.sh
-          ./test/workflow-trigger-policy-test.sh
-          ./test/github-cli-wrapper-test.sh
-          ./test/github-check-suites-test.sh
+        run: ./test/static-all.sh
       - name: 启动隔离 SSH 与 tmux fixture
         if: steps.changes.outputs.android_runtime == 'true'
         timeout-minutes: 5

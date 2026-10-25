@@ -58,10 +58,13 @@ require_contains "$source_text" "ConnectionDiagnosticNavigationTest" \
     "环境诊断入口变更必须触发连接诊断导航测试。"
 require_contains "$source_text" "SshKeysNavigationTest" \
     "SSH 密钥入口变更必须触发 SSH 密钥导航测试。"
-require_contains "$source_text" "scripts/validate-skills.sh" \
-    "推送前冒烟必须包含 Skill 校验，避免规则漂移。"
-require_contains "$source_text" "android-string-resource-parity-test.sh" \
-    "推送前冒烟必须包含 Android 字符串资源中英文 key 对齐校验，避免默认资源缺失。"
+require_contains "$source_text" "./test/static-all.sh" \
+    "推送前冒烟必须通过静态门禁唯一清单 test/static-all.sh 执行，避免三处清单漂移。"
+static_all_text="$(sed -n '1,80p' "$project_dir/test/static-all.sh")"
+require_contains "$static_all_text" "scripts/validate-skills.sh" \
+    "静态门禁唯一清单必须包含 Skill 校验，避免规则漂移。"
+require_contains "$static_all_text" "android-string-resource-parity-test.sh" \
+    "静态门禁唯一清单必须包含 Android 字符串资源中英文 key 对齐校验，避免默认资源缺失。"
 require_contains "$source_text" "scripts/resource-guard.sh normal" \
     "真实 Gradle 冒烟前必须执行资源守卫。"
 require_contains "$source_text" "scripts/resolve-jdk17.sh" \
