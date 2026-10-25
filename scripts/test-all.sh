@@ -6,31 +6,7 @@ cd "$project_dir"
 
 source "$project_dir/scripts/resolve-jdk17.sh"
 
-./test/version-metadata-test.sh
-./test/select-stable-baseline-tag-test.sh
-./test/github-cli-wrapper-test.sh
-./test/github-check-suites-test.sh
-./test/pre-push-smoke-test.sh
-./test/workflow-trigger-policy-test.sh
-./test/release-notification-format-test.sh
-./test/github-noise-audit-test.sh
-./test/ai-launch-decision-copy-test.sh
-./test/terminal-touch-scrollback-test.sh
-./test/terminal-session-actions-test.sh
-./test/dialog-readable-style-test.sh
-./test/skill-validator-bootstrap-test.sh
-./test/ui-screenshot-manifest-test.sh
-./test/release-apk-device-smoke-test.sh
-./test/release-abi-gate-test.sh
-./test/codex-quota-guard-test.sh
-./test/android-string-resource-parity-test.sh
-./test/release-window-guard-test.sh
-./test/context-checkpoint-test.sh
-./test/goal-lifecycle-policy-test.sh
-./test/generated-cache-cleanup-test.sh
-./test/android-sdk-bootstrap-test.sh
-./test/ui-affordance-batch-test.sh
-./scripts/validate-skills.sh
+./test/static-all.sh
 
 gradle_args=(--no-daemon --max-workers=2)
 if [[ "${TERMUXPRO_OFFLINE:-0}" == "1" ]]; then
