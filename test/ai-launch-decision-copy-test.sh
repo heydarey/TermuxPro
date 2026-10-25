@@ -108,6 +108,42 @@ if [[ -z "$new_line" || -z "$history_line" || -z "$context_line" || "$new_line" 
     echo "AI 会话的两个决策按钮必须排在详细说明之前。" >&2
     exit 1
 fi
+
+require_contains "$zh" "不会自动进入未指定的 tmux 或 Claude/Codex 历史会话" \
+    "工作区安全提示必须精确说明不会进入未指定的 tmux 或 Claude/Codex 历史会话。"
+require_contains "$en" "Claude/Codex history sessions" \
+    "英文工作区安全提示必须与中文语义对齐，明确 tmux 与 Claude/Codex 历史会话边界。"
+if grep -Fq "AI 历史会话" "$zh"; then
+    echo "中文文案不能使用泛化的“AI 历史会话”，必须明确为 Claude/Codex 历史会话。" >&2
+    exit 1
+fi
+if grep -Fq "续接 AI 历史" "$zh"; then
+    echo "中文文案不能写“续接 AI 历史”，必须明确为续接 Claude/Codex 历史。" >&2
+    exit 1
+fi
+if grep -Fq "AI history sessions" "$en"; then
+    echo "英文文案不能使用 AI history sessions，必须明确为 Claude/Codex history sessions。" >&2
+    exit 1
+fi
+
+# 用户可见文档（README 与 UX 质量门）与资源同口径；历史 RELEASE_NOTES 属不可变发布记录，不回溯改写、不纳入扫描。
+readme_doc="$project_dir/README.md"
+ux_doc="$project_dir/docs/UX_QUALITY.md"
+for doc_file in "$readme_doc" "$ux_doc"; do
+    if [[ ! -f "$doc_file" ]]; then
+        echo "门禁扫描目标缺失：$doc_file" >&2
+        exit 1
+    fi
+    if grep -Fq -e "AI 历史会话" -e "续接 AI 历史" -e "远端 AI 历史" -e "读取 AI 历史" -e "AI 私有历史" "$doc_file"; then
+        echo "用户可见文档 $doc_file 不能使用泛化 AI 历史表述，必须明确为 Claude/Codex 历史。" >&2
+        exit 1
+    fi
+    if grep -Fq -e "AI history sessions" -e "private AI history" -e "remote AI history" -e "read AI history" "$doc_file"; then
+        echo "用户可见文档 $doc_file 不能使用泛化 AI history 表述，必须明确为 Claude/Codex history。" >&2
+        exit 1
+    fi
+done
+
 require_contains "$command" "claude --resume" \
     "Claude 历史入口只能打开原生命令选择器，不能改成静默最近恢复。"
 require_contains "$command" "codex resume" \

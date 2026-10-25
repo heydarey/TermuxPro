@@ -450,7 +450,7 @@
     <string name="ai_cli_center_open_git_description">Open the Git workbench for the current workspace. Review branches, changes, and commits without directly committing, pulling, pushing, or discarding changes.</string>
     <string name="ai_cli_center_open_project_tasks_description">Open project tasks and tests. It shows the remote target and command for confirmation first, and never types test commands into the current Claude or Codex terminal.</string>
     <string name="workspace_open_local_terminal">Open local terminal</string>
-    <string name="workspace_security_tip">The first SSH connection still requires explicit host fingerprint confirmation.</string>
+    <string name="workspace_security_tip">First connection requires host fingerprint confirmation plus your password or SSH key. TermuxPro never auto-enters unspecified tmux or Claude/Codex history sessions.</string>
     <string name="workspace_error_host">Enter a valid SSH alias, host, user@host, user@host:port, or ssh -p port user@host.</string>
     <string name="workspace_error_port">SSH port must be between 1 and 65535.</string>
     <string name="workspace_error_path">Enter a remote project path.</string>

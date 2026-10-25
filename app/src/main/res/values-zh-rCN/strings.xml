@@ -325,7 +325,7 @@
     <string name="ai_cli_center_open_git_description">打开当前工作区 Git 工作台；查看分支、改动和提交记录，不会直接提交、拉取、推送或丢弃修改。</string>
     <string name="ai_cli_center_open_project_tasks_description">打开项目任务与测试页；先展示远端目标和命令确认，不会把测试命令直接输入当前 Claude 或 Codex 终端。</string>
     <string name="workspace_open_local_terminal">打开本地终端</string>
-    <string name="workspace_security_tip">首次连接需确认服务器指纹并输入密码或配置 SSH 密钥；TermuxPro 不会自动进入未指定的 tmux 或 AI 历史会话。</string>
+    <string name="workspace_security_tip">首次连接需确认服务器指纹并输入密码或配置 SSH 密钥；TermuxPro 不会自动进入未指定的 tmux 或 Claude/Codex 历史会话。</string>
     <string name="workspace_error_host">请输入有效的 SSH 别名、主机、“用户名@主机”、“用户名@主机:端口”或“ssh -p 端口 用户名@主机”。</string>
     <string name="workspace_error_port">SSH 端口必须在 1 到 65535 之间。</string>
     <string name="workspace_error_path">请输入远程项目路径。</string>

@@ -33,7 +33,7 @@ TermuxPro 是面向 Android 手机的移动 AI 开发终端。它以官方
 主机/IP/`user@host`/`~/.ssh/config` 别名和远端项目目录。建议远端提前安装 OpenSSH、tmux、Git、
 Claude Code 和 Codex CLI。工作区内的 Claude、Codex、Git、文件、任务与诊断入口复用同一 SSH 配置。
 默认策略只建立普通 SSH，不探测、创建或进入任何 tmux 会话；可按工作区选择只查看列表、仅进入指定
-会话，或创建/进入指定会话。应用不保存 SSH 密码，不读取私钥，不会跨项目自动续接 AI 历史，也不会
+会话，或创建/进入指定会话。应用不保存 SSH 密码，不读取私钥，不会跨项目自动续接 Claude/Codex 历史，也不会
 自动确认 AI CLI 的危险授权。
 
 Git 工作台已支持状态概览、分支查看/切换/新建、提交历史、暂存/取消暂存、提交、fetch、快进拉取、
